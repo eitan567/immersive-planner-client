@@ -3,29 +3,11 @@ import { Button } from "../../../components/ui/button.tsx";
 import { Input } from "../../../components/ui/input.tsx";
 import { Card } from "../../../components/ui/card.tsx";
 import { useMcpTool } from '../../../hooks//useMcp.ts';
-import { Badge } from "../../../components/ui/badge.tsx";
-import { SiProbot } from "react-icons/si";
-import { MdFace } from "react-icons/md";
 import { cn } from "../../..//lib/utils.ts"
-import { XMarkIcon, PaperAirplaneIcon, ChatBubbleLeftRightIcon,
-         DocumentDuplicateIcon, ArrowPathIcon
-} from '@heroicons/react/24/outline';
-
-interface Message {
-  text: string;
-  sender: 'user' | 'ai';
-  timestamp: Date;
-}
-
+import { XMarkIcon, PaperAirplaneIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import { LessonPlanSections } from '../types.ts';
-
-interface LessonFieldChatBoxProps {
-  onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
-  currentValues: Record<string, string>;
-  sections: LessonPlanSections;
-  saveCurrentPlan: () => Promise<void>;
-  className?: string;
-}
+import { ChatMessage, Message } from "./ChatMessage.tsx";
+import { QuickActions } from "./QuickActions.tsx";
 
 const FIELD_LABELS: Record<string, string> = {
   // Basic info fields
@@ -56,6 +38,14 @@ const QUICK_ACTIONS = [
   {text:'שפר ידע קודם נדרש',maxWidth:'max-w-[90px] mt-[5px]'},
   {text:'הצע שכבת גיל',maxWidth:'min-w-[86px] mt-[5px] leading-7'},
 ];
+
+interface LessonFieldChatBoxProps {
+  onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
+  currentValues: Record<string, string>;
+  sections: LessonPlanSections;
+  saveCurrentPlan: () => Promise<void>;
+  className?: string;
+}
 
 export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
   onUpdateField,
@@ -234,39 +224,10 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
     setShouldSend(true);
   };
 
-  const renderMessageText = (text: string) => {
-    const parts = text.split(/(<שדה:\s*[^>]+>)/);
-    return parts.map((part, index) => {
-      const fieldMatch = part.match(/<שדה:\s*([^>]+)>/);
-      if (fieldMatch) {
-        const fieldName = fieldMatch[1].trim();
-        return (
-          <React.Fragment key={`field-${index}`}>
-          <br/>
-          <Badge key={index} className="mx-1 float-right mt-[10px]">
-            {fieldName}
-          </Badge>
-          </React.Fragment>
-        );
-      }
-      return part;
-    });
-  };
-
   const handleQuickAction = (action: string) => {
     setCurrentMessage(action);
     setShouldSend(true);
   };
-
-  const renderQuickActions = () => (
-    <div className="flex flex-wrap gap-1 mb-3 text-center">
-      {QUICK_ACTIONS.map((action, index) => (
-        <Badge key={index} onClick={() => handleQuickAction(action.text)} className={cn("cursor-pointer hover:bg-[#c6a0f3] transition-colors border border-[#e6b8ff] text-black bg-[#f9d9ff] font-semibold text-[9px] px-[7px] pb-[1px]",action.maxWidth)}>
-          {action.text}
-        </Badge>
-      ))}
-    </div>
-  );
 
   return (
     <Card className="mt-0 border border-[#eadfff] rounded-[9px] shadow-none">
@@ -310,55 +271,12 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
                 </div>
               ) : (
                 messages.map((message, index) => (
-                  <div
+                  <ChatMessage
                     key={index}
-                    className={`flex gap-2 ${
-                      message.sender === 'user' ? 'flex-row-reverse' : ''
-                    }`}
-                  >
-                    <div className="shrink-0">
-                      {message.sender === 'user' ? (
-                        <MdFace className="h-6 w-6 text-[darkslateblue]" />
-                      ) : (
-                        <SiProbot className="h-5 w-5 text-[darkmagenta]" />
-                      )}
-                    </div>
-                    <div className={`relative p-2 text-sm rounded-lg max-w-[80%] ${
-                      message.sender === 'user'
-                        ? 'bg-[darkslateblue] text-white px-[9px] pt-[3px] pb-[6px]'
-                        : 'bg-[honeydew] border rounded-md min-w-[194px]'
-                    }`}>
-                      {renderMessageText(message.text)}
-                      <div className="flex gap-2 mt-2 justify-end">
-                        {message.sender === 'user' ? (
-                          <>
-                            <button
-                              onClick={() => handleResendMessage(message.text)}
-                              className="hover:text-[pink] transition-colors text-white"
-                              title="שלח שוב"
-                            >
-                              <ArrowPathIcon className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => handleCopyMessage(message.text)}
-                              className="hover:text-[pink] transition-colors text-white"
-                              title="העתק הודעה"
-                            >
-                              <DocumentDuplicateIcon className="h-4 w-4" />
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => handleCopyMessage(message.text)}
-                            className="hover:text-[#540ba9] transition-colors text-gray-800"
-                            title="העתק הודעה"
-                          >
-                            <DocumentDuplicateIcon className="h-4 w-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                    message={message}
+                    onCopy={handleCopyMessage}
+                    onResend={message.sender === 'user' ? handleResendMessage : undefined}
+                  />
                 ))
               )}
               {loading && (
@@ -368,7 +286,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
               )}
             </div>
 
-            {renderQuickActions()}
+            <QuickActions actions={QUICK_ACTIONS} onActionClick={handleQuickAction} />
 
             <div className="flex gap-2">
               <Input
