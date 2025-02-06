@@ -241,12 +241,12 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
       if (fieldMatch) {
         const fieldName = fieldMatch[1].trim();
         return (
-          <>
+          <React.Fragment key={`field-${index}`}>
           <br/>
           <Badge key={index} className="mx-1 float-right mt-[10px]">
             {fieldName}
           </Badge>
-          </>
+          </React.Fragment>
         );
       }
       return part;

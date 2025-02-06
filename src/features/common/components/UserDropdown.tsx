@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Button } from "../../../components/ui/button.tsx";
+import { supabase } from '../../../lib/supabase-client.ts';
 
 interface UserDropdownProps {
     user: {
@@ -33,12 +34,19 @@ export const UserDropdown = React.memo(({ user, onSignOut }: UserDropdownProps) 
   }, [user?.user_metadata]);
 
   // Memoize the error handler to prevent recreating it on every render
-  const handleImageError = React.useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+  const handleImageError = React.useCallback(async (e: React.SyntheticEvent<HTMLImageElement>) => {
+    
     console.error('Avatar image failed to load:', avatarUrl);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    const metadata = user.user_metadata;
+    
     const target = e.target as HTMLImageElement;
-    target.src = ''; // Clear broken image
+    target.src = metadata?.avatar_url || ''; // Clear broken image
     target.onerror = null; // Prevent infinite loop
-  }, [avatarUrl]);
+  }, []);
 
   console.log('Rendering UserDropdown');
 
@@ -49,7 +57,7 @@ export const UserDropdown = React.memo(({ user, onSignOut }: UserDropdownProps) 
           <div className="h-10 w-10 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center border-2 border-white/30 overflow-hidden mr-2">
             {avatarUrl ? (
               <img 
-                src={avatarUrl} 
+                src={avatarUrl?.split('=')[0]} 
                 alt="User avatar" 
                 className="h-full w-full object-cover"
                 onError={handleImageError}
