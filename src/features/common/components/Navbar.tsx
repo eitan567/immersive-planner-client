@@ -47,7 +47,7 @@ export const Navbar = React.memo(({ user }: NavbarProps) => {
       </div>      
 
       {/* Right side - User Profile and Logout */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 mr-6">
         <UserDropdown user={user} onSignOut={handleSignOut} />
       </div>
     </nav>

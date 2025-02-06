@@ -67,7 +67,7 @@ export const UserDropdown = React.memo(({ user, onSignOut }: UserDropdownProps) 
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="relative min-w-[220px] bg-gradient-to-b from-white/95 to-white/90 rounded-xl p-3 
+          className="relative min-w-[220px] bg-gradient-to-b from-white/95 to-white/90 rounded-xl p-[5px]
             shadow-[0_4px_20px_-1px_rgba(0,0,0,0.1)] 
             border border-slate-200
             backdrop-blur-lg backdrop-saturate-150

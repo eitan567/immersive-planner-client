@@ -27,7 +27,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
 
   return (
     <div className="space-y-2 rtl">
-      <h1 className="text-[1.2rem] font-semibold text-[#540ba9]">פרטי השיעור</h1>
+      <h1 className="text-[1.2rem] font-semibold text-[#540ba9] pb-[10px] pt-[23px]">פרטי השיעור</h1>
       <div className="text-right">
         <Label className="text-right">נושא היחידה</Label>
         <div className="space-y-2">

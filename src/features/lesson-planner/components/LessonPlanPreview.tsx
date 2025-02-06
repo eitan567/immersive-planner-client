@@ -24,7 +24,7 @@ const LessonPlanPreview = ({ content: initialContent, onContentChange }: LessonP
     <Card className="mt-4 border-gray-200">
       <CardHeader className="border-b border-gray-100">
         <CardTitle className="text-right flex items-center justify-end gap-2 text-gray-800">
-          <h1 className="text-[1.2rem] font-semibold text-[#540ba9]">תצוגה מקדימה של תכנית השיעור</h1>
+          <h1 className="text-[1.2rem] font-semibold text-[#540ba9] pb-[10px] pt-[23px]">תצוגה מקדימה של תכנית השיעור</h1>
         </CardTitle>
       </CardHeader>
       <CardContent className="bg-white h-[calc(100vh-380px)] min-h-[380px]">

@@ -145,10 +145,10 @@ const MainContent = React.memo(() => {
   return (
     <Layout user={user} rightSidebarProps={rightSidebarProps} leftSidebarProps={leftSidebarProps}>
       <div className="p-6 min-h-full">
-        <div dir="rtl" className="mx-auto space-y-6">
+        <div dir="rtl" className="mx-auto space-y-0">
           {error && <ErrorAlert message={error} />}
           <Card>
-            <CardContent className='min-h-[calc(100vh-130px)]'>
+            <CardContent className='min-h-[calc(100vh-160px)] pt-0'>
               {lessonPlan && (
                 <LessonContent
                   currentStep={currentStep}
