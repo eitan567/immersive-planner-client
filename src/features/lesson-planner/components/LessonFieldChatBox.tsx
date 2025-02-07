@@ -312,17 +312,32 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
                   <br />
                   דוגמאות לפרטי השיעור:
                   <br />
-                  "שנה את נושא היחידה ל'אנרגיה מתחדשת'"
+                  <button
+                    onClick={() => handleQuickAction("שנה את נושא היחידה ל'אנרגיה מתחדשת'")}
+                    className="text-[#540ba9] hover:underline cursor-pointer"
+                  >"שנה את נושא היחידה ל'אנרגיה מתחדשת'"</button>
                   <br />
-                  "תעזור לי לנסח טוב יותר את מטרות התוכן"
+                  <button
+                    onClick={() => handleQuickAction("תעזור לי לנסח טוב יותר את מטרות התוכן")}
+                    className="text-[#540ba9] hover:underline cursor-pointer"
+                  >"תעזור לי לנסח טוב יותר את מטרות התוכן"</button>
                   <br />
                   דוגמאות לבניית השיעור:
                   <br />
-                  "תציע פעילות מעניינת לפתיחת השיעור"
+                  <button
+                    onClick={() => handleQuickAction("תציע פעילות מעניינת לפתיחת השיעור")}
+                    className="text-[#540ba9] hover:underline cursor-pointer"
+                  >"תציע פעילות מעניינת לפתיחת השיעור"</button>
                   <br />
-                  "תשפר את השימוש במרחב בגוף השיעור"
+                  <button
+                    onClick={() => handleQuickAction("תשפר את השימוש במרחב בגוף השיעור")}
+                    className="text-[#540ba9] hover:underline cursor-pointer"
+                  >"תשפר את השימוש במרחב בגוף השיעור"</button>
                   <br />
-                  "תציע פעילות סיכום אינטראקטיבית"
+                  <button
+                    onClick={() => handleQuickAction("תציע פעילות סיכום אינטראקטיבית")}
+                    className="text-[#540ba9] hover:underline cursor-pointer"
+                  >"תציע פעילות סיכום אינטראקטיבית"</button>
                 </div>
               ) : (
                 messages.map((message, index) => (
@@ -341,28 +356,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
               )}
             </div>
 
-            <div className="flex justify-center gap-2 text-xs h-4">
-              <button
-                onClick={() => setMode('command')}
-                className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
-                  mode === 'command'
-                    ? 'bg-[#540ba9] text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                פקודה
-              </button>
-              <button
-                onClick={() => setMode('chat')}
-                className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
-                  mode === 'chat'
-                    ? 'bg-[#540ba9] text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                שיחה
-              </button>
-            </div>
+            
 
             {/* {mode === 'chat' && (
               <div className="text-xs text-gray-500 text-center">
@@ -394,6 +388,28 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
               >
                 <PaperAirplaneIcon className="h-4 w-4 rotate-180 border-none outline-none shadow-none text-[#540ba9]" />
               </Button>
+            </div>
+            <div className="flex justify-start gap-2 text-xs h-4">
+              <button
+                onClick={() => setMode('command')}
+                className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
+                  mode === 'command'
+                    ? 'bg-[#540ba9] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                פקודה
+              </button>
+              <button
+                onClick={() => setMode('chat')}
+                className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
+                  mode === 'chat'
+                    ? 'bg-[#540ba9] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                שיחה
+              </button>
             </div>
           </div>
         )}
