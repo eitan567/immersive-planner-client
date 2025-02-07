@@ -208,7 +208,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                              )}
                            </div>
                            <div
-                             className={`p-2 rounded-lg max-w-[80%] text-sm ${
+                             className={`p-2 rounded-lg max-w-[90%] text-sm whitespace-pre-wrap break-words font-mono font-['Assistant'] ${
                                message.sender === 'user'
                                  ? 'bg-[darkslateblue] text-white px-[9px] pt-[3px] pb-[6px]'
                                  : 'bg-[honeydew] border rounded-md '

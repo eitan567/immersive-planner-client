@@ -26,7 +26,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onCopy, onRes
           <SiProbot className="h-5 w-5 text-[darkmagenta]" />
         )}
       </div>
-      <div className={`relative p-2 text-sm rounded-lg max-w-[80%] ${
+      <div className={`relative p-2 text-sm rounded-lg max-w-[90%] whitespace-pre-wrap break-words font-mono font-['Assistant'] ${
         message.sender === 'user'
           ? 'bg-[darkslateblue] text-white px-[9px] pt-[3px] pb-[6px]'
           : 'bg-[honeydew] border rounded-md min-w-[194px]'

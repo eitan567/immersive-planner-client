@@ -47,6 +47,19 @@ interface LessonFieldChatBoxProps {
   className?: string;
 }
 
+interface FieldUpdate {
+  fieldToUpdate: string;
+  userResponse: string;
+  newValue: string;
+}
+
+interface ChatResponse {
+  response: string;
+}
+
+type AIResponse = FieldUpdate | FieldUpdate[] | ChatResponse;
+
+
 export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
   onUpdateField,
   className,
@@ -55,6 +68,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
   saveCurrentPlan
 }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [mode, setMode] = useState<'command' | 'chat'>('command');
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -112,16 +126,33 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
         timestamp: new Date()
       }]);
 
-      const response = await useMcpTool({
-        serverName: 'ai-server',
-        toolName: 'update_lesson_field',
-        arguments: {
+      let response;
+      if (mode === 'command') {
+        response = await useMcpTool({
+          serverName: 'ai-server',
+          toolName: 'update_lesson_field',
+          arguments: {
+            message: currentMessage,
+            fieldLabels: FIELD_LABELS,
+            currentValues: allValues,
+            rephrase: currentMessage.includes('נסח') || currentMessage.includes('שפר')
+         } 
+        });
+
+      } else {
+        response = await useMcpTool({
+          serverName: 'ai-server',
+          toolName: 'chat_with_context',
+          arguments: {
           message: currentMessage,
-          fieldLabels: FIELD_LABELS,
           currentValues: allValues,
-          rephrase: currentMessage.includes('נסח') || currentMessage.includes('שפר')
-        }
-      });
+          history: messages
+,
+          fieldLabels: FIELD_LABELS
+          }
+        });
+      }
+
 
       if ('error' in response) {
         let errorMessage = response.error;
@@ -141,7 +172,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
         throw new Error('לא התקבלה תשובה מהשרת. אנא נסה שוב.');
       }
 
-      let parsed;
+      let parsed: AIResponse, updates: FieldUpdate[];
       try {
         parsed = JSON.parse(responseText);
       } catch (e) {
@@ -149,50 +180,62 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
         throw new Error('התקבל מידע לא תקין מהשרת. אנא נסה שוב.');
       }
       
-      const updates = Array.isArray(parsed) ? parsed : [parsed];
+      if (mode === 'command') {
+        updates = Array.isArray(parsed) ? parsed as FieldUpdate[] : [parsed as FieldUpdate];
       
-      for (const update of updates) {
-        if (!update.fieldToUpdate || !update.userResponse || !update.newValue) {
-          throw new Error('תשובת המערכת חסרה שדות נדרשים');
-        }
-      }
-
-      setMessages(prev => [
-        ...prev,
-        ...updates.map(update => ({
-          text: update.userResponse,
-          sender: 'ai' as const,
-          timestamp: new Date()
-        }))
-      ]);
-
-      const batchUpdates = updates.map(update => {
-        const fieldName = update.fieldToUpdate;
-        const newValue = update.newValue;
-        
-        if (fieldName.includes('.')) {
-          const [phase, index, field] = fieldName.split('.');
-          
-          if (phase && field && ['opening', 'main', 'summary'].includes(phase) &&
-              ['content', 'spaceUsage'].includes(field)) {
-            return [fieldName, newValue] as [string, string];
+  
+        for (const update of updates) {
+          if (!update.fieldToUpdate || !update.userResponse || !update.newValue) {
+            throw new Error('תשובת המערכת חסרה שדות נדרשים');
           }
         }
+
+        setMessages(prev => [
+          ...prev,
+          ...updates.map(update => ({
+            text: update.userResponse,
+            sender: 'ai' as const,
+            timestamp: new Date()
+          }))
+        ]);
+
+        const batchUpdates = updates.map(update => {
+          const fieldName = update.fieldToUpdate;
+          const newValue = update.newValue;
         
-        return [fieldName, newValue] as [string, string];
-      });
+  
+          if (fieldName.includes('.')) {
+            const [phase, index, field] = fieldName.split('.');
+          
+  
+            if (phase && field && ['opening', 'main', 'summary'].includes(phase) &&
+                ['content', 'spaceUsage'].includes(field)) {
+              return [fieldName, newValue] as [string, string];
+            }
+          }
+        
+  
+          return [fieldName, newValue] as [string, string];
+        });
 
-      const validUpdates = batchUpdates.filter(update =>
-        update && FIELD_LABELS[update[0]] !== undefined
-      );
+        const validUpdates = batchUpdates.filter(update =>
+          update && FIELD_LABELS[update[0]] !== undefined
+        );
 
-      if (validUpdates.length > 0) {
-        await onUpdateField(validUpdates);
-        await saveCurrentPlan();
+        if (validUpdates.length > 0) {
+          await onUpdateField(validUpdates);
+          await saveCurrentPlan();
+        }
+      } else {
+        setMessages(prev => [...prev, {
+          text: (parsed as ChatResponse).response,
+          sender: 'ai' as const,
+          timestamp: new Date()
+        }]);
       }
 
     } catch (error) {
-      console.error('Failed to process request:', error);
+      console.error(`Failed to process ${mode} request:`, error);
       setMessages(prev => [...prev, {
         text: error instanceof Error ? error.message : 'מצטער, נתקלתי בבעיה בעיבוד הבקשה. אנא נסה שנית.',
         sender: 'ai',
@@ -248,7 +291,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
 
         {isOpen && (
           <div className="space-y-4">
-            <div ref={chatContainerRef} className={cn("h-[calc(100vh-330px)] overflow-y-auto border rounded-lg p-3 mt-2 space-y-3 bg-white scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md",className)}>
+            <div ref={chatContainerRef} className={cn("h-[calc(100vh-370px)] overflow-y-auto border rounded-lg p-3 mt-2 space-y-3 bg-white scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md",className)}>
               {messages.length === 0 ? (
                 <div className="text-center text-gray-500 text-sm p-4">
                   אפשר לבקש עזרה בניסוח, שיפור או שינוי של פרטי השיעור ומבנה השיעור.
@@ -286,6 +329,36 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
               )}
             </div>
 
+            <div className="flex justify-center gap-2 text-xs h-4">
+              <button
+                onClick={() => setMode('command')}
+                className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
+                  mode === 'command'
+                    ? 'bg-[#540ba9] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                פקודה
+              </button>
+              <button
+                onClick={() => setMode('chat')}
+                className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
+                  mode === 'chat'
+                    ? 'bg-[#540ba9] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                שיחה
+              </button>
+            </div>
+
+            {/* {mode === 'chat' && (
+              <div className="text-xs text-gray-500 text-center">
+                מצב שיחה מאפשר לך לנהל דיאלוג עם הבינה בהקשר השיעור,
+                <br />ללא שינוי אוטומטי של השדות
+              </div>
+            )} */}
+
             <QuickActions actions={QUICK_ACTIONS} onActionClick={handleQuickAction} />
 
             <div className="flex gap-2">
@@ -293,7 +366,10 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
                 value={currentMessage}
                 onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setCurrentMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="בקש עזרה בניסוח, שיפור או שינוי פרטי השיעור..."
+                placeholder={mode === 'command' 
+                  ? "בקש עזרה בניסוח, שיפור או שינוי פרטי השיעור..."
+                  : "שאל שאלה או התייעץ על תכנון השיעור..."
+                }
                 className="flex-1 shadow-none"
                 dir="rtl"
                 disabled={loading}
