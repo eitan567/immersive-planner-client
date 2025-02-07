@@ -89,10 +89,16 @@ export const LessonContent = ({
               handleBasicInfoChange={handleBasicInfoChange}
               onSave={saveCurrentPlan}
             />
+            <LessonBuilder
+              sections={lessonPlan.sections}
+              onAddSection={addSection}
+              onUpdateSection={handleSectionUpdate}
+              onRemoveSection={removeSection}
+            />
           </>
         )}
         
-        {currentStep === 2 && (
+        {/* {currentStep === 2 && (
           <>
             <SaveStatus
               onSave={saveCurrentPlan}
@@ -107,9 +113,9 @@ export const LessonContent = ({
               onRemoveSection={removeSection}
             />
           </>
-        )}
+        )} */}
         
-        {currentStep === 3 && (
+        {currentStep === 2 && (
           <LessonPlanPreview 
             content={editedContent} 
             onContentChange={handleContentChange}

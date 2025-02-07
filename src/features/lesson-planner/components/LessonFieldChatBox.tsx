@@ -29,7 +29,7 @@ const FIELD_LABELS: Record<string, string> = {
 };
 
 const QUICK_ACTIONS = [
-  {text:'שפר את תוכן נושא היחידה',maxWidth:'max-w-[86px]'},
+  {text:'הצע שם חדש לנושא היחידה',maxWidth:'max-w-[86px]'},
   {text:'נסח מחדש מטרות ברמת התוכן',maxWidth:'max-w-[92px]'},
   {text:'שפר מטרות ברמת המיומנויות',maxWidth:'max-w-[90px]'},
   {text:'הצע רעיונות לפתיחת השיעור',maxWidth:'max-w-[86px]'},
