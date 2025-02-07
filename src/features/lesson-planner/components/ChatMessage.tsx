@@ -18,7 +18,7 @@ interface ChatMessageProps {
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onCopy, onResend }) => {
   return (
-    <div className={`flex gap-2 ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}>
+    <div className={`flex gap-2 ${message.sender === 'ai' ? 'flex-row-reverse' : ''}`}>
       <div className="shrink-0">
         {message.sender === 'user' ? (
           <MdFace className="h-6 w-6 text-[darkslateblue]" />
