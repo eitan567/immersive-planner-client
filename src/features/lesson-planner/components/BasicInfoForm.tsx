@@ -13,7 +13,7 @@ import {
 import type { LessonPlan } from '../types.ts';
 
 type BasicInfoFormProps = {
-  lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals'>;
+  lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position'>;
   handleBasicInfoChange: (field: keyof LessonPlan, value: string) => void;
   onSave?: () => Promise<void>;
 };
@@ -86,7 +86,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             className="text-right"
             dir="rtl"
             context={lessonPlan.priorKnowledge}
-            fieldType="content"
+            fieldType="priorKnowledge"
             onSave={onSave}
           />
         </div>
@@ -120,7 +120,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             className="text-right"
             dir="rtl"
             context={lessonPlan.contentGoals}
-            fieldType="goals"
+            fieldType="contentGoals"
             onSave={onSave}
           />
         </div>
@@ -136,7 +136,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             className="text-right"
             dir="rtl"
             context={lessonPlan.skillGoals}
-            fieldType="goals"
+            fieldType="skillGoals"
             onSave={onSave}
           />
         </div>

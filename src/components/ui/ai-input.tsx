@@ -11,7 +11,7 @@ import { Textarea } from "./textarea.tsx";
 
 interface AIInputProps<T extends string = string> extends Omit<React.ComponentProps<"input">, "onChange"> {
   context: string;
-  fieldType?: 'topic' | 'content' | 'goals' | 'duration' | 'activity' | 'priorKnowledge' | 'gradeLevel';
+  fieldType?: 'topic' | 'duration' | 'activity' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position';
   aiOn?: boolean;
   onSave?: () => Promise<void>;
   onChange?: (e: React.ChangeEvent<HTMLInputElement> & { currentTarget: { value: string } }) => void;
@@ -161,7 +161,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
         </div>
          
         {isOpen && (
-          <div className={cn(
+          <div id="conversation" className={cn(
             "p-6 z-[9999] bg-[#f9f6ff] rounded-lg shadow-lg border border-gray-200",
             isChatMode
               ? "fixed inset-x-[15%] top-[10%] bottom-[10%] w-[70%]"

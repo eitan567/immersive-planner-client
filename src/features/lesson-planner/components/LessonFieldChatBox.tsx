@@ -75,9 +75,12 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
   const [shouldSend, setShouldSend] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior
+      });
     }
   };
 
@@ -90,6 +93,15 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
   useEffect(() => {
     if (isOpen) scrollToBottom();
   }, [isOpen]);
+
+  // Add a mutation observer to handle dynamic content changes
+  useEffect(() => {
+    const observer = new MutationObserver(() => scrollToBottom());
+    if (chatContainerRef.current) {
+      observer.observe(chatContainerRef.current, { childList: true, subtree: true });
+    }
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     console.log('LessonFieldChatBox mounted with currentValues:', currentValues);
