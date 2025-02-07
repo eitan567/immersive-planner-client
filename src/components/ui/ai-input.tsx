@@ -197,7 +197,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                          <div
                            key={index}
                            className={`flex gap-2 ${
-                             message.sender === 'user' ? 'flex-row-reverse' : ''
+                             message.sender === 'ai' ? 'flex-row-reverse' : ''
                            }`}
                          >
                            <div className="shrink-0">
