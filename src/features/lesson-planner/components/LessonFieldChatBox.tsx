@@ -389,7 +389,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
                 <PaperAirplaneIcon className="h-4 w-4 rotate-180 border-none outline-none shadow-none text-[#540ba9]" />
               </Button>
             </div>
-            <div className="flex justify-start gap-2 text-xs h-4">
+            <div className="flex justify-end text-xs border border-solid border-[#5b398b] w-fit rounded-lg h-5 bg-gray-100 gap-0">
               <button
                 onClick={() => setMode('command')}
                 className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
