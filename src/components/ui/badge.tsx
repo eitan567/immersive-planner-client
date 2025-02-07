@@ -9,7 +9,7 @@ function Badge({ className, ...props }: BadgeProps) {
   return (
     <div
       className={cn(
-        "inline-block px-[8px] pb-[2px] rounded-md font-xs text-white bg-[darkmagenta] text-xs mx-1",
+        "inline-block rounded-md text-white bg-[#6a6a6a] px-1 text-[10px] leading-[14px] rounded",
         className
       )}
       {...props}

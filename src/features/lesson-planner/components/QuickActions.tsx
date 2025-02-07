@@ -19,8 +19,8 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ actions, onActionCli
         key={index}
         onClick={() => onActionClick(action.text)}
         className={cn(
-          "cursor-pointer hover:bg-[#c6a0f3] transition-colors border border-[#e6b8ff] text-black bg-[#f9d9ff] font-semibold text-[9px] px-[7px] pb-[1px]",
-          action.maxWidth
+          "cursor-pointer hover:bg-[#c6a0f3] transition-colors border border-[#e6b8ff] text-black bg-[#f9d9ff] font-normal text-[10px] px-[7px] pb-[1px] w-[95px]",
+          ''//action.maxWidth
         )}
       >
         {action.text}

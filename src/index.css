@@ -5,8 +5,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 @layer base {
   :root {
+    font-family: 'Assistant', sans-serif !important;
     direction: rtl;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
