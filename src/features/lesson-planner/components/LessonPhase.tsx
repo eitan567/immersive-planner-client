@@ -51,7 +51,6 @@ const ScreenTypeSelect = ({
 
 const LessonPhase = ({
   phase,
-  title,
   sections,
   onAddSection,
   onUpdateSection,

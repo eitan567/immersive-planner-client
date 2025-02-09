@@ -158,8 +158,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
           arguments: {
           message: currentMessage,
           currentValues: allValues,
-          history: messages
-,
+          history: messages,
           fieldLabels: FIELD_LABELS
           }
         });
@@ -216,23 +215,34 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
           const newValue = update.newValue;
         
   
+          // Check if this is a section field update
           if (fieldName.includes('.')) {
             const [phase, index, field] = fieldName.split('.');
           
   
+            // Validate this is a valid section update
             if (phase && field && ['opening', 'main', 'summary'].includes(phase) &&
-                ['content', 'spaceUsage'].includes(field)) {
+                ['content', 'spaceUsage', 'screen1', 'screen2', 'screen3'].includes(field)) {
+              console.log(`Processing section update: ${phase}.${index}.${field} = ${newValue}`);
               return [fieldName, newValue] as [string, string];
             }
+            console.log(`Invalid section update field: ${fieldName}`);
+            return null;
           }
-        
-  
+          
+          // Handle non-section fields
+          console.log(`Processing regular field update: ${fieldName} = ${newValue}`);      
           return [fieldName, newValue] as [string, string];
         });
 
-        const validUpdates = batchUpdates.filter(update =>
-          update && FIELD_LABELS[update[0]] !== undefined
-        );
+        const validUpdates = batchUpdates.filter((update): update is [string, string] => {
+          if (!update) return false;
+          const [fieldName] = update;
+          
+          // Allow both regular fields from FIELD_LABELS and section fields
+          return FIELD_LABELS[fieldName] !== undefined || 
+                 /^(opening|main|summary)\.\d+\.(content|spaceUsage|screen[1-3])$/.test(fieldName);
+        });
 
         if (validUpdates.length > 0) {
           await onUpdateField(validUpdates);

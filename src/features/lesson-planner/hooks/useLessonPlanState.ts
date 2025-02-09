@@ -50,28 +50,58 @@ const isSectionField = (key: string): boolean => {
   return isPhaseKey(phase);
 };
 
-const updateSection = (sections: LessonPlanSections, fieldPath: string, newValue: string): LessonPlanSections => {
-  const [phase, index, prop] = fieldPath.split('.');
-  if (!isPhaseKey(phase)) return sections;
 
-  const sectionIndex = parseInt(index);
-  if (isNaN(sectionIndex)) return sections;
+const handleSectionUpdate = (fieldPath: string, newValue: string, currentSections: LessonPlanSections): LessonPlanSections => {
+  // Example fieldPath: 'opening.2.screens.screen1' or 'main.1.content'
+  const parts = fieldPath.split('.');
+  if (parts.length < 3) {
+    console.warn('handleSectionUpdate expects at least 3 parts (phase, index, field). Received:', parts);
+    return currentSections;
+  }
+  const phase = parts[0];
+  const rawIndex = parts[1];
+  const field = parts.slice(2).join('.');
 
-  const updatedPhase = [...sections[phase]];
-  if (!updatedPhase[sectionIndex]) {
-    updatedPhase[sectionIndex] = createEmptySection();
+  // Validate the phase
+  if (!isPhaseKey(phase)) {
+    console.warn('handleSectionUpdate: invalid phase', phase);
+    return currentSections;
   }
 
-  const section = { ...updatedPhase[sectionIndex] };
-  if (prop === 'content' || prop === 'spaceUsage') {
-    section[prop] = newValue;
-  } else if (prop.startsWith('screen')) {
-    section.screens = { ...section.screens, [prop]: newValue };
+  // Convert index from string to number
+  const targetIndex = parseInt(rawIndex, 10);
+  if (isNaN(targetIndex)) {
+    console.warn('handleSectionUpdate: index is not a number', rawIndex);
+    return currentSections;
   }
 
-  updatedPhase[sectionIndex] = section;
-  return { ...sections, [phase]: updatedPhase };
-};
+  const sectionsCopy = { ...currentSections };
+  const phaseSections = [...(sectionsCopy[phase] || [])];
+
+  // Create empty sections if needed
+  while (phaseSections.length <= targetIndex) {
+    phaseSections.push(createEmptySection());
+  }
+
+  const section = { ...phaseSections[targetIndex] };
+  // Top-level fields
+  if (field === 'content' || field === 'spaceUsage') {
+    (section as any)[field] = newValue;
+  } else if (field.startsWith('screens.')) {
+    // e.g. screens.screen1
+    const [, screenField] = field.split('.');
+    section.screens = { ...section.screens, [screenField]: newValue };
+  } else if (field.startsWith('screen')) {
+    // e.g. screen1, screen2
+    section.screens = { ...section.screens, [field]: newValue };
+  } else {
+    console.warn('handleSectionUpdate: unknown field path =>', fieldPath);
+  }
+
+  phaseSections[targetIndex] = section;
+  sectionsCopy[phase] = phaseSections;
+  return sectionsCopy;
+}
 
 const useLessonPlanState = () => {
   const { user } = useAuth();
@@ -152,9 +182,11 @@ const useLessonPlanState = () => {
       if (!prevPlan) return null;
 
       if (Array.isArray(field)) {
+        console.log('Processing batch updates:', field);
+        
         return field.reduce((plan, [key, val]) => {
           if (isSectionField(key)) {
-            return { ...plan, sections: updateSection(plan.sections, key, val) };
+            return { ...plan, sections: handleSectionUpdate(key, val, plan.sections) };
           }
           return { ...plan, [key]: val };
         }, prevPlan);
