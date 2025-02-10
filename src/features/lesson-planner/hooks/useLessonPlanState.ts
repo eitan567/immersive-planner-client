@@ -1,7 +1,6 @@
-/// <reference lib="dom" />
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext.tsx';
-import type { LessonPlan, LessonPlanSections, LessonSection, LessonPhaseType } from '../types.ts';
+import type { LessonPlan, LessonPlanSections, LessonSection } from '../types.ts';
 import { lessonPlanService } from '../services/lessonPlanService.ts';
 
 const STORAGE_KEY = 'currentLessonPlanId';
@@ -30,23 +29,25 @@ const createEmptyLessonPlan = (userId: string): Omit<LessonPlan, 'id' | 'created
     summary: []
   },
   status: 'draft',
-  description: ''
+  description: '',
+  category: 'מתמטיקה' // default category
 });
 
 const createEmptySection = (): LessonSection => ({
+  id: crypto.randomUUID(),
   content: '',
   spaceUsage: '',
-  screens: {
-    screen1: '',
-    screen2: '',
-    screen3: '',
-    screen1Description: '',
-    screen2Description: '',
-    screen3Description: ''
-  }
+  screen1: '',
+  screen2: '',
+  screen3: '',
+  screen1Description: '',
+  screen2Description: '',
+  screen3Description: ''
 });
 
-const isPhaseKey = (key: string): key is LessonPhaseType => {
+type PhaseType = keyof LessonPlanSections;
+
+const isPhaseKey = (key: string): key is PhaseType => {
   return ['opening', 'main', 'summary'].includes(key);
 };
 
@@ -54,7 +55,6 @@ const isSectionField = (key: string): boolean => {
   const [phase] = key.split('.');
   return isPhaseKey(phase);
 };
-
 
 const handleSectionUpdate = (fieldPath: string, newValue: string, currentSections: LessonPlanSections): LessonPlanSections => {
   const parts = fieldPath.split('.');
@@ -66,13 +66,11 @@ const handleSectionUpdate = (fieldPath: string, newValue: string, currentSection
   const rawIndex = parts[1];
   const field = parts.slice(2).join('.');
 
-  // Validate the phase
   if (!isPhaseKey(phase)) {
     console.warn('handleSectionUpdate: invalid phase', phase);
     return currentSections;
   }
 
-  // Convert index from string to number
   const targetIndex = parseInt(rawIndex, 10);
   if (isNaN(targetIndex)) {
     console.warn('handleSectionUpdate: index is not a number', rawIndex);
@@ -82,38 +80,27 @@ const handleSectionUpdate = (fieldPath: string, newValue: string, currentSection
   const sectionsCopy = { ...currentSections };
   const phaseSections = [...(sectionsCopy[phase] || [])];
 
-  // Create empty sections if needed
   while (phaseSections.length <= targetIndex) {
     phaseSections.push(createEmptySection());
   }
 
   const section = { ...phaseSections[targetIndex] };
-  
-  // Top-level fields
+
   if (field === 'content' || field === 'spaceUsage') {
-    (section as any)[field] = newValue;
+    section[field] = newValue;
   } else if (field.startsWith('screens.')) {
-    // e.g. screens.screen1, screens.screen1Description
     const [, screenField] = field.split('.');
-    section.screens = { ...section.screens, [screenField]: newValue };
-    console.log(`Updated screen field ${screenField} to:`, newValue); // Debug log
-  } else if (field.startsWith('screen')) {
-    // Handle both screen type and description updates
-    // e.g. screen1, screen1Description
-    section.screens = { ...section.screens, [field]: newValue };
-    console.log(`Updated direct screen field ${field} to:`, newValue); // Debug log
+    section[screenField as keyof LessonSection] = newValue;
   } else {
     console.warn('handleSectionUpdate: unknown field path =>', fieldPath);
+    return currentSections;
   }
 
   phaseSections[targetIndex] = section;
   sectionsCopy[phase] = phaseSections;
 
-  // Debug log entire section after update
-  console.log(`Updated section for ${phase}.${targetIndex}:`, section);
-  
   return sectionsCopy;
-}
+};
 
 const useLessonPlanState = (lessonId?: string) => {
   const { user } = useAuth();
@@ -141,23 +128,21 @@ const useLessonPlanState = (lessonId?: string) => {
 
       try {
         setLoading(true);
+        let plan: LessonPlan | null = null;
 
         if (lessonId) {
-          const plan = await lessonPlanService.getLessonPlan(lessonId);
-          if (plan) {
-            setLessonPlan(plan);
-            setError(null);
-            return;
+          plan = await lessonPlanService.getLessonPlan(lessonId);
+        }
+
+        if (!plan) {
+          const emptyPlan = createEmptyLessonPlan(user.id);
+          plan = await lessonPlanService.createLessonPlan(emptyPlan);
+          if (plan.id) {
+            localStorage.setItem(STORAGE_KEY, plan.id);
           }
         }
-        
-        // No lesson ID or lesson not found - create new plan
-        const emptyPlan = createEmptyLessonPlan(user.id);
-        const created = await lessonPlanService.createLessonPlan(emptyPlan);
-        if (created.id) {
-          localStorage.setItem(STORAGE_KEY, created.id);
-        }
-        setLessonPlan(created);
+
+        setLessonPlan(plan);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to initialize lesson plan');
@@ -167,15 +152,9 @@ const useLessonPlanState = (lessonId?: string) => {
     };
 
     loadLessonPlan();
-  }, [user]);
+  }, [user, lessonId]);
 
-  const handleStepChange = (updater: number | ((prev: number) => number)) => {
-    const newStep = typeof updater === 'function' ? updater(currentStep) : updater;
-    setCurrentStep(newStep);
-    localStorage.setItem(STEP_STORAGE_KEY, newStep.toString());
-  };
-
-  const handleBasicInfoChange = async (
+  const handleBasicInfoChange = (
     field: keyof LessonPlan | Array<[string, string]>,
     value?: string
   ) => {
@@ -185,8 +164,6 @@ const useLessonPlanState = (lessonId?: string) => {
       if (!prevPlan) return null;
 
       if (Array.isArray(field)) {
-        console.log('Processing batch updates:', field);
-        
         return field.reduce((plan, [key, val]) => {
           if (isSectionField(key)) {
             return { ...plan, sections: handleSectionUpdate(key, val, plan.sections) };
@@ -195,9 +172,10 @@ const useLessonPlanState = (lessonId?: string) => {
         }, prevPlan);
       }
 
+      if (value === undefined) return prevPlan;
+
       return { ...prevPlan, [field]: value };
     });
-
     setUnsavedChanges(true);
   };
 
@@ -207,35 +185,17 @@ const useLessonPlanState = (lessonId?: string) => {
     try {
       setSaveInProgress(true);
       
-      // Create a deep copy to ensure all nested objects are included
       const updatesToSend = JSON.parse(JSON.stringify({
         ...lessonPlan,
-        sections: {
-          opening: lessonPlan.sections.opening.map(section => ({
-            ...section,
-            screens: { ...section.screens }
-          })),
-          main: lessonPlan.sections.main.map(section => ({
-            ...section,
-            screens: { ...section.screens }
-          })),
-          summary: lessonPlan.sections.summary.map(section => ({
-            ...section,
-            screens: { ...section.screens }
-          }))
-        }
+        sections: lessonPlan.sections
       }));
 
-      console.log('Saving plan with updates:', updatesToSend); // Debug log
-      
       await lessonPlanService.updateLessonPlan(lessonPlan.id, updatesToSend);
-      setError(null);
       setLastSaved(new Date());
       setUnsavedChanges(false);
       localStorage.setItem(STORAGE_KEY, lessonPlan.id);
     } catch (err) {
-      console.error('Error saving plan:', err); // Debug log
-      setError(err instanceof Error ? err.message : 'שגיאה בשמירת התוכנית');
+      setError(err instanceof Error ? err.message : 'Error saving plan');
     } finally {
       setSaveInProgress(false);
     }
@@ -244,16 +204,17 @@ const useLessonPlanState = (lessonId?: string) => {
   const updateSections = (newSections: LessonPlanSections) => {
     if (!lessonPlan || !user) return;
 
-    const updatedPlan = {
-      ...lessonPlan,
-      sections: newSections
-    };
-
-    setLessonPlan(updatedPlan);
+    setLessonPlan(prevPlan => {
+      if (!prevPlan) return null;
+      return {
+        ...prevPlan,
+        sections: newSections
+      };
+    });
     setUnsavedChanges(true);
   };
 
-  const addSection = async (phase: keyof LessonPlanSections) => {
+  const addSection = async (phase: PhaseType) => {
     if (!lessonPlan || !user) return;
 
     const newSection = createEmptySection();
@@ -265,58 +226,27 @@ const useLessonPlanState = (lessonId?: string) => {
     updateSections(updatedSections);
   };
 
-  const createAndAddSection = async (
-    phase: keyof LessonPlanSections,
-    content: string,
-    spaceUsage: string,
-    screen1?: string,
-    screen2?: string,
-    screen3?: string,
-    screen1Description?: string,
-    screen2Description?: string,
-    screen3Description?: string
-  ) => {
+  const removeSection = async (phase: PhaseType, index: number) => {
     if (!lessonPlan || !user) return;
-  
-    console.log('Creating new section:', { 
-      phase, content, spaceUsage, 
-      screen1, screen2, screen3,
-      screen1Description, screen2Description, screen3Description 
-    });
-  
-    const newSection = {
-      content,
-      spaceUsage,
-      screens: {
-        screen1,
-        screen2,
-        screen3,
-        screen1Description,
-        screen2Description,
-        screen3Description
-      }
+
+    const updatedSections = {
+      ...lessonPlan.sections,
+      [phase]: lessonPlan.sections[phase].filter((_, i) => i !== index)
     };
-  
-    setLessonPlan(prev => {
-      if (!prev) return null;
-      
-      return {
-        ...prev,
-        sections: {
-          ...prev.sections,
-          [phase]: [...(prev.sections[phase] || []), newSection]
-        }
-      };
-    });
-  
-    setUnsavedChanges(true);
-    await saveCurrentPlan();
+
+    updateSections(updatedSections);
+  };
+
+  const handleStepChange = (updater: number | ((prev: number) => number)) => {
+    const newStep = typeof updater === 'function' ? updater(currentStep) : updater;
+    setCurrentStep(newStep);
+    localStorage.setItem(STEP_STORAGE_KEY, newStep.toString());
   };
 
   const handleExport = () => {
     try {
       const text = generateLessonPlanText();
-      const fileName = `תכנית_שיעור_${lessonPlan?.topic || 'חדש'}.txt`;
+      const fileName = `lesson_plan_${lessonPlan?.topic || 'new'}.txt`;
       const file = new File([text], fileName, { type: 'text/plain' });
       const url = URL.createObjectURL(file);
       const link = document.createElement('a');
@@ -332,83 +262,83 @@ const useLessonPlanState = (lessonId?: string) => {
   const generateLessonPlanText = () => {
     if (!lessonPlan) return '';
 
-    let text = `תכנית שיעור: ${lessonPlan.topic}\n\n`;
-    text += `זמן כולל: ${lessonPlan.duration}\n`;
-    text += `שכבת גיל: ${lessonPlan.gradeLevel}\n`;
-    text += `ידע קודם: ${lessonPlan.priorKnowledge}\n`;
-    text += `מיקום בתוכן: ${lessonPlan.position}\n\n`;
-    text += `מטרות ברמת התוכן:\n${lessonPlan.contentGoals}\n\n`;
-    text += `מטרות ברמת המיומנויות:\n${lessonPlan.skillGoals}\n\n`;
+    let text = '';
+    text += `Topic: ${lessonPlan.topic}\n`;
+    text += `Duration: ${lessonPlan.duration}\n`;
+    text += `Grade Level: ${lessonPlan.gradeLevel}\n`;
+    text += `Prior Knowledge: ${lessonPlan.priorKnowledge}\n`;
+    text += `Position: ${lessonPlan.position}\n\n`;
+    text += `Content Goals:\n${lessonPlan.contentGoals}\n\n`;
+    text += `Skill Goals:\n${lessonPlan.skillGoals}\n\n`;
 
-    text += '== פתיחה ==\n';
-    lessonPlan.sections.opening.forEach((section, i) => {
-      text += `\nפעילות ${i + 1}:\n`;
-      text += `תוכן: ${section.content}\n`;
-      text += `מסך 1: ${section.screens.screen1}\n`;
-      if (section.screens.screen1Description) {
-        text += `תיאור מסך 1: ${section.screens.screen1Description}\n`;
-      }
-      text += `מסך 2: ${section.screens.screen2}\n`;
-      if (section.screens.screen2Description) {
-        text += `תיאור מסך 2: ${section.screens.screen2Description}\n`;
-      }
-      text += `מסך 3: ${section.screens.screen3}\n`;
-      if (section.screens.screen3Description) {
-        text += `תיאור מסך 3: ${section.screens.screen3Description}\n`;
-      }
-      text += `ארגון הלומדים: ${section.spaceUsage}\n`;
-    });
-
-    text += '\n== גוף השיעור ==\n';
-    lessonPlan.sections.main.forEach((section, i) => {
-      text += `\nפעילות ${i + 1}:\n`;
-      text += `תוכן: ${section.content}\n`;
-      text += `מסך 1: ${section.screens.screen1}\n`;
-      if (section.screens.screen1Description) {
-        text += `תיאור מסך 1: ${section.screens.screen1Description}\n`;
-      }
-      text += `מסך 2: ${section.screens.screen2}\n`;
-      if (section.screens.screen2Description) {
-        text += `תיאור מסך 2: ${section.screens.screen2Description}\n`;
-      }
-      text += `מסך 3: ${section.screens.screen3}\n`;
-      if (section.screens.screen3Description) {
-        text += `תיאור מסך 3: ${section.screens.screen3Description}\n`;
-      }
-      text += `ארגון הלומדים: ${section.spaceUsage}\n`;
-    });
-
-    text += '\n== סיכום ==\n';
-    lessonPlan.sections.summary.forEach((section, i) => {
-      text += `\nפעילות ${i + 1}:\n`;
-      text += `תוכן: ${section.content}\n`;
-      text += `מסך 1: ${section.screens.screen1}\n`;
-      if (section.screens.screen1Description) {
-        text += `תיאור מסך 1: ${section.screens.screen1Description}\n`;
-      }
-      text += `מסך 2: ${section.screens.screen2}\n`;
-      if (section.screens.screen2Description) {
-        text += `תיאור מסך 2: ${section.screens.screen2Description}\n`;
-      }
-      text += `מסך 3: ${section.screens.screen3}\n`;
-      if (section.screens.screen3Description) {
-        text += `תיאור מסך 3: ${section.screens.screen3Description}\n`;
-      }
-      text += `ארגון הלומדים: ${section.spaceUsage}\n`;
+    ['opening', 'main', 'summary'].forEach((phase) => {
+      text += `\n== ${phase.toUpperCase()} ==\n`;
+      lessonPlan.sections[phase as PhaseType].forEach((section, i) => {
+        text += `\nActivity ${i + 1}:\n`;
+        text += `Content: ${section.content}\n`;
+        if (section.screen1) {
+          text += `Screen 1: ${section.screen1}\n`;
+          if (section.screen1Description) {
+            text += `Screen 1 Description: ${section.screen1Description}\n`;
+          }
+        }
+        if (section.screen2) {
+          text += `Screen 2: ${section.screen2}\n`;
+          if (section.screen2Description) {
+            text += `Screen 2 Description: ${section.screen2Description}\n`;
+          }
+        }
+        if (section.screen3) {
+          text += `Screen 3: ${section.screen3}\n`;
+          if (section.screen3Description) {
+            text += `Screen 3 Description: ${section.screen3Description}\n`;
+          }
+        }
+        if (section.spaceUsage) {
+          text += `Space Usage: ${section.spaceUsage}\n`;
+        }
+      });
     });
 
     return text;
   };
 
-  const removeSection = async (phase: keyof LessonPlanSections, index: number) => {
+  const createAndAddSection = async (
+    phase: PhaseType,
+    content: string,
+    spaceUsage: string,
+    screen1?: string,
+    screen2?: string,
+    screen3?: string,
+    screen1Description?: string,
+    screen2Description?: string,
+    screen3Description?: string
+  ) => {
     if (!lessonPlan || !user) return;
 
-    const updatedSections = {
-      ...lessonPlan.sections,
-      [phase]: lessonPlan.sections[phase].filter((_, i) => i !== index)
+    const newSection = {
+      ...createEmptySection(),
+      content,
+      spaceUsage,
+      screen1,
+      screen2,
+      screen3,
+      screen1Description,
+      screen2Description,
+      screen3Description
     };
 
-    updateSections(updatedSections);
+    setLessonPlan(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [phase]: [...prev.sections[phase], newSection]
+        }
+      };
+    });
+    setUnsavedChanges(true);
   };
 
   return {

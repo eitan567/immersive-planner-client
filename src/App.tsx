@@ -47,7 +47,7 @@ const LessonEditor = React.memo(() => {
 
     const updatedSections = {
       ...lessonPlan.sections,
-      [phase]: lessonPlan.sections[phase].map((section, i) =>
+      [phase]: lessonPlan.sections[phase].map((section: any, i: number) =>
         i === index ? { ...section, ...updates } : section
       )
     };

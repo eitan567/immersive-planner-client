@@ -48,7 +48,6 @@ export function LessonDashboard() {
   });
 
   const handleCreateEmpty = async () => {
-    const defaultCategory = LESSON_CATEGORIES[0];
     try {
       const lessonPlan = await lessonPlanService.createLessonPlan({
         userId: user!.id,
@@ -74,7 +73,7 @@ export function LessonDashboard() {
           contentGoals: '',
           skillGoals: ''
         },
-        category: defaultCategory
+        category: LESSON_CATEGORIES[0] // Default category that must be actively changed by user
       });
       navigate(`/lesson/${lessonPlan.id}`);
     } catch (err) {
@@ -159,10 +158,29 @@ export function LessonDashboard() {
   };
 
   const handlePublish = async (lessonId: string) => {
-    await lessonPlanService.publishLessonPlan(lessonId);
-    // Refresh lessons list
-    const updatedLessons = await lessonPlanService.getLessonPlans();
-    setLessons(updatedLessons);
+    const lesson = lessons.find(l => l.id === lessonId);
+    if (!lesson) return;
+
+    if (!lesson.basicInfo.title?.trim() || !lesson.topic?.trim()) {
+      setError('לא ניתן לפרסם שיעור ללא נושא. אנא מלא את שדה נושא היחידה.');
+      return;
+    }
+
+    if (!lesson.category || lesson.category === LESSON_CATEGORIES[0]) {
+      setError('לא ניתן לפרסם שיעור ללא בחירת קטגוריה. אנא בחר קטגוריה.');
+      return;
+    }
+
+    try {
+      await lessonPlanService.publishLessonPlan(lessonId);
+      // Refresh lessons list
+      const updatedLessons = await lessonPlanService.getUserLessonPlans(user!.id);
+      setLessons(updatedLessons);
+      setError(null);
+    } catch (err) {
+      setError('פרסום השיעור נכשל');
+      console.error(err);
+    }
   };
 
   if (!user) return null;

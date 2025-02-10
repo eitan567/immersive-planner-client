@@ -143,3 +143,12 @@ button:not(:has(svg)){
 textarea {
   border-color:rgba(175, 11, 184, 0.13) !important;
 }
+
+.required-field {
+  border-color: #540ba9 !important;
+}
+
+.required-field:focus {
+  border-color: #681bc2 !important;
+  box-shadow: 0 0 0 2px rgba(104, 27, 194, 0.2) !important;
+}

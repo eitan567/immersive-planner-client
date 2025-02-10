@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Navbar } from './Navbar.tsx';
-import { RightSidebar } from './RightSidebar.tsx';
+import { RightSidebar } from '../../lesson-planner/components/RightSidebar.tsx';
 import { LeftSidebar } from './LeftSidebar.tsx';
 import { DashboardRightSidebar } from './DashboardRightSidebar.tsx';
-import { LessonPlanSections } from '../../lesson-planner/types.ts';
+import type { LessonPlanSections } from '../../lesson-planner/types.ts';
 
 interface LessonRightSidebarProps {
   saveInProgress: boolean;
@@ -14,11 +14,8 @@ interface LessonRightSidebarProps {
   onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
   saveCurrentPlan: () => Promise<void>;
-  sections: {
-    opening: any;
-    main: any;
-    summary: any;
-  };
+  sections: LessonPlanSections;
+  everSaved: boolean;
   createAndAddSection: (
     phase: keyof LessonPlanSections,
     content: string,
@@ -54,11 +51,7 @@ interface LayoutProps {
     onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
     currentValues: Record<string, string>;
     saveCurrentPlan: () => Promise<void>;
-    sections: {
-      opening: any;
-      main: any;
-      summary: any;
-    };
+    sections: LessonPlanSections;
   };
 }
 
@@ -77,7 +70,7 @@ export const Layout = React.memo(({ children, user, mode, rightSidebarProps, lef
           <div className="relative flex">
             {/* LeftSidebar Container */}
             <div className={`bg-[#85003f05] border-r border-gray-300 transition-all duration-300 ease-in-out ${isLeftSidebarOpen ? 'w-[30rem]' : 'w-0'} overflow-hidden`}>
-              <LeftSidebar {...leftSidebarProps} />
+              <LeftSidebar {...(leftSidebarProps as LessonRightSidebarProps)} />
             </div>
             
             {/* Toggle Button */}
@@ -103,18 +96,17 @@ export const Layout = React.memo(({ children, user, mode, rightSidebarProps, lef
 
         <div className="relative flex">
           {/* RightSidebar Container */}
-          
-            {mode === 'new' ? null : (
-              mode === 'lesson' ? (
-                <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[30rem]' : 'w-0'} overflow-hidden`}>
-                  <RightSidebar {...(rightSidebarProps as LessonRightSidebarProps)} />
-                </div>
-              ) : (
-                <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[20rem]' : 'w-0'} overflow-hidden`}>
-                  <DashboardRightSidebar {...(rightSidebarProps as DashboardRightSidebarProps)} />
-                </div>
-              )
-            )}          
+          {mode === 'new' ? null : (
+            mode === 'lesson' ? (
+              <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[30rem]' : 'w-0'} overflow-hidden`}>
+                <RightSidebar {...(rightSidebarProps as LessonRightSidebarProps)} />
+              </div>
+            ) : (
+              <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[20rem]' : 'w-0'} overflow-hidden`}>
+                <DashboardRightSidebar {...(rightSidebarProps as DashboardRightSidebarProps)} />
+              </div>
+            )
+          )}          
           
           {/* Toggle Button */}
           <button

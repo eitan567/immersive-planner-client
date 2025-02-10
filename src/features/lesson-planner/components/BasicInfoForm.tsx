@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
 import { AIInput } from "../../../components/ui/ai-input.tsx";
@@ -20,22 +20,59 @@ type BasicInfoFormProps = {
 };
 
 export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: BasicInfoFormProps) => {
+  const [validationErrors, setValidationErrors] = useState<{
+    topic?: string;
+    category?: string;
+  }>({});
+
   const handleChange = (field: keyof LessonPlan) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { currentTarget: { value: string } }
   ) => {
     handleBasicInfoChange(field, e.currentTarget.value);
+    
+    // Clear validation error when field is filled
+    if (validationErrors[field as 'topic' | 'category']) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: undefined
+      }));
+    }
+  };
+
+  const validateField = (field: 'topic' | 'category') => {
+    if (!lessonPlan[field] || (lessonPlan[field] === 'בחר קטגוריה' && field === 'category')) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: `${field === 'topic' ? 'נושא היחידה' : 'קטגוריה'} הוא שדה חובה`
+      }));
+      return false;
+    }
+    return true;
+  };
+
+  const handleSave = async () => {
+    const isTopicValid = validateField('topic');
+    const isCategoryValid = validateField('category');
+
+    if (!isTopicValid || !isCategoryValid) {
+      return;
+    }
+
+    if (onSave) {
+      await onSave();
+    }
   };
 
   return (
     <div className="space-y-2 rtl">
-      <h1 className="text-[1.2rem] font-semibold text-[#540ba9] pb-[10px] pt-[23px]">פרטי השיעור</h1>
+      <h1 className="text-[1.2rem] font-semibold text-[#540ba9] py-[23px]">פרטי השיעור</h1>
+
       <div className="text-right">
         <Label className="text-right">קטגוריה *</Label>
         <div className="space-y-2">
           <Select 
             value={lessonPlan.category} 
             onValueChange={(value) => handleBasicInfoChange('category', value)}
-            required
           >
             <SelectTrigger className="text-right">
               <SelectValue placeholder="בחר קטגוריה" />
@@ -46,11 +83,14 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
               ))}
             </SelectContent>
           </Select>
+          {validationErrors.category && (
+            <p className="text-sm text-red-500 mt-1">{validationErrors.category}</p>
+          )}
         </div>
       </div>
       
       <div className="text-right">
-        <Label className="text-right">נושא היחידה</Label>
+        <Label className="text-right">נושא היחידה *</Label>
         <div className="space-y-2">
           <AIInput
             value={lessonPlan.topic}
@@ -60,8 +100,11 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             dir="rtl"
             context={lessonPlan.topic}
             fieldType="topic"
-            onSave={onSave}
+            onSave={handleSave}
           />
+          {validationErrors.topic && (
+            <p className="text-sm text-red-500 mt-1">{validationErrors.topic}</p>
+          )}
         </div>
       </div>
       
@@ -76,7 +119,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             dir="rtl"
             context={lessonPlan.duration}
             fieldType="duration"
-            onSave={onSave}
+            onSave={handleSave}
           />          
         </div>
       </div>
@@ -92,7 +135,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             dir="rtl"
             context={lessonPlan.gradeLevel} 
             fieldType="gradeLevel"
-            onSave={onSave}
+            onSave={handleSave}
           />          
         </div>
       </div>
@@ -108,7 +151,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             dir="rtl"
             context={lessonPlan.priorKnowledge}
             fieldType="priorKnowledge"
-            onSave={onSave}
+            onSave={handleSave}
           />
         </div>
       </div>
@@ -142,7 +185,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             dir="rtl"
             context={lessonPlan.contentGoals}
             fieldType="contentGoals"
-            onSave={onSave}
+            onSave={handleSave}
           />
         </div>
       </div>
@@ -158,7 +201,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
             dir="rtl"
             context={lessonPlan.skillGoals}
             fieldType="skillGoals"
-            onSave={onSave}
+            onSave={handleSave}
           />
         </div>
       </div>

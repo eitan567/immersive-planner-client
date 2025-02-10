@@ -13,6 +13,17 @@ interface LeftSidebarProps {
   currentValues: Record<string, string>;
   saveCurrentPlan: () => Promise<void>;
   sections: LessonPlanSections;
+  createAndAddSection: (
+    phase: keyof LessonPlanSections,
+    content: string,
+    spaceUsage?: string,
+    screen1?: string,
+    screen2?: string,
+    screen3?: string,
+    screen1Description?: string,
+    screen2Description?: string,
+    screen3Description?: string
+  ) => Promise<void>;
 }
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({
@@ -22,6 +33,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   lessonTitle,
   totalSteps,
   onUpdateField,
+  createAndAddSection,
   currentValues,
   saveCurrentPlan
 }) => {
@@ -49,6 +61,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           onUpdateField={onUpdateField}
           currentValues={currentValues}
           saveCurrentPlan={saveCurrentPlan}
+          createAndAddSection={createAndAddSection}
           sections={sections}
           className="h-[calc(100vh-510px)]"
         />

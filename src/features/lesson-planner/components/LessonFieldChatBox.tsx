@@ -433,7 +433,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
 
         {isOpen && (
           <div className="space-y-4">
-            <div ref={chatContainerRef} className={cn("h-[calc(100vh-370px)] overflow-y-auto border rounded-lg p-3 mt-2 space-y-3 bg-white scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md",className)}>
+            <div ref={chatContainerRef} className={cn("h-[calc(100vh-425px)] overflow-y-auto border rounded-lg p-3 mt-2 space-y-3 bg-white scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md",className)}>
               {messages.length === 0 ? (
                 <div className="text-center text-gray-500 text-sm p-4">
                   אפשר לבקש עזרה בניסוח, שיפור או שינוי של פרטי השיעור ומבנה השיעור.
