@@ -22,10 +22,19 @@ const FIELD_LABELS: Record<string, string> = {
   // Lesson section fields
   'opening.0.content': 'פתיחה - תוכן/פעילות',
   'opening.0.spaceUsage': 'פתיחה - שימוש במרחב הפיזי',
+  'opening.0.screen1Description': 'פתיחה - תיאור מסך 1',
+  'opening.0.screen2Description': 'פתיחה - תיאור מסך 2',
+  'opening.0.screen3Description': 'פתיחה - תיאור מסך 3',
   'main.0.content': 'גוף השיעור - תוכן/פעילות',
   'main.0.spaceUsage': 'גוף השיעור - שימוש במרחב הפיזי',
+  'main.0.screen1Description': 'גוף השיעור - תיאור מסך 1',
+  'main.0.screen2Description': 'גוף השיעור - תיאור מסך 2',
+  'main.0.screen3Description': 'גוף השיעור - תיאור מסך 3',
   'summary.0.content': 'סיכום - תוכן/פעילות',
-  'summary.0.spaceUsage': 'סיכום - שימוש במרחב הפיזי'
+  'summary.0.spaceUsage': 'סיכום - שימוש במרחב הפיזי',
+  'summary.0.screen1Description': 'סיכום - תיאור מסך 1',
+  'summary.0.screen2Description': 'סיכום - תיאור מסך 2',
+  'summary.0.screen3Description': 'סיכום - תיאור מסך 3'
 };
 
 const QUICK_ACTIONS = [
@@ -68,7 +77,10 @@ interface LessonFieldChatBoxProps {
      spaceUsage?: string,
      screen1?: string,
      screen2?: string,
-     screen3?: string
+     screen3?: string,
+     screen1Description?: string,
+     screen2Description?: string,
+     screen3Description?: string
     ) => Promise<void>;
   className?: string;
 }
@@ -253,7 +265,10 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
             update.fieldToUpdate.includes('.spaceUsage') ||
             update.fieldToUpdate.includes('.screen1') ||
             update.fieldToUpdate.includes('.screen2') ||
-            update.fieldToUpdate.includes('.screen3')
+            update.fieldToUpdate.includes('.screen3') ||
+            update.fieldToUpdate.includes('.screen1Description') ||
+            update.fieldToUpdate.includes('.screen2Description') ||
+            update.fieldToUpdate.includes('.screen3Description')
           );
       
           if (activityUpdates.length > 0) {
@@ -264,13 +279,17 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
               // Get spaceUsage and convert from Hebrew to English
               const hebrewSpaceUsage = activityUpdates.find(u => u.fieldToUpdate.includes('.spaceUsage'))?.newValue || '';
               console.log('Hebrew spaceUsage:', hebrewSpaceUsage);
-              const spaceUsage = SPACE_USAGE_MAP[hebrewSpaceUsage as keyof typeof SPACE_USAGE_MAP] || 'whole';
+              const spaceUsage = SPACE_USAGE_MAP[hebrewSpaceUsage as keyof typeof SPACE_USAGE_MAP] || undefined;
               console.log('Converted spaceUsage:', spaceUsage);
               
-              // Extract screen values from content or explicit screen updates
-              const screen1Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen1'));
-              const screen2Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen2'));
-              const screen3Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen3'));
+              // Extract screen values and descriptions from updates
+              const screen1Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen1') && !u.fieldToUpdate.includes('Description'));
+              const screen2Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen2') && !u.fieldToUpdate.includes('Description'));
+              const screen3Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen3') && !u.fieldToUpdate.includes('Description'));
+
+              const screen1Description = activityUpdates.find(u => u.fieldToUpdate.includes('.screen1Description'))?.newValue;
+              const screen2Description = activityUpdates.find(u => u.fieldToUpdate.includes('.screen2Description'))?.newValue;
+              const screen3Description = activityUpdates.find(u => u.fieldToUpdate.includes('.screen3Description'))?.newValue;
 
               const screen1 = screen1Update ? extractScreenType(screen1Update.newValue) : undefined;
               const screen2 = screen2Update ? extractScreenType(screen2Update.newValue) : undefined;
@@ -282,7 +301,10 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
                 spaceUsage,
                 screen1,
                 screen2,
-                screen3
+                screen3,
+                screen1Description,
+                screen2Description,
+                screen3Description
               });
 
               try {
@@ -292,7 +314,10 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
                   spaceUsage,
                   screen1,
                   screen2,
-                  screen3
+                  screen3,
+                  screen1Description,
+                  screen2Description,
+                  screen3Description
                 );
                 console.log('Activity created successfully');
                 return;
@@ -316,7 +341,8 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
   
             // Validate this is a valid section update
             if (phase && field && ['opening', 'main', 'summary'].includes(phase) &&
-                ['content', 'spaceUsage', 'screen1', 'screen2', 'screen3'].includes(field)) {
+                ['content', 'spaceUsage', 'screen1', 'screen2', 'screen3', 
+                 'screen1Description', 'screen2Description', 'screen3Description'].includes(field)) {
               console.log(`Processing section update: ${phase}.${index}.${field} = ${newValue}`);
               return [fieldName, newValue] as [string, string];
             }

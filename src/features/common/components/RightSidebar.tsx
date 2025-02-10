@@ -19,7 +19,10 @@ interface RightSidebarProps {
     spaceUsage?: string,
     screen1?: string,
     screen2?: string,
-    screen3?: string
+    screen3?: string,
+    screen1Description?: string,
+    screen2Description?: string,
+    screen3Description?: string
   ) => Promise<void>;
 }
 

@@ -26,13 +26,17 @@ interface LessonPhaseProps {
 const ScreenTypeSelect = ({ 
   value, 
   onChange, 
-  screenNumber 
+  screenNumber,
+  description,
+  onDescriptionChange 
 }: { 
   value: string; 
   onChange: (value: string) => void; 
   screenNumber: string;
+  description?: string;
+  onDescriptionChange?: (value: string) => void;
 }) => (
-  <div>
+  <div className="space-y-2">
     <Label>מסך {screenNumber}</Label>
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="bg-white">
@@ -46,6 +50,13 @@ const ScreenTypeSelect = ({
         <SelectItem value="genially">ג'ניאלי</SelectItem>
       </SelectContent>
     </Select>
+    <textarea
+      value={description || ''}
+      onChange={(e) => onDescriptionChange?.(e.target.value)}
+      placeholder={`תיאור תצוגת מסך ${screenNumber}`}
+      className="w-full h-20 p-2 text-sm border rounded-md resize-none"
+      dir="rtl"
+    />
   </div>
 );
 
@@ -60,7 +71,6 @@ const LessonPhase = ({
   return (
     <Card className="mt-2 border-gray-200">
       <CardContent>
-        {/* <h3 className="text-[1rem] font-normal mb-2 text-[#540ba9]">{title}</h3> */}
         <div className="space-y-4">
           {sections.map((section, index) => (
             <Card key={index} className="p-4 border-gray-200 bg-white relative">                           
@@ -90,6 +100,12 @@ const LessonPhase = ({
                       })
                     }
                     screenNumber="1"
+                    description={section.screens.screen1Description}
+                    onDescriptionChange={(value) =>
+                      onUpdateSection(phase, index, {
+                        screens: { ...section.screens, screen1Description: value }
+                      })
+                    }
                   />
                   <ScreenTypeSelect
                     value={section.screens.screen2}
@@ -99,6 +115,12 @@ const LessonPhase = ({
                       })
                     }
                     screenNumber="2"
+                    description={section.screens.screen2Description}
+                    onDescriptionChange={(value) =>
+                      onUpdateSection(phase, index, {
+                        screens: { ...section.screens, screen2Description: value }
+                      })
+                    }
                   />
                   <ScreenTypeSelect
                     value={section.screens.screen3}
@@ -108,6 +130,12 @@ const LessonPhase = ({
                       })
                     }
                     screenNumber="3"
+                    description={section.screens.screen3Description}
+                    onDescriptionChange={(value) =>
+                      onUpdateSection(phase, index, {
+                        screens: { ...section.screens, screen3Description: value }
+                      })
+                    }
                   />
                 </div>
 

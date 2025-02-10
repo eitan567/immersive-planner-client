@@ -244,13 +244,20 @@ const useLessonPlanState = () => {
     phase: keyof LessonPlanSections,
     content: string,
     spaceUsage: string,
-    screen1: string,
-    screen2: string,
-    screen3: string,
-    ) => {
+    screen1?: string,
+    screen2?: string,
+    screen3?: string,
+    screen1Description?: string,
+    screen2Description?: string,
+    screen3Description?: string
+  ) => {
     if (!lessonPlan || !user) return;
   
-    console.log('Creating new section:', { phase, content, spaceUsage, screen1, screen2, screen3 });
+    console.log('Creating new section:', { 
+      phase, content, spaceUsage, 
+      screen1, screen2, screen3,
+      screen1Description, screen2Description, screen3Description 
+    });
   
     const newSection = {
       content,
@@ -258,7 +265,10 @@ const useLessonPlanState = () => {
       screens: {
         screen1,
         screen2,
-        screen3
+        screen3,
+        screen1Description,
+        screen2Description,
+        screen3Description
       }
     };
   
