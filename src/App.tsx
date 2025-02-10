@@ -178,7 +178,12 @@ const LessonEditor = React.memo(() => {
   }
 
   return (
-    <Layout user={user} rightSidebarProps={rightSidebarProps} leftSidebarProps={leftSidebarProps}>
+    <Layout 
+      user={user} 
+      mode="lesson"
+      rightSidebarProps={rightSidebarProps} 
+      leftSidebarProps={leftSidebarProps}
+    >
       <div className="p-6 min-h-full">
         <div dir="rtl" className="mx-auto space-y-0">
           {error && <ErrorAlert message={error} />}

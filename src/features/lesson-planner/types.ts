@@ -1,29 +1,56 @@
-export interface ScreenConfig {
-  screen1: string;
-  screen2: string;
-  screen3: string;
-}
+export const LESSON_CATEGORIES = [
+  'מתמטיקה',
+  'אנגלית',
+  'עברית',
+  'תנ״ך',
+  'היסטוריה',
+  'אזרחות',
+  'ספרות',
+  'פיזיקה',
+  'כימיה',
+  'ביולוגיה',
+  'מדעים',
+  'גיאוגרפיה',
+  'מחשבים',
+  'אומנות',
+  'מוזיקה',
+  'חינוך גופני',
+  'פילוסופיה',
+  'פסיכולוגיה',
+  'סוציולוגיה',
+  'חינוך חברתי'
+] as const;
 
-export interface LessonSection {
+export type LessonCategory = typeof LESSON_CATEGORIES[number];
+
+export type LessonSection = {
+  id: string;
   content: string;
-  spaceUsage: string;
-  screens: {
-    screen1: string;
-    screen2: string;
-    screen3: string;
-    screen1Description?: string;
-    screen2Description?: string;
-    screen3Description?: string;
-  };
-}
+  spaceUsage?: string;
+  screen1?: string;
+  screen2?: string;
+  screen3?: string;
+  screen1Description?: string;
+  screen2Description?: string;
+  screen3Description?: string;
+};
 
-export interface LessonPlanSections {
+export type LessonPlanSections = {
   opening: LessonSection[];
   main: LessonSection[];
   summary: LessonSection[];
-}
+};
 
-export interface LessonPlan {
+export type LessonBasicInfo = {
+  title: string;
+  duration: string;
+  gradeLevel: string;
+  priorKnowledge: string;
+  contentGoals: string;
+  skillGoals: string;
+};
+
+export type LessonPlan = {
   id: string;
   userId: string;
   topic: string;
@@ -34,19 +61,10 @@ export interface LessonPlan {
   contentGoals: string;
   skillGoals: string;
   sections: LessonPlanSections;
+  status: 'draft' | 'published';
+  description: string;
+  basicInfo: LessonBasicInfo;
+  category: LessonCategory;
   created_at: string;
   updated_at: string;
-  status: 'draft' | 'published';
-  description?: string;
-  basicInfo: {
-    title: string;
-    duration: string;
-    gradeLevel: string;
-    priorKnowledge: string;
-    contentGoals: string;
-    skillGoals: string;
-  };
-
-}
-
-export type LessonPhaseType = 'opening' | 'main' | 'summary';
+};

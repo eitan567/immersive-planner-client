@@ -1,14 +1,14 @@
-import React, { useState, useEffect, ChangeEvent } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../auth/AuthContext.tsx'
-import { Button } from '../../../components/ui/button.tsx'
-import { Card } from '../../../components/ui/card.tsx'
 import { Input } from '../../../components/ui/input.tsx'
-import { Label } from '../../../components/ui/label.tsx'
-import { Badge } from '../../../components/ui/badge.tsx'
 import { LoadingSpinner } from '../../../components/ui/loading-spinner.tsx'
 import { useNavigate } from "react-router-dom"
-import { LessonPlan } from '../types.ts'
+import { LessonPlan, LessonCategory } from '../types.ts'
 import { lessonPlanService } from '../services/lessonPlanService.ts'
+import { Layout } from '../../common/components/Layout.tsx'
+import { LessonCard } from './LessonCard.tsx'
+import { LessonFilters } from './LessonFilters.tsx'
+import { CreateLessonAIModal } from './CreateLessonAIModal.tsx'
 
 export function LessonDashboard() {
   const { user } = useAuth()
@@ -16,9 +16,9 @@ export function LessonDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedStatus, setSelectedStatus] = useState('all')
+  const [selectedCategory, setSelectedCategory] = useState('all')
   const [isAIModalOpen, setIsAIModalOpen] = useState(false)
-  const [aiTopic, setAiTopic] = useState('')
-  const [aiMaterials, setAiMaterials] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -38,9 +38,54 @@ export function LessonDashboard() {
     loadLessons()
   }, [user])
 
-  const filteredLessons = lessons.filter(lesson =>
-    lesson.basicInfo.title.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredLessons = lessons.filter(lesson => {
+    const matchesSearch = lesson.basicInfo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         lesson.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = selectedStatus === 'all' || lesson.status === selectedStatus;
+    const matchesCategory = selectedCategory === 'all' || lesson.category === selectedCategory;
+    
+    return matchesSearch && matchesStatus && matchesCategory;
+  })
+
+  const handleCreateAI = async (data: { topic: string, materials: string, category: LessonCategory }) => {
+    try {
+      // TODO: Add API call to create AI lesson
+      const newPlan = await lessonPlanService.createLessonPlan({
+        userId: user!.id,
+        topic: data.topic,
+        duration: '',
+        gradeLevel: '',
+        priorKnowledge: '',
+        position: '',
+        contentGoals: '',
+        skillGoals: '',
+        sections: {
+          opening: [],
+          main: [],
+          summary: []
+        },
+        status: 'draft',
+        description: '',
+        basicInfo: {
+          title: data.topic,
+          duration: '',
+          gradeLevel: '',
+          priorKnowledge: '',
+          contentGoals: '',
+          skillGoals: ''
+        },
+        category: data.category
+      })
+      
+      // TODO: Add API call to generate lesson content using AI
+      // For now, just navigate to the new lesson
+      setIsAIModalOpen(false)
+      navigate(`/lesson/${newPlan.id}`)
+    } catch (err) {
+      setError('יצירת השיעור נכשלה')
+      console.error(err)
+    }
+  }
 
   const handleCreateEmpty = async () => {
     try {
@@ -67,7 +112,8 @@ export function LessonDashboard() {
           priorKnowledge: '',
           contentGoals: '',
           skillGoals: ''
-        }
+        },
+        category: 'מתמטיקה' // Default category
       })
       navigate(`/lesson/${newPlan.id}`)
     } catch (err) {
@@ -94,41 +140,18 @@ export function LessonDashboard() {
     setLessons(updatedLessons)
   }
 
-  const handleCreateAI = async () => {
-    try {
-      // TODO: Implement AI lesson creation
-      setIsAIModalOpen(false)
-    } catch (error) {
-      console.error('Failed to create AI lesson:', error)
-    }
-  }
+  if (!user) return null
 
-  const getStatusText = (status: string) => {
-    return status === 'published' ? 'פורסם' : 'טיוטה'
-  }
-
-  return (
+  const dashboardContent = (
     <div className="container mx-auto p-6" dir="rtl">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">השיעורים שלי</h1>
-        <div className="space-x-4 flex flex-row-reverse">
-          <Button onClick={() => setIsAIModalOpen(true)}>
-            צור שיעור בעזרת AI
-          </Button>
-          <Button onClick={handleCreateEmpty} variant="outline">
-            צור שיעור ריק
-          </Button>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <Input
-          placeholder="חיפוש שיעורים..."
-          value={searchTerm}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-          className="max-w-md"
-        />
-      </div>
+      <LessonFilters
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        selectedStatus={selectedStatus}
+        onStatusChange={setSelectedStatus}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
 
       {isLoading ? (
         <div className="flex justify-center py-8">
@@ -138,79 +161,38 @@ export function LessonDashboard() {
         <div className="text-red-500 text-center py-8">{error}</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredLessons.map((lesson) => (
-          <Card key={lesson.id} className="p-6">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="text-xl font-semibold">{lesson.basicInfo.title}</h3>
-              <Badge className={lesson.status === 'published' ? 'bg-green-500' : 'bg-gray-500'}>
-                {getStatusText(lesson.status)}
-              </Badge>
-            </div>
-            <p className="text-gray-600 mb-4">{lesson.description || 'אין תיאור'}</p>
-            <div className="flex justify-start space-x-2 flex-row-reverse">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleEdit(lesson.id)}
-              >
-                ערוך
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleDelete(lesson.id)}
-              >
-                מחק
-              </Button>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => handlePublish(lesson.id)}
-              >
-                פרסם
-              </Button>
-            </div>
-          </Card>
-        ))}
-        </div>
-      )}
-
-      {isAIModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <Card className="w-[500px] p-6">
-            <h2 className="text-xl font-bold mb-4">יצירת שיעור בעזרת AI</h2>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="topic">נושא</Label>
-                <Input
-                  id="topic"
-                  value={aiTopic}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setAiTopic(e.target.value)}
-                  placeholder="הזן את נושא השיעור"
-                />
-              </div>
-              <div>
-                <Label htmlFor="materials">חומרי למידה</Label>
-                <Input
-                  id="materials"
-                  value={aiMaterials}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setAiMaterials(e.target.value)}
-                  placeholder="הזן או העלה חומרי למידה"
-                />
-              </div>
-              <div className="flex justify-start space-x-2 flex-row-reverse">
-                <Button onClick={handleCreateAI}>צור שיעור</Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAIModalOpen(false)}
-                >
-                  ביטול
-                </Button>
-              </div>
-            </div>
-          </Card>
+          {filteredLessons.map((lesson) => (
+            <LessonCard
+              key={lesson.id}
+              lesson={lesson}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onPublish={handlePublish}
+            />
+          ))}
         </div>
       )}
     </div>
+  )
+
+  return (
+    <>
+      <Layout 
+        user={user}
+        mode="dashboard"
+        rightSidebarProps={{
+          onCreateEmpty: handleCreateEmpty,
+          onCreateAI: () => setIsAIModalOpen(true)
+        }}
+      >
+        {dashboardContent}
+      </Layout>
+      
+      <CreateLessonAIModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        onCreate={handleCreateAI}
+      />
+    </>
   )
 }
