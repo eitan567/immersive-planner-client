@@ -240,6 +240,44 @@ const useLessonPlanState = () => {
     updateSections(updatedSections);
   };
 
+  const createAndAddSection = async (
+    phase: keyof LessonPlanSections,
+    content: string,
+    spaceUsage: string,
+    screen1: string,
+    screen2: string,
+    screen3: string,
+    ) => {
+    if (!lessonPlan || !user) return;
+  
+    console.log('Creating new section:', { phase, content, spaceUsage, screen1, screen2, screen3 });
+  
+    const newSection = {
+      content,
+      spaceUsage,
+      screens: {
+        screen1,
+        screen2,
+        screen3
+      }
+    };
+  
+    setLessonPlan(prev => {
+      if (!prev) return null;
+      
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [phase]: [...(prev.sections[phase] || []), newSection]
+        }
+      };
+    });
+  
+    setUnsavedChanges(true);
+    await saveCurrentPlan();
+  };
+
   const handleExport = () => {
     try {
       const text = generateLessonPlanText();
@@ -326,7 +364,8 @@ const useLessonPlanState = () => {
     generateLessonPlanText,
     updateSections,
     saveCurrentPlan,
-    unsavedChanges
+    unsavedChanges,
+    createAndAddSection
   };
 };
 

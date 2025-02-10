@@ -6,8 +6,12 @@ export interface ScreenConfig {
 
 export interface LessonSection {
   content: string;
-  screens: ScreenConfig;
   spaceUsage: string;
+  screens: {
+    screen1: string;
+    screen2: string;
+    screen3: string;
+  };
 }
 
 export interface LessonPlanSections {
@@ -40,4 +44,4 @@ export interface LessonPlan {
 
 }
 
-export type LessonPhaseType = keyof LessonPlanSections;
+export type LessonPhaseType = 'opening' | 'main' | 'summary';

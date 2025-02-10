@@ -39,11 +39,37 @@ const QUICK_ACTIONS = [
   {text:'הצע שכבת גיל',maxWidth:'min-w-[86px] mt-[5px] leading-7'},
 ];
 
+const VALID_SPACE_USAGE = ['whole', 'groups', 'individual', 'mixed'];
+const VALID_SCREEN_TYPES = ['video', 'image', 'padlet', 'website', 'genially'];
+
+const SPACE_USAGE_MAP = {
+  'מליאה': 'whole',
+  'עבודה בקבוצות': 'groups',
+  'עבודה אישית': 'individual',
+  'משולב': 'mixed'
+} as const;
+
+const SCREEN_TYPE_MAP = {
+  'סרטון': 'video',
+  'תמונה': 'image',
+  'פדלט': 'padlet',
+  'אתר': 'website',
+  'ג\'ניאלי': 'genially'
+} as const;
+
 interface LessonFieldChatBoxProps {
   onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
   sections: LessonPlanSections;
   saveCurrentPlan: () => Promise<void>;
+  createAndAddSection: (    
+     phase: keyof LessonPlanSections, 
+     content: string, 
+     spaceUsage?: string,
+     screen1?: string,
+     screen2?: string,
+     screen3?: string
+    ) => Promise<void>;
   className?: string;
 }
 
@@ -59,13 +85,23 @@ interface ChatResponse {
 
 type AIResponse = FieldUpdate | FieldUpdate[] | ChatResponse;
 
+const extractScreenType = (text: string): string => {
+  // Look for Hebrew screen type mentions in the text
+  if (text.includes('סרטון')) return 'video';
+  if (text.includes('תמונה') || text.includes('תמונות')) return 'image';
+  if (text.includes('פדלט')) return 'padlet';
+  if (text.includes('אתר')) return 'website';
+  if (text.includes('ג\'ניאלי')) return 'genially';
+  return 'image'; // default value
+};
 
 export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
   onUpdateField,
   className,
   currentValues,
   sections,
-  saveCurrentPlan
+  saveCurrentPlan,
+  createAndAddSection
 }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [mode, setMode] = useState<'command' | 'chat'>('command');
@@ -209,6 +245,64 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
             timestamp: new Date()
           }))
         ]);
+
+        // Handle activity creation for commands containing "הוסף פעילות" or similar phrases
+        if (currentMessage.includes('פעילות')) {          
+          const activityUpdates = updates.filter(update => 
+            update.fieldToUpdate.includes('.content') || 
+            update.fieldToUpdate.includes('.spaceUsage') ||
+            update.fieldToUpdate.includes('.screen1') ||
+            update.fieldToUpdate.includes('.screen2') ||
+            update.fieldToUpdate.includes('.screen3')
+          );
+      
+          if (activityUpdates.length > 0) {
+            const [phase] = activityUpdates[0].fieldToUpdate.split('.');
+            if (['opening', 'main', 'summary'].includes(phase)) {
+              const content = activityUpdates.find(u => u.fieldToUpdate.includes('.content'))?.newValue || '';
+              
+              // Get spaceUsage and convert from Hebrew to English
+              const hebrewSpaceUsage = activityUpdates.find(u => u.fieldToUpdate.includes('.spaceUsage'))?.newValue || '';
+              console.log('Hebrew spaceUsage:', hebrewSpaceUsage);
+              const spaceUsage = SPACE_USAGE_MAP[hebrewSpaceUsage as keyof typeof SPACE_USAGE_MAP] || 'whole';
+              console.log('Converted spaceUsage:', spaceUsage);
+              
+              // Extract screen values from content or explicit screen updates
+              const screen1Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen1'));
+              const screen2Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen2'));
+              const screen3Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen3'));
+
+              const screen1 = screen1Update ? extractScreenType(screen1Update.newValue) : undefined;
+              const screen2 = screen2Update ? extractScreenType(screen2Update.newValue) : undefined;
+              const screen3 = screen3Update ? extractScreenType(screen3Update.newValue) : undefined;
+
+              console.log('Creating activity with:', {
+                phase,
+                content,
+                spaceUsage,
+                screen1,
+                screen2,
+                screen3
+              });
+
+              try {
+                await createAndAddSection(
+                  phase as keyof LessonPlanSections,
+                  content,
+                  spaceUsage,
+                  screen1,
+                  screen2,
+                  screen3
+                );
+                console.log('Activity created successfully');
+                return;
+              } catch (error) {
+                console.error('Failed to create activity:', error);
+                throw error;
+              }
+            }
+          }
+        }
 
         const batchUpdates = updates.map(update => {
           const fieldName = update.fieldToUpdate;

@@ -9,7 +9,7 @@ import LoginForm from './features/auth/LoginForm.tsx';
 import { LoadingSpinner } from './components/ui/loading-spinner.tsx';
 import { ErrorAlert } from './features/common/components/ErrorAlert.tsx';
 import { LessonContent } from './features/lesson-planner/components/LessonContent.tsx';
-import type { LessonPlan, LessonSection } from './features/lesson-planner/types.ts';
+import type { LessonPlan, LessonSection, LessonPlanSections } from './features/lesson-planner/types.ts';
 import { Layout } from './features/common/components/Layout.tsx';
 import { usePreventPageReset } from './hooks/usePreventPageReset.ts';
 
@@ -30,7 +30,8 @@ const MainContent = React.memo(() => {
     generateLessonPlanText,
     updateSections,
     saveCurrentPlan,
-    removeSection
+    removeSection,
+    createAndAddSection
   } = useLessonPlanState();
 
   useEffect(() => {
@@ -95,8 +96,16 @@ const MainContent = React.memo(() => {
       skillGoals: lessonPlan?.skillGoals || ''
     },
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] },
-    saveCurrentPlan
-  }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan]);
+    saveCurrentPlan,
+    createAndAddSection: createAndAddSection as (
+      phase: keyof LessonPlanSections, 
+      content: string, 
+      spaceUsage?: string,
+      screen1?: string,
+      screen2?: string,
+      screen3?: string
+    ) => Promise<void>
+  }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan, createAndAddSection]);
 
   const leftSidebarProps = React.useMemo(() => ({
     saveInProgress,

@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Navbar } from './Navbar.tsx';
 import { RightSidebar } from './RightSidebar.tsx';
 import { LeftSidebar } from './LeftSidebar.tsx';
+import { LessonPlanSections, LessonSection } from '../../lesson-planner/types.ts';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,12 @@ interface LayoutProps {
       main: any;
       summary: any;
     };
+    createAndAddSection: ( phase: keyof LessonPlanSections, 
+      content: string, 
+      spaceUsage?: string,
+      screen1?: string,
+      screen2?: string,
+      screen3?: string) => Promise<void>;
   };
   leftSidebarProps: {
     saveInProgress: boolean;

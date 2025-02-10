@@ -13,6 +13,14 @@ interface RightSidebarProps {
   currentValues: Record<string, string>;
   saveCurrentPlan: () => Promise<void>;
   sections: LessonPlanSections;
+  createAndAddSection: (
+    phase: keyof LessonPlanSections,
+    content: string,
+    spaceUsage?: string,
+    screen1?: string,
+    screen2?: string,
+    screen3?: string
+  ) => Promise<void>;
 }
 
 const RightSidebar: React.FC<RightSidebarProps> = ({
@@ -23,7 +31,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   totalSteps,
   onUpdateField,
   currentValues,
-  saveCurrentPlan
+  saveCurrentPlan,
+  createAndAddSection
 }) => {
   // הוסף לוג לבדיקת הערכים
   useEffect(() => {
@@ -49,6 +58,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           currentValues={currentValues}
           saveCurrentPlan={saveCurrentPlan}
           sections={sections}
+          createAndAddSection={createAndAddSection}
         />
       </div>
     </aside>
