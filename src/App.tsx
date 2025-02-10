@@ -97,14 +97,27 @@ const MainContent = React.memo(() => {
     },
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] },
     saveCurrentPlan,
-    createAndAddSection: createAndAddSection as (
-      phase: keyof LessonPlanSections, 
-      content: string, 
+    createAndAddSection: (
+      phase: keyof LessonPlanSections,
+      content: string,
       spaceUsage?: string,
       screen1?: string,
       screen2?: string,
-      screen3?: string
-    ) => Promise<void>
+      screen3?: string,
+      screen1Description?: string,
+      screen2Description?: string,
+      screen3Description?: string
+    ) => createAndAddSection(
+      phase,
+      content,
+      spaceUsage ?? '',
+      screen1,
+      screen2,
+      screen3,
+      screen1Description,
+      screen2Description,
+      screen3Description
+    )
   }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan, createAndAddSection]);
 
   const leftSidebarProps = React.useMemo(() => ({

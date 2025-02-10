@@ -21,12 +21,17 @@ interface LayoutProps {
       main: any;
       summary: any;
     };
-    createAndAddSection: ( phase: keyof LessonPlanSections, 
-      content: string, 
+    createAndAddSection: (
+      phase: keyof LessonPlanSections,
+      content: string,
       spaceUsage?: string,
       screen1?: string,
       screen2?: string,
-      screen3?: string) => Promise<void>;
+      screen3?: string,
+      screen1Description?: string,
+      screen2Description?: string,
+      screen3Description?: string
+    ) => Promise<void>;
   };
   leftSidebarProps: {
     saveInProgress: boolean;

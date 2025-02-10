@@ -37,7 +37,10 @@ const createEmptySection = (): LessonSection => ({
   screens: {
     screen1: '',
     screen2: '',
-    screen3: ''
+    screen3: '',
+    screen1Description: '',
+    screen2Description: '',
+    screen3Description: ''
   }
 });
 
@@ -52,7 +55,6 @@ const isSectionField = (key: string): boolean => {
 
 
 const handleSectionUpdate = (fieldPath: string, newValue: string, currentSections: LessonPlanSections): LessonPlanSections => {
-  // Example fieldPath: 'opening.2.screens.screen1' or 'main.1.content'
   const parts = fieldPath.split('.');
   if (parts.length < 3) {
     console.warn('handleSectionUpdate expects at least 3 parts (phase, index, field). Received:', parts);
@@ -84,22 +86,30 @@ const handleSectionUpdate = (fieldPath: string, newValue: string, currentSection
   }
 
   const section = { ...phaseSections[targetIndex] };
+  
   // Top-level fields
   if (field === 'content' || field === 'spaceUsage') {
     (section as any)[field] = newValue;
   } else if (field.startsWith('screens.')) {
-    // e.g. screens.screen1
+    // e.g. screens.screen1, screens.screen1Description
     const [, screenField] = field.split('.');
     section.screens = { ...section.screens, [screenField]: newValue };
+    console.log(`Updated screen field ${screenField} to:`, newValue); // Debug log
   } else if (field.startsWith('screen')) {
-    // e.g. screen1, screen2
+    // Handle both screen type and description updates
+    // e.g. screen1, screen1Description
     section.screens = { ...section.screens, [field]: newValue };
+    console.log(`Updated direct screen field ${field} to:`, newValue); // Debug log
   } else {
     console.warn('handleSectionUpdate: unknown field path =>', fieldPath);
   }
 
   phaseSections[targetIndex] = section;
   sectionsCopy[phase] = phaseSections;
+
+  // Debug log entire section after update
+  console.log(`Updated section for ${phase}.${targetIndex}:`, section);
+  
   return sectionsCopy;
 }
 
@@ -203,13 +213,35 @@ const useLessonPlanState = () => {
     
     try {
       setSaveInProgress(true);
-      const {...updates } = lessonPlan;
-      await lessonPlanService.updateLessonPlan(lessonPlan.id, updates);
+      
+      // Create a deep copy to ensure all nested objects are included
+      const updatesToSend = JSON.parse(JSON.stringify({
+        ...lessonPlan,
+        sections: {
+          opening: lessonPlan.sections.opening.map(section => ({
+            ...section,
+            screens: { ...section.screens }
+          })),
+          main: lessonPlan.sections.main.map(section => ({
+            ...section,
+            screens: { ...section.screens }
+          })),
+          summary: lessonPlan.sections.summary.map(section => ({
+            ...section,
+            screens: { ...section.screens }
+          }))
+        }
+      }));
+
+      console.log('Saving plan with updates:', updatesToSend); // Debug log
+      
+      await lessonPlanService.updateLessonPlan(lessonPlan.id, updatesToSend);
       setError(null);
       setLastSaved(new Date());
       setUnsavedChanges(false);
       localStorage.setItem(STORAGE_KEY, lessonPlan.id);
     } catch (err) {
+      console.error('Error saving plan:', err); // Debug log
       setError(err instanceof Error ? err.message : 'שגיאה בשמירת התוכנית');
     } finally {
       setSaveInProgress(false);
@@ -320,8 +352,17 @@ const useLessonPlanState = () => {
       text += `\nפעילות ${i + 1}:\n`;
       text += `תוכן: ${section.content}\n`;
       text += `מסך 1: ${section.screens.screen1}\n`;
+      if (section.screens.screen1Description) {
+        text += `תיאור מסך 1: ${section.screens.screen1Description}\n`;
+      }
       text += `מסך 2: ${section.screens.screen2}\n`;
+      if (section.screens.screen2Description) {
+        text += `תיאור מסך 2: ${section.screens.screen2Description}\n`;
+      }
       text += `מסך 3: ${section.screens.screen3}\n`;
+      if (section.screens.screen3Description) {
+        text += `תיאור מסך 3: ${section.screens.screen3Description}\n`;
+      }
       text += `ארגון הלומדים: ${section.spaceUsage}\n`;
     });
 
@@ -330,8 +371,17 @@ const useLessonPlanState = () => {
       text += `\nפעילות ${i + 1}:\n`;
       text += `תוכן: ${section.content}\n`;
       text += `מסך 1: ${section.screens.screen1}\n`;
+      if (section.screens.screen1Description) {
+        text += `תיאור מסך 1: ${section.screens.screen1Description}\n`;
+      }
       text += `מסך 2: ${section.screens.screen2}\n`;
+      if (section.screens.screen2Description) {
+        text += `תיאור מסך 2: ${section.screens.screen2Description}\n`;
+      }
       text += `מסך 3: ${section.screens.screen3}\n`;
+      if (section.screens.screen3Description) {
+        text += `תיאור מסך 3: ${section.screens.screen3Description}\n`;
+      }
       text += `ארגון הלומדים: ${section.spaceUsage}\n`;
     });
 
@@ -340,8 +390,17 @@ const useLessonPlanState = () => {
       text += `\nפעילות ${i + 1}:\n`;
       text += `תוכן: ${section.content}\n`;
       text += `מסך 1: ${section.screens.screen1}\n`;
+      if (section.screens.screen1Description) {
+        text += `תיאור מסך 1: ${section.screens.screen1Description}\n`;
+      }
       text += `מסך 2: ${section.screens.screen2}\n`;
+      if (section.screens.screen2Description) {
+        text += `תיאור מסך 2: ${section.screens.screen2Description}\n`;
+      }
       text += `מסך 3: ${section.screens.screen3}\n`;
+      if (section.screens.screen3Description) {
+        text += `תיאור מסך 3: ${section.screens.screen3Description}\n`;
+      }
       text += `ארגון הלומדים: ${section.spaceUsage}\n`;
     });
 
