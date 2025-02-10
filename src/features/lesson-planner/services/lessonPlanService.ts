@@ -36,7 +36,14 @@ const validateLessonPlanSections = (json: Json): LessonPlanSections => {
         if (!section || typeof section !== 'object') {
           return {
             content: '',
-            screens: { screen1: '', screen2: '', screen3: '' },
+            screens: { 
+              screen1: '', 
+              screen2: '', 
+              screen3: '',
+              screen1Description: '',
+              screen2Description: '',
+              screen3Description: ''
+            },
             spaceUsage: ''
           };
         }
@@ -48,11 +55,14 @@ const validateLessonPlanSections = (json: Json): LessonPlanSections => {
           screens: {
             screen1: s.screens && typeof s.screens === 'object' ? String((s.screens as any).screen1 || '') : '',
             screen2: s.screens && typeof s.screens === 'object' ? String((s.screens as any).screen2 || '') : '',
-            screen3: s.screens && typeof s.screens === 'object' ? String((s.screens as any).screen3 || '') : ''
+            screen3: s.screens && typeof s.screens === 'object' ? String((s.screens as any).screen3 || '') : '',
+            screen1Description: s.screens && typeof s.screens === 'object' ? String((s.screens as any).screen1Description || '') : '',
+            screen2Description: s.screens && typeof s.screens === 'object' ? String((s.screens as any).screen2Description || '') : '',
+            screen3Description: s.screens && typeof s.screens === 'object' ? String((s.screens as any).screen3Description || '') : ''
           }
         };
       });
-    };
+    };    
 
     result.opening = processSections(data.opening);
     result.main = processSections(data.main);
