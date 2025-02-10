@@ -1,42 +1,42 @@
-import React, { useState, useEffect } from 'react'
-import { useAuth } from '../../auth/AuthContext.tsx'
-import { Input } from '../../../components/ui/input.tsx'
-import { LoadingSpinner } from '../../../components/ui/loading-spinner.tsx'
-import { useNavigate } from "react-router-dom"
-import { LessonPlan, LessonCategory } from '../types.ts'
-import { lessonPlanService } from '../services/lessonPlanService.ts'
-import { Layout } from '../../common/components/Layout.tsx'
-import { LessonCard } from './LessonCard.tsx'
-import { LessonFilters } from './LessonFilters.tsx'
-import { CreateLessonAIModal } from './CreateLessonAIModal.tsx'
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../auth/AuthContext.tsx';
+import { LoadingSpinner } from '../../../components/ui/loading-spinner.tsx';
+import { useNavigate } from "react-router-dom";
+import { LessonPlan, LessonCategory, LESSON_CATEGORIES } from '../types.ts';
+import { lessonPlanService } from '../services/lessonPlanService.ts';
+import { Layout } from '../../common/components/Layout.tsx';
+import { LessonCard } from './LessonCard.tsx';
+import { LessonFilters } from './LessonFilters.tsx';
+import { CreateLessonAIModal } from './CreateLessonAIModal.tsx';
+import { useAILesson } from '../hooks/useAILesson.ts';
 
 export function LessonDashboard() {
-  const { user } = useAuth()
-  const [lessons, setLessons] = useState<LessonPlan[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState('all')
-  const [selectedCategory, setSelectedCategory] = useState('all')
-  const [isAIModalOpen, setIsAIModalOpen] = useState(false)
-  const navigate = useNavigate()
+  const { user } = useAuth();
+  const [lessons, setLessons] = useState<LessonPlan[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadLessons = async () => {
-      if (!user) return
+      if (!user) return;
       try {
-        const data = await lessonPlanService.getUserLessonPlans(user.id)
-        setLessons(data)
+        const data = await lessonPlanService.getUserLessonPlans(user.id);
+        setLessons(data);
       } catch (err) {
-        setError('טעינת השיעורים נכשלה')
-        console.error(err)
+        setError('טעינת השיעורים נכשלה');
+        console.error(err);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    loadLessons()
-  }, [user])
+    loadLessons();
+  }, [user]);
 
   const filteredLessons = lessons.filter(lesson => {
     const matchesSearch = lesson.basicInfo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -45,12 +45,69 @@ export function LessonDashboard() {
     const matchesCategory = selectedCategory === 'all' || lesson.category === selectedCategory;
     
     return matchesSearch && matchesStatus && matchesCategory;
-  })
+  });
+
+  const handleCreateEmpty = async () => {
+    const defaultCategory = LESSON_CATEGORIES[0];
+    try {
+      const lessonPlan = await lessonPlanService.createLessonPlan({
+        userId: user!.id,
+        topic: '',
+        duration: '',
+        gradeLevel: '',
+        priorKnowledge: '',
+        position: '',
+        contentGoals: '',
+        skillGoals: '',
+        sections: {
+          opening: [],
+          main: [],
+          summary: []
+        },
+        status: 'draft',
+        description: '',
+        basicInfo: {
+          title: '',
+          duration: '',
+          gradeLevel: '',
+          priorKnowledge: '',
+          contentGoals: '',
+          skillGoals: ''
+        },
+        category: defaultCategory
+      });
+      navigate(`/lesson/${lessonPlan.id}`);
+    } catch (err) {
+      setError('יצירת השיעור נכשלה');
+      console.error(err);
+    }
+  };
+
+  const { generateLesson, isGenerating } = useAILesson({
+    onSuccess: async (generatedPlan) => {
+      try {
+        const updatedPlan = await lessonPlanService.updateLessonPlan(
+          generatedPlan.id,
+          {
+            ...generatedPlan,
+            status: 'draft',
+          }
+        );
+        navigate(`/lesson/${updatedPlan.id}`);
+      } catch (err) {
+        setError('Failed to update lesson with AI content');
+        console.error(err);
+      }
+    },
+    onError: (errorMessage) => {
+      setError(errorMessage);
+      setIsAIModalOpen(false);
+    }
+  });
 
   const handleCreateAI = async (data: { topic: string, materials: string, category: LessonCategory }) => {
     try {
-      // TODO: Add API call to create AI lesson
-      const newPlan = await lessonPlanService.createLessonPlan({
+      const lessonPlan = await lessonPlanService.createLessonPlan({
         userId: user!.id,
         topic: data.topic,
         duration: '',
@@ -75,72 +132,40 @@ export function LessonDashboard() {
           skillGoals: ''
         },
         category: data.category
-      })
-      
-      // TODO: Add API call to generate lesson content using AI
-      // For now, just navigate to the new lesson
-      setIsAIModalOpen(false)
-      navigate(`/lesson/${newPlan.id}`)
-    } catch (err) {
-      setError('יצירת השיעור נכשלה')
-      console.error(err)
-    }
-  }
+      });
 
-  const handleCreateEmpty = async () => {
-    try {
-      const newPlan = await lessonPlanService.createLessonPlan({
-        userId: user!.id,
-        topic: '',
-        duration: '',
-        gradeLevel: '',
-        priorKnowledge: '',
-        position: '',
-        contentGoals: '',
-        skillGoals: '',
-        sections: {
-          opening: [],
-          main: [],
-          summary: []
-        },
-        status: 'draft',
-        description: '',
-        basicInfo: {
-          title: 'שיעור חדש',
-          duration: '',
-          gradeLevel: '',
-          priorKnowledge: '',
-          contentGoals: '',
-          skillGoals: ''
-        },
-        category: 'מתמטיקה' // Default category
-      })
-      navigate(`/lesson/${newPlan.id}`)
+      await generateLesson({
+        topic: data.topic,
+        category: data.category,
+        materials: data.materials || undefined
+      });
+
+      setIsAIModalOpen(false);
     } catch (err) {
-      setError('יצירת השיעור נכשלה')
-      console.error(err)
+      setError('יצירת השיעור נכשלה');
+      console.error(err);
     }
-  }
+  };
 
   const handleEdit = (lessonId: string) => {
-    navigate(`/lesson/${lessonId}`)
-  }
+    navigate(`/lesson/${lessonId}`);
+  };
 
   const handleDelete = async (lessonId: string) => {
     if (confirm('האם אתה בטוח שברצונך למחוק שיעור זה?')) {
-      await lessonPlanService.deleteLessonPlan(lessonId)
-      setLessons(lessons.filter(lesson => lesson.id !== lessonId))
+      await lessonPlanService.deleteLessonPlan(lessonId);
+      setLessons(lessons.filter(lesson => lesson.id !== lessonId));
     }
-  }
+  };
 
   const handlePublish = async (lessonId: string) => {
-    await lessonPlanService.publishLessonPlan(lessonId)
+    await lessonPlanService.publishLessonPlan(lessonId);
     // Refresh lessons list
-    const updatedLessons = await lessonPlanService.getLessonPlans()
-    setLessons(updatedLessons)
-  }
+    const updatedLessons = await lessonPlanService.getLessonPlans();
+    setLessons(updatedLessons);
+  };
 
-  if (!user) return null
+  if (!user) return null;
 
   const dashboardContent = (
     <div className="container mx-auto p-6" dir="rtl">
@@ -153,7 +178,7 @@ export function LessonDashboard() {
         onCategoryChange={setSelectedCategory}
       />
 
-      {isLoading ? (
+      {isLoading || isGenerating ? (
         <div className="flex justify-center py-8">
           <LoadingSpinner />
         </div>
@@ -173,7 +198,7 @@ export function LessonDashboard() {
         </div>
       )}
     </div>
-  )
+  );
 
   return (
     <>
@@ -194,5 +219,5 @@ export function LessonDashboard() {
         onCreate={handleCreateAI}
       />
     </>
-  )
+  );
 }

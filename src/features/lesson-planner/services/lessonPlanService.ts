@@ -35,6 +35,7 @@ const validateLessonPlanSections = (json: Json): LessonPlanSections => {
       return sections.map(section => {
         if (!section || typeof section !== 'object') {
           return {
+            id: crypto.randomUUID(),
             content: '',
             screens: { 
               screen1: '', 
@@ -50,6 +51,7 @@ const validateLessonPlanSections = (json: Json): LessonPlanSections => {
 
         const s = section as Record<string, unknown>;
         return {
+          id: typeof s.id === 'string' ? s.id : crypto.randomUUID(),
           content: typeof s.content === 'string' ? s.content : '',
           spaceUsage: typeof s.spaceUsage === 'string' ? s.spaceUsage : '',
           screens: {
@@ -98,7 +100,8 @@ const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => ({
     priorKnowledge: dbPlan.prior_knowledge || '',
     contentGoals: dbPlan.content_goals || '',
     skillGoals: dbPlan.skill_goals || ''
-  }
+  },
+  category: dbPlan.category
 });
 
 // Convert application lesson plan to database format
@@ -113,7 +116,8 @@ const toDbLessonPlan = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at
   position: plan.position,
   content_goals: plan.contentGoals,
   skill_goals: plan.skillGoals,
-  sections: plan.sections as unknown as Json
+  sections: plan.sections as unknown as Json,
+  category: plan.category
 });
 
 export const lessonPlanService = {

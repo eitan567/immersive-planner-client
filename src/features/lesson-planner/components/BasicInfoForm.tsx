@@ -10,10 +10,11 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "../../../components/ui/select.tsx";
-import type { LessonPlan } from '../types.ts';
+import type { LessonPlan, LessonCategory } from '../types.ts';
+import { LESSON_CATEGORIES } from '../types.ts';
 
 type BasicInfoFormProps = {
-  lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position'>;
+  lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'category'>;
   handleBasicInfoChange: (field: keyof LessonPlan, value: string) => void;
   onSave?: () => Promise<void>;
 };
@@ -28,6 +29,26 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave }: Bas
   return (
     <div className="space-y-2 rtl">
       <h1 className="text-[1.2rem] font-semibold text-[#540ba9] pb-[10px] pt-[23px]">פרטי השיעור</h1>
+      <div className="text-right">
+        <Label className="text-right">קטגוריה *</Label>
+        <div className="space-y-2">
+          <Select 
+            value={lessonPlan.category} 
+            onValueChange={(value) => handleBasicInfoChange('category', value)}
+            required
+          >
+            <SelectTrigger className="text-right">
+              <SelectValue placeholder="בחר קטגוריה" />
+            </SelectTrigger>
+            <SelectContent>
+              {LESSON_CATEGORIES.map((cat) => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      
       <div className="text-right">
         <Label className="text-right">נושא היחידה</Label>
         <div className="space-y-2">

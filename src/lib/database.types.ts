@@ -1,3 +1,5 @@
+import { LessonCategory } from '../features/lesson-planner/types.ts';
+
 export type Json =
   | string
   | number
@@ -25,6 +27,7 @@ export interface Database {
           updated_at: string
           status: string
           description: string | null
+          category: LessonCategory
         }
         Insert: {
           id?: string
@@ -41,6 +44,7 @@ export interface Database {
           updated_at?: string
           status?: string
           description?: string | null
+          category: LessonCategory
         }
         Update: {
           id?: string
@@ -57,6 +61,7 @@ export interface Database {
           updated_at?: string
           status?: string
           description?: string | null
+          category?: LessonCategory
         }
       }
     }

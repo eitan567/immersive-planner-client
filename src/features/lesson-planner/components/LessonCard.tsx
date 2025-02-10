@@ -1,9 +1,15 @@
 import React from 'react';
-import { Card } from '../../../components/ui/card.tsx';
-import { Badge } from '../../../components/ui/badge.tsx';
 import { Button } from '../../../components/ui/button.tsx';
-import { Pencil, Trash2, Globe, Clock } from 'lucide-react';
-import { LessonPlan } from '../types.ts';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '../../../components/ui/card.tsx';
+import type { LessonPlan } from '../types.ts';
+import { PenBox, Trash2, Upload } from 'lucide-react';
 
 interface LessonCardProps {
   lesson: LessonPlan;
@@ -12,114 +18,112 @@ interface LessonCardProps {
   onPublish: (id: string) => void;
 }
 
-export function LessonCard({ lesson, onEdit, onDelete, onPublish }: LessonCardProps) {
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        return 'תאריך לא ידוע';
-      }
-      return date.toLocaleString('he-IL', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    } catch (error) {
-      return 'תאריך לא ידוע';
+export function LessonCard({
+  lesson,
+  onEdit,
+  onDelete,
+  onPublish,
+}: LessonCardProps) {
+  const { id, basicInfo, status, category } = lesson;
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'published':
+        return 'bg-green-100 text-green-800';
+      case 'draft':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const formatTitle = (title: string) => {
+    return title.length > 50 ? title.substring(0, 50) + '...' : title;
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'published':
+        return 'פורסם';
+      case 'draft':
+        return 'טיוטה';
+      default:
+        return status;
     }
   };
 
   return (
-    <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-lg hover:translate-y-[-2px] bg-gradient-to-br from-white to-[#f8f9ff] border border-[#e6e8f0]">
-      {/* Status Badge - Absolute positioned */}
-      <div className="absolute top-4 left-4">
-        <Badge 
-          className={`
-            ${lesson.status === 'published' 
-              ? 'bg-[#681bc2] hover:bg-[#681bc2]/90' 
-              : 'bg-gray-500 hover:bg-gray-500/90'}
-            transition-colors px-2.5 py-1 text-[11px] font-medium
-          `}
-        >
-          {lesson.status === 'published' ? 'פורסם' : 'טיוטה'}
-        </Badge>
-      </div>
-
-      {/* Main Content */}
-      <div className="p-4">
-        <h3 className="text-xl font-semibold mb-3 mr-16">{lesson.basicInfo.title}</h3>
-        
-        {/* Metadata */}
-        <div className="space-y-1.5 text-sm text-gray-600 mb-4">
-          <div className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5 text-gray-400" />
-            <span>נוצר: {formatDate(lesson.created_at)}</span>
+    <Card className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col min-h-[200px] bg-[#f7f7f7]">
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <CardTitle className="text-lg font-semibold text-[#f06094] line-clamp-2">
+              {formatTitle(basicInfo.title)}
+            </CardTitle>
           </div>
-          <div className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5 text-gray-400" />
-            <span>עודכן: {formatDate(lesson.updated_at)}</span>
+          <span
+            className={`px-2 py-1 rounded-md text-xs font-medium ${getStatusColor(
+              status
+            )}`}
+          >
+            {getStatusText(status)}
+          </span>
+        </div>
+        <CardDescription className="text-sm text-[#000000] font-medium">
+          קטגוריה: {category}
+        </CardDescription>
+        <div className="text-xs text-gray-500 mt-1">
+          <time>נוצר: {new Date(lesson.created_at).toLocaleString('he-IL', {
+            dateStyle: 'short',
+            timeStyle: 'short'
+          })}</time>
+          <span className="mx-2">•</span>
+          <time>עודכן: {new Date(lesson.updated_at).toLocaleString('he-IL', {
+            dateStyle: 'short',
+            timeStyle: 'short'
+          })}</time>
+        </div>
+      </CardHeader>
+      <CardContent className="py-2">
+        {basicInfo.duration && (
+          <div className="text-sm text-gray-600">
+            משך זמן: {basicInfo.duration}
           </div>
-        </div>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          <Badge className="bg-white border border-[#e2e3e8] text-[#681bc2] hover:border-[#681bc2] transition-colors">
-            {lesson.category}
-          </Badge>
-          {lesson.basicInfo.duration && (
-            <Badge className="bg-white border border-[#e2e3e8] text-gray-600 hover:border-gray-400 transition-colors">
-              {lesson.basicInfo.duration} דקות
-            </Badge>
-          )}
-          {lesson.basicInfo.gradeLevel && (
-            <Badge className="bg-white border border-[#e2e3e8] text-gray-600 hover:border-gray-400 transition-colors">
-              {lesson.basicInfo.gradeLevel}
-            </Badge>
-          )}
-        </div>
-
-        {/* Description */}
-        {lesson.description && (
-          <p className="text-gray-600 text-sm line-clamp-2 mb-4">
-            {lesson.description}
-          </p>
         )}
-
-        {/* Actions */}
-        <div className="flex justify-end space-x-1 flex-row-reverse pt-2">
+        {basicInfo.gradeLevel && (
+          <div className="text-sm text-gray-600">
+            שכבת גיל: {basicInfo.gradeLevel}
+          </div>
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-end gap-2 pt-4 border-t mt-auto">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onDelete(id)}
+          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onEdit(id)}
+          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+        >
+          <PenBox className="w-4 h-4" />
+        </Button>
+        {status !== 'published' && (
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="text-[#681bc2] hover:bg-[#681bc2]/10 hover:text-[#681bc2]"
-            onClick={() => onEdit(lesson.id)}
-            title="ערוך שיעור"
+            onClick={() => onPublish(id)}
+            className="text-green-600 hover:text-green-700 hover:bg-green-50"
           >
-            <Pencil className="h-4 w-4" />
+            <Upload className="w-4 h-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-red-500 hover:bg-red-50 hover:text-red-500"
-            onClick={() => onDelete(lesson.id)}
-            title="מחק שיעור"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-          {lesson.status !== 'published' && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-[#681bc2] hover:bg-[#681bc2]/10 hover:text-[#681bc2]"
-              onClick={() => onPublish(lesson.id)}
-              title="פרסם שיעור"
-            >
-              <Globe className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
+        )}
+      </CardFooter>
     </Card>
   );
 }

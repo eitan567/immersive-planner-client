@@ -38,7 +38,6 @@ const LessonEditor = React.memo(() => {
     createAndAddSection
   } = useLessonPlanState(id);
 
-
   const handleSectionUpdate = React.useCallback((
     phase: 'opening' | 'main' | 'summary',
     index: number,
@@ -61,7 +60,7 @@ const LessonEditor = React.memo(() => {
     
     const validFields: (keyof LessonPlan)[] = [
       'topic', 'duration', 'gradeLevel', 'priorKnowledge',
-      'position', 'contentGoals', 'skillGoals'
+      'position', 'contentGoals', 'skillGoals', 'category'
     ];
 
     if (Array.isArray(fieldName)) {
@@ -94,7 +93,8 @@ const LessonEditor = React.memo(() => {
       priorKnowledge: lessonPlan?.priorKnowledge || '',
       position: String(lessonPlan?.position || ''),
       contentGoals: lessonPlan?.contentGoals || '',
-      skillGoals: lessonPlan?.skillGoals || ''
+      skillGoals: lessonPlan?.skillGoals || '',
+      category: lessonPlan?.category || ''
     },
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] },
     saveCurrentPlan,
@@ -137,7 +137,8 @@ const LessonEditor = React.memo(() => {
       priorKnowledge: lessonPlan?.priorKnowledge || '',
       position: String(lessonPlan?.position || ''),
       contentGoals: lessonPlan?.contentGoals || '',
-      skillGoals: lessonPlan?.skillGoals || ''
+      skillGoals: lessonPlan?.skillGoals || '',
+      category: lessonPlan?.category || ''
     },
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] }
   }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan]);
@@ -203,7 +204,6 @@ const LessonEditor = React.memo(() => {
                   generateLessonPlanText={generateLessonPlanText}
                   saveCurrentPlan={saveCurrentPlan}
                   removeSection={removeSection}
-                  // className='min-h-[calc(100vh-130px)]'
                 />
               )}
             </CardContent>
@@ -235,7 +235,6 @@ const MainContent = () => {
   return (
     <Routes>
       <Route path="/" element={<LessonDashboard />} />
-      <Route path="/lesson/new" element={<LessonEditor />} />
       <Route path="/lesson/:id" element={<LessonEditor />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

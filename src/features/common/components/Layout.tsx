@@ -37,11 +37,15 @@ interface DashboardRightSidebarProps {
   onCreateAI: () => void;
 }
 
+interface NewRightSidebarProps {
+  // Empty for now since new mode doesn't need a sidebar
+}
+
 interface LayoutProps {
   children: React.ReactNode;
   user: any;
-  mode: 'lesson' | 'dashboard';
-  rightSidebarProps: LessonRightSidebarProps | DashboardRightSidebarProps;
+  mode: 'lesson' | 'dashboard' | 'new';
+  rightSidebarProps?: LessonRightSidebarProps | DashboardRightSidebarProps | NewRightSidebarProps;
   leftSidebarProps?: {
     saveInProgress: boolean;
     lastSaved: Date | null;
@@ -100,14 +104,16 @@ export const Layout = React.memo(({ children, user, mode, rightSidebarProps, lef
         <div className="relative flex">
           {/* RightSidebar Container */}
           
-            {mode === 'lesson' ? (
-              <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[30rem]' : 'w-0'} overflow-hidden`}>
-                <RightSidebar {...(rightSidebarProps as LessonRightSidebarProps)} />
-              </div>
-            ) : (
-              <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[20rem]' : 'w-0'} overflow-hidden`}>
-                <DashboardRightSidebar {...(rightSidebarProps as DashboardRightSidebarProps)} />
-              </div>
+            {mode === 'new' ? null : (
+              mode === 'lesson' ? (
+                <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[30rem]' : 'w-0'} overflow-hidden`}>
+                  <RightSidebar {...(rightSidebarProps as LessonRightSidebarProps)} />
+                </div>
+              ) : (
+                <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[20rem]' : 'w-0'} overflow-hidden`}>
+                  <DashboardRightSidebar {...(rightSidebarProps as DashboardRightSidebarProps)} />
+                </div>
+              )
             )}          
           
           {/* Toggle Button */}
