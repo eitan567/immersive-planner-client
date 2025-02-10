@@ -23,6 +23,8 @@ export interface Database {
           sections: Json
           created_at: string
           updated_at: string
+          status: string
+          description: string | null
         }
         Insert: {
           id?: string
@@ -37,6 +39,8 @@ export interface Database {
           sections?: Json
           created_at?: string
           updated_at?: string
+          status?: string
+          description?: string | null
         }
         Update: {
           id?: string
@@ -51,6 +55,8 @@ export interface Database {
           sections?: Json
           created_at?: string
           updated_at?: string
+          status?: string
+          description?: string | null
         }
       }
     }

@@ -28,7 +28,9 @@ const createEmptyLessonPlan = (userId: string): Omit<LessonPlan, 'id' | 'created
     opening: [],
     main: [],
     summary: []
-  }
+  },
+  status: 'draft',
+  description: ''
 });
 
 const createEmptySection = (): LessonSection => ({
@@ -113,7 +115,7 @@ const handleSectionUpdate = (fieldPath: string, newValue: string, currentSection
   return sectionsCopy;
 }
 
-const useLessonPlanState = () => {
+const useLessonPlanState = (lessonId?: string) => {
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(() => {
     const savedStep = localStorage.getItem(STEP_STORAGE_KEY);
@@ -139,26 +141,17 @@ const useLessonPlanState = () => {
 
       try {
         setLoading(true);
-        const userPlans = await lessonPlanService.getUserLessonPlans(user.id);
-        const existingPlanId = localStorage.getItem(STORAGE_KEY);
-        
-        if (existingPlanId) {
-          const existingPlan = userPlans.find(plan => plan.id === existingPlanId);
-          if (existingPlan) {
-            setLessonPlan(existingPlan);
+
+        if (lessonId) {
+          const plan = await lessonPlanService.getLessonPlan(lessonId);
+          if (plan) {
+            setLessonPlan(plan);
             setError(null);
             return;
           }
         }
         
-        if (userPlans.length > 0) {
-          const mostRecentPlan = userPlans[0];
-          localStorage.setItem(STORAGE_KEY, mostRecentPlan.id);
-          setLessonPlan(mostRecentPlan);
-          setError(null);
-          return;
-        }
-        
+        // No lesson ID or lesson not found - create new plan
         const emptyPlan = createEmptyLessonPlan(user.id);
         const created = await lessonPlanService.createLessonPlan(emptyPlan);
         if (created.id) {

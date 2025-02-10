@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from './components/ui/card.tsx';
 import './index.css';
 
@@ -12,10 +13,13 @@ import { LessonContent } from './features/lesson-planner/components/LessonConten
 import type { LessonPlan, LessonSection, LessonPlanSections } from './features/lesson-planner/types.ts';
 import { Layout } from './features/common/components/Layout.tsx';
 import { usePreventPageReset } from './hooks/usePreventPageReset.ts';
+import { LessonDashboard } from './features/lesson-planner/components/LessonDashboard.tsx';
 
-// בתוך הקומפוננטה
-const MainContent = React.memo(() => {
+const LessonEditor = React.memo(() => {
+  const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const {
     currentStep,
     lessonPlan,
@@ -32,11 +36,8 @@ const MainContent = React.memo(() => {
     saveCurrentPlan,
     removeSection,
     createAndAddSection
-  } = useLessonPlanState();
+  } = useLessonPlanState(id);
 
-  useEffect(() => {
-    console.log('MainContent lessonPlan:', lessonPlan);
-  }, []);
 
   const handleSectionUpdate = React.useCallback((
     phase: 'opening' | 'main' | 'summary',
@@ -141,6 +142,18 @@ const MainContent = React.memo(() => {
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] }
   }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan]);
 
+  useEffect(() => {
+    if (!loading && !lessonPlan && id) {
+      setShouldRedirect(true);
+    }
+  }, [loading, lessonPlan, id]);
+
+  useEffect(() => {
+    if (shouldRedirect) {
+      navigate('/');
+    }
+  }, [shouldRedirect, navigate]);
+
   // Show loading spinner while auth is initializing
   if (authLoading) {
     return (
@@ -196,12 +209,40 @@ const MainContent = React.memo(() => {
   );
 });
 
-const App = () => {
+const MainContent = () => {
+  const { user, loading: authLoading } = useAuth();
   usePreventPageReset();
 
+  // Show loading spinner while auth is initializing
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated
+  if (!user) {
+    return <LoginForm />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<LessonDashboard />} />
+      <Route path="/lesson/new" element={<LessonEditor />} />
+      <Route path="/lesson/:id" element={<LessonEditor />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+};
+
+const App = () => {
   return (
     <AuthProvider>
-      <MainContent />
+      <Router>
+        <MainContent />
+      </Router>
     </AuthProvider>
   );
 };

@@ -89,6 +89,8 @@ const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => ({
   sections: validateLessonPlanSections(dbPlan.sections),
   created_at: dbPlan.created_at,
   updated_at: dbPlan.updated_at,
+  status: dbPlan.status as 'draft' | 'published' || 'draft',
+  description: dbPlan.description || '',
   basicInfo: {
     title: dbPlan.topic,
     duration: dbPlan.duration,
@@ -101,6 +103,8 @@ const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => ({
 
 // Convert application lesson plan to database format
 const toDbLessonPlan = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at'>) => ({
+  status: plan.status || 'draft',
+  description: plan.description || '',
   user_id: plan.userId,
   topic: plan.topic,
   duration: plan.duration,
@@ -113,6 +117,33 @@ const toDbLessonPlan = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at
 });
 
 export const lessonPlanService = {
+  async getLessonPlans(): Promise<LessonPlan[]> {
+    return dbOperation(async (client) => {
+      const { data, error } = await client
+        .from('lesson_plans')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return (data || []).map(toAppLessonPlan);
+    });
+  },
+
+  async publishLessonPlan(id: string): Promise<LessonPlan> {
+    return dbOperation(async (client) => {
+      const { data, error } = await client
+        .from('lesson_plans')
+        .update({ status: 'published' })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      if (!data) throw new Error('Failed to publish lesson plan');
+      return toAppLessonPlan(data);
+    });
+  },
+
   async getUserLessonPlans(userId: string): Promise<LessonPlan[]> {
     return dbOperation(async (client) => {
       const { data, error } = await client

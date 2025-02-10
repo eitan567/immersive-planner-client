@@ -36,6 +36,8 @@ export interface LessonPlan {
   sections: LessonPlanSections;
   created_at: string;
   updated_at: string;
+  status: 'draft' | 'published';
+  description?: string;
   basicInfo: {
     title: string;
     duration: string;
