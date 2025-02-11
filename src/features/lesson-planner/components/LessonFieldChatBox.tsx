@@ -49,7 +49,7 @@ const QUICK_ACTIONS = [
 ];
 
 const VALID_SPACE_USAGE = ['whole', 'groups', 'individual', 'mixed'];
-const VALID_SCREEN_TYPES = ['video', 'image', 'padlet', 'website', 'genially'];
+const VALID_SCREEN_TYPES = ['video', 'image', 'padlet', 'website', 'genially', 'presentation'];
 
 const SPACE_USAGE_MAP = {
   'מליאה': 'whole',
@@ -63,7 +63,8 @@ const SCREEN_TYPE_MAP = {
   'תמונה': 'image',
   'פדלט': 'padlet',
   'אתר': 'website',
-  'ג\'ניאלי': 'genially'
+  'ג\'ניאלי': 'genially',
+  'מצגת': 'presentation'
 } as const;
 
 interface LessonFieldChatBoxProps {
@@ -104,8 +105,13 @@ const extractScreenType = (text: string): string => {
   if (text.includes('פדלט')) return 'padlet';
   if (text.includes('אתר')) return 'website';
   if (text.includes('ג\'ניאלי')) return 'genially';
+  if (text.includes('מצגת')) return 'presentation';
   return 'image'; // default value
 };
+
+export function mapScreenTypeToEnglish(hebrewValue: string): string {
+  return SCREEN_TYPE_MAP[hebrewValue as keyof typeof SCREEN_TYPE_MAP] || hebrewValue;
+}
 
 export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
   onUpdateField,
@@ -291,9 +297,9 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
               const screen2Description = activityUpdates.find(u => u.fieldToUpdate.includes('.screen2Description'))?.newValue;
               const screen3Description = activityUpdates.find(u => u.fieldToUpdate.includes('.screen3Description'))?.newValue;
 
-              const screen1 = screen1Update ? extractScreenType(screen1Update.newValue) : undefined;
-              const screen2 = screen2Update ? extractScreenType(screen2Update.newValue) : undefined;
-              const screen3 = screen3Update ? extractScreenType(screen3Update.newValue) : undefined;
+              const screen1 = screen1Update ? mapScreenTypeToEnglish(screen1Update.newValue) : undefined;
+              const screen2 = screen2Update ? mapScreenTypeToEnglish(screen2Update.newValue) : undefined;
+              const screen3 = screen3Update ? mapScreenTypeToEnglish(screen3Update.newValue) : undefined;
 
               console.log('Creating activity with:', {
                 phase,

@@ -59,6 +59,7 @@ const ScreenTypeSelect = ({
         <SelectItem value="padlet">פדלט</SelectItem>
         <SelectItem value="website">אתר</SelectItem>
         <SelectItem value="genially">ג'ניאלי</SelectItem>
+        <SelectItem value="presentation">מצגת</SelectItem>
       </SelectContent>
     </Select>
     <textarea
