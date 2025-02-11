@@ -3,7 +3,6 @@ import { BasicInfoForm } from './BasicInfoForm.tsx';
 import { LessonBuilder } from './LessonBuilder.tsx';
 import LessonPlanPreview from './LessonPlanPreview.tsx';
 import { NavigationControls } from './NavigationControls.tsx';
-import { SaveStatus } from './SaveStatus.tsx';
 import { cn } from "../../../lib/utils.ts"
 import type { LessonPlan, LessonSection } from '../types.ts';
 
@@ -42,6 +41,13 @@ export const LessonContent = React.memo(({
   saveCurrentPlan
 }: LessonContentProps) => {
   const validateRef = React.useRef<(() => boolean) | undefined>();
+  
+  // Expose validateRef to parent
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).__lessonValidateRef = validateRef;
+    }
+  }, []);
 
   const handleNext = async () => {
     if (validateRef.current?.()) {
@@ -86,16 +92,10 @@ export const LessonContent = React.memo(({
   };
 
   return (
-    <div className={cn("relative min-h-[calc(100vh-170px)] pb-16 ", className)}>
+    <div className={cn("relative min-h-[calc(100vh-170px)] pb-16 ", className)}>      
       <div className="space-y-4">
         {currentStep === 1 && (
           <>
-            <SaveStatus
-              onSave={handleSave}
-              saving={saveInProgress}
-              lastSaved={lastSaved}
-              className="mb-2 flex justify-end absolute top-0 left-0"
-            />
             <BasicInfoForm
               lessonPlan={lessonPlan}
               handleBasicInfoChange={handleBasicInfoChange}

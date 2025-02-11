@@ -5,6 +5,7 @@ import { RightSidebar } from '../../lesson-planner/components/RightSidebar.tsx';
 import { LeftSidebar } from './LeftSidebar.tsx';
 import { DashboardRightSidebar } from './DashboardRightSidebar.tsx';
 import type { LessonPlanSections } from '../../lesson-planner/types.ts';
+import { FloatingSaveButton } from '../../lesson-planner/components/FloatingSaveButton.tsx';
 
 interface LessonRightSidebarProps {
   saveInProgress: boolean;
@@ -42,6 +43,9 @@ interface LayoutProps {
   children: React.ReactNode;
   user: any;
   mode: 'lesson' | 'dashboard' | 'new';
+  saveCurrentPlan: () => Promise<void>;
+  saveInProgress: boolean;
+  lastSaved: Date | null;
   rightSidebarProps?: LessonRightSidebarProps | DashboardRightSidebarProps | NewRightSidebarProps;
   leftSidebarProps?: {
     saveInProgress: boolean;
@@ -55,12 +59,19 @@ interface LayoutProps {
   };
 }
 
-export const Layout = React.memo(({ children, user, mode, rightSidebarProps, leftSidebarProps }: LayoutProps) => {
+export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, children, user, mode, rightSidebarProps, leftSidebarProps }: LayoutProps) => {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
 
   const toggleRightSidebar = () => setIsRightSidebarOpen(!isRightSidebarOpen);
   const toggleLeftSidebar = () => setIsLeftSidebarOpen(!isLeftSidebarOpen);
+
+  const handleSave = async () => {
+    const validateRef = (window as any).__lessonValidateRef;
+    if (!validateRef?.current || validateRef.current()) {
+      await saveCurrentPlan();
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col">
@@ -89,6 +100,12 @@ export const Layout = React.memo(({ children, user, mode, rightSidebarProps, lef
         )}
 
         <main className="flex-1 relative">
+          <FloatingSaveButton
+            onClick={handleSave}
+            saving={saveInProgress}
+            lastSaved={lastSaved}
+            className="absolute top-[46px] left-[48px]"
+          />
           <div className="absolute inset-0 overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md" dir="ltr">
             {children}
           </div>

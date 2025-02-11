@@ -188,6 +188,9 @@ const LessonEditor = React.memo(() => {
       mode="lesson"
       rightSidebarProps={rightSidebarProps} 
       leftSidebarProps={leftSidebarProps}
+      saveCurrentPlan={saveCurrentPlan}
+      saveInProgress={saveInProgress}
+      lastSaved={lastSaved}      
     >
       <div className="p-6 min-h-full">
         <div dir="rtl" className="mx-auto space-y-0">
