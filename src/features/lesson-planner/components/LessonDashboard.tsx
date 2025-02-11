@@ -18,6 +18,7 @@ export function LessonDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedView, setSelectedView] = useState('grid');
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -152,6 +153,58 @@ export function LessonDashboard() {
 
   if (!user) return null;
 
+  const renderLessons = () => {
+    if (selectedView === 'presentation') {
+      return (
+        <div className="flex flex-col gap-6">
+          {filteredLessons.map((lesson) => (
+            <div key={lesson.id} className="w-full p-6 bg-white rounded-lg shadow">
+              <h2 className="text-2xl font-bold mb-4">{lesson.basicInfo.title}</h2>
+              <div className="mb-4">
+                <p className="text-lg">{lesson.description}</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">קטגוריה: {lesson.category}</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(lesson.id)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    ערוך
+                  </button>
+                  {lesson.status === 'draft' && (
+                    <button
+                      onClick={() => handlePublish(lesson.id)}
+                      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                    >
+                      פרסם
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className={`grid ${
+        selectedView === 'list' ? 'grid-cols-1 gap-4' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'
+      }`}>
+        {filteredLessons.map((lesson) => (
+          <LessonCard
+            key={lesson.id}
+            lesson={lesson}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onPublish={handlePublish}
+          />
+        ))}
+      </div>
+    );
+  };
+
   const dashboardContent = (
     <div className="container mx-auto p-6" dir="rtl">
       <LessonFilters
@@ -161,6 +214,8 @@ export function LessonDashboard() {
         onStatusChange={setSelectedStatus}
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
+        selectedView={selectedView}
+        onViewChange={setSelectedView}
       />
 
       {isLoading || isGenerating ? (
@@ -170,17 +225,7 @@ export function LessonDashboard() {
       ) : error ? (
         <div className="text-red-500 text-center py-8">{error}</div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredLessons.map((lesson) => (
-            <LessonCard
-              key={lesson.id}
-              lesson={lesson}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onPublish={handlePublish}
-            />
-          ))}
-        </div>
+        renderLessons()
       )}
     </div>
   );

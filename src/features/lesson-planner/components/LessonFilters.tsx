@@ -16,6 +16,8 @@ interface LessonFiltersProps {
   onStatusChange: (value: string) => void;
   selectedCategory: string;
   onCategoryChange: (value: string) => void;
+  selectedView?: string;
+  onViewChange?: (value: string) => void;
 }
 
 export function LessonFilters({
@@ -24,7 +26,9 @@ export function LessonFilters({
   selectedStatus,
   onStatusChange,
   selectedCategory,
-  onCategoryChange
+  onCategoryChange,
+  selectedView = 'list',
+  onViewChange = () => {}
 }: LessonFiltersProps) {
   return (
     <div className="flex flex-col md:flex-row gap-4 mb-6" dir="rtl">
@@ -51,12 +55,23 @@ export function LessonFilters({
             <SelectValue placeholder="תחום" />
           </SelectTrigger>
           <SelectContent>
-          <SelectItem value="all">כל התחומים</SelectItem>
+            <SelectItem value="all">כל התחומים</SelectItem>
             {LESSON_CATEGORIES.map((category) => (
               <SelectItem key={category} value={category}>
                 {category}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={selectedView} onValueChange={onViewChange}>
+          <SelectTrigger className="w-32">
+            <SelectValue placeholder="בחר תצוגה" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="list">רשימה</SelectItem>
+            <SelectItem value="grid">רשת</SelectItem>
+            <SelectItem value="presentation">מצגת</SelectItem>
           </SelectContent>
         </Select>
       </div>
