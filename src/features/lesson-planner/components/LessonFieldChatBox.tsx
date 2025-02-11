@@ -476,9 +476,9 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
                   >"תשפר את השימוש במרחב בגוף השיעור"</button>
                   <br />
                   <button
-                    onClick={() => handleQuickAction("תציע פעילות סיכום אינטראקטיבית")}
+                    onClick={() => handleQuickAction("הצע פעילות סיכום אינטראקטיבית")}
                     className="text-[#540ba9] hover:underline cursor-pointer"
-                  >"תציע פעילות סיכום אינטראקטיבית"</button>
+                  >"הצע פעילות סיכום אינטראקטיבית"</button>
                 </div>
               ) : (
                 messages.map((message, index) => (
