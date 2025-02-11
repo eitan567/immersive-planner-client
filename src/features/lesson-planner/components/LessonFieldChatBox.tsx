@@ -533,20 +533,20 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
             <div className="flex justify-end text-xs border border-solid border-[#5b398b] w-fit rounded-lg h-5 bg-gray-100 gap-0">
               <button
                 onClick={() => setMode('command')}
-                className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
+                className={`text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
                   mode === 'command'
-                    ? 'bg-[#540ba9] text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-[#540ba9] text-white rounded-r-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-r-md'
                 }`}
               >
                 פקודה
               </button>
               <button
                 onClick={() => setMode('chat')}
-                className={`rounded-[6px] text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
+                className={`text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
                   mode === 'chat'
-                    ? 'bg-[#540ba9] text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-[#540ba9] text-white rounded-l-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-l-md'
                 }`}
               >
                 שיחה
