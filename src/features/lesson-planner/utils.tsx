@@ -11,7 +11,7 @@ export const renderMessageText = (message: Message): React.ReactNode => {
     if (fieldMatch) {
       const fieldName = fieldMatch[1].trim();
       return (
-        <React.Fragment key={`field-${index}`}>
+<React.Fragment key={`field-${message.timestamp.getTime()}-${index}`}>
           <br />
           <Badge className="float-right mt-[10px] h-3.5">
             {fieldName}
@@ -20,14 +20,14 @@ export const renderMessageText = (message: Message): React.ReactNode => {
       );
     }
     return (
-      <>
+      <React.Fragment key={`text-${message.timestamp.getTime()}-${index}`}>
         {part}
         {index === 0 ? (
           <div className="text-[11px] text-gray-600">
             {message.value}
           </div>
         ) : null}
-      </>
+      </React.Fragment>
     );
   });
 };
