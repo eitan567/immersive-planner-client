@@ -88,9 +88,15 @@ const handleSectionUpdate = (fieldPath: string, newValue: string, currentSection
 
   if (field === 'content' || field === 'spaceUsage') {
     section[field] = newValue;
-  } else if (field.startsWith('screens.')) {
-    const [, screenField] = field.split('.');
-    section[screenField as keyof LessonSection] = newValue;
+  } else if (
+    field === 'screen1' || 
+    field === 'screen2' || 
+    field === 'screen3' ||
+    field === 'screen1Description' ||
+    field === 'screen2Description' ||
+    field === 'screen3Description'
+  ) {
+    section[field] = newValue;
   } else {
     console.warn('handleSectionUpdate: unknown field path =>', fieldPath);
     return currentSections;

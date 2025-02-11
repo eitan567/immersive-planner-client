@@ -93,47 +93,47 @@ const LessonPhase = ({
 
                 <div className="grid grid-cols-3 gap-4">
                   <ScreenTypeSelect
-                    value={section.screens.screen1}
+                    value={section.screen1 || ''}
                     onChange={(value) => 
                       onUpdateSection(phase, index, { 
-                        screens: { ...section.screens, screen1: value } 
+                        screen1: value
                       })
                     }
                     screenNumber="1"
-                    description={section.screens.screen1Description}
+                    description={section.screen1Description || ''}
                     onDescriptionChange={(value) =>
                       onUpdateSection(phase, index, {
-                        screens: { ...section.screens, screen1Description: value }
+                        screen1Description: value
                       })
                     }
                   />
                   <ScreenTypeSelect
-                    value={section.screens.screen2}
+                    value={section.screen2 || ''}
                     onChange={(value) => 
                       onUpdateSection(phase, index, { 
-                        screens: { ...section.screens, screen2: value } 
+                        screen2: value
                       })
                     }
                     screenNumber="2"
-                    description={section.screens.screen2Description}
+                    description={section.screen2Description || ''}
                     onDescriptionChange={(value) =>
                       onUpdateSection(phase, index, {
-                        screens: { ...section.screens, screen2Description: value }
+                        screen2Description: value
                       })
                     }
                   />
                   <ScreenTypeSelect
-                    value={section.screens.screen3}
+                    value={section.screen3 || ''}
                     onChange={(value) => 
                       onUpdateSection(phase, index, { 
-                        screens: { ...section.screens, screen3: value } 
+                        screen3: value
                       })
                     }
                     screenNumber="3"
-                    description={section.screens.screen3Description}
+                    description={section.screen3Description || ''}
                     onDescriptionChange={(value) =>
                       onUpdateSection(phase, index, {
-                        screens: { ...section.screens, screen3Description: value }
+                        screen3Description: value
                       })
                     }
                   />
