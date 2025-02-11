@@ -47,39 +47,8 @@ export function LessonDashboard() {
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
-  const handleCreateEmpty = async () => {
-    try {
-      const lessonPlan = await lessonPlanService.createLessonPlan({
-        userId: user!.id,
-        topic: '',
-        duration: '',
-        gradeLevel: '',
-        priorKnowledge: '',
-        position: '',
-        contentGoals: '',
-        skillGoals: '',
-        sections: {
-          opening: [],
-          main: [],
-          summary: []
-        },
-        status: 'draft',
-        description: '',
-        basicInfo: {
-          title: '',
-          duration: '',
-          gradeLevel: '',
-          priorKnowledge: '',
-          contentGoals: '',
-          skillGoals: ''
-        },
-        category: LESSON_CATEGORIES[0] // Default category that must be actively changed by user
-      });
-      navigate(`/lesson/${lessonPlan.id}`);
-    } catch (err) {
-      setError('יצירת השיעור נכשלה');
-      console.error(err);
-    }
+  const handleCreateEmpty = () => {
+    navigate('/lesson/new');
   };
 
   const { generateLesson, isGenerating } = useAILesson({

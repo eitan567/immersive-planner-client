@@ -20,6 +20,10 @@ const LessonEditor = React.memo(() => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  
+  // Don't pass id to useLessonPlanState if it's "new"
+  const lessonId = id === 'new' ? undefined : id;
+  
   const {
     currentStep,
     lessonPlan,
@@ -36,7 +40,7 @@ const LessonEditor = React.memo(() => {
     saveCurrentPlan,
     removeSection,
     createAndAddSection
-  } = useLessonPlanState(id);
+  } = useLessonPlanState(lessonId);
 
   const handleSectionUpdate = React.useCallback((
     phase: 'opening' | 'main' | 'summary',
@@ -144,7 +148,7 @@ const LessonEditor = React.memo(() => {
   }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan]);
 
   useEffect(() => {
-    if (!loading && !lessonPlan && id) {
+    if (!loading && !lessonPlan && id && id !== 'new') {
       setShouldRedirect(true);
     }
   }, [loading, lessonPlan, id]);
@@ -235,6 +239,7 @@ const MainContent = () => {
   return (
     <Routes>
       <Route path="/" element={<LessonDashboard />} />
+      <Route path="/lesson/new" element={<LessonEditor />} />
       <Route path="/lesson/:id" element={<LessonEditor />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

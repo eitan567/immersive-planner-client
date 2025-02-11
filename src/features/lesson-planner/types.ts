@@ -76,7 +76,7 @@ export type LessonPlan = {
   status: 'draft' | 'published';
   description: string;
   basicInfo: LessonBasicInfo;
-  category: LessonCategory;
+  category: LessonCategory | '';
   created_at: string;
   updated_at: string;
 };

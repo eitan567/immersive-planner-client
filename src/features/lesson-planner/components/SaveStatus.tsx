@@ -14,6 +14,7 @@ export const SaveStatus = ({ onSave, saving, lastSaved, className = '' ,savingTe
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <Button 
+        data-save-button
         onClick={onSave}
         disabled={saving}
         className="text-[#681bc2] border border-[#681bc2] h-[50px] flex flex-col items-center gap-1 hover:!bg-[#681bc2] hover:!text-white"

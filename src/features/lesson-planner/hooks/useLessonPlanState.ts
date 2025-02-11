@@ -30,7 +30,7 @@ const createEmptyLessonPlan = (userId: string): Omit<LessonPlan, 'id' | 'created
   },
   status: 'draft',
   description: '',
-  category: 'מתמטיקה' // default category
+  category: '' // empty category by default
 });
 
 const createEmptySection = (): LessonSection => ({
@@ -140,7 +140,16 @@ const useLessonPlanState = (lessonId?: string) => {
           plan = await lessonPlanService.getLessonPlan(lessonId);
         }
 
-        if (!plan) {
+        // For new lessons without an ID, use temporary state without DB creation
+        if (!plan && !lessonId) {
+          const emptyPlan = {
+            ...createEmptyLessonPlan(user.id),
+            id: 'temp-' + crypto.randomUUID(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          };
+          plan = emptyPlan;
+        } else if (!plan) {
           const emptyPlan = createEmptyLessonPlan(user.id);
           plan = await lessonPlanService.createLessonPlan(emptyPlan);
           if (plan.id) {
@@ -186,7 +195,20 @@ const useLessonPlanState = (lessonId?: string) => {
   };
 
   const saveCurrentPlan = async () => {
-    if (!lessonPlan?.id || !user || saveInProgress) return;
+    if (!lessonPlan || !user || saveInProgress) return;
+    
+    // Skip saving if category is not selected or topic is empty
+    if (!lessonPlan.category || !lessonPlan.topic.trim()) {
+      return;
+    }
+
+    // For temporary lessons, create new DB record
+    if (lessonPlan.id.startsWith('temp-')) {
+      const { id, created_at, updated_at, ...planWithoutId } = lessonPlan;
+      const newPlan = await lessonPlanService.createLessonPlan(planWithoutId);
+      setLessonPlan(newPlan);
+      return;
+    }
     
     try {
       setSaveInProgress(true);

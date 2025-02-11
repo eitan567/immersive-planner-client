@@ -4,7 +4,7 @@ import { LessonBuilder } from './LessonBuilder.tsx';
 import LessonPlanPreview from './LessonPlanPreview.tsx';
 import { NavigationControls } from './NavigationControls.tsx';
 import { SaveStatus } from './SaveStatus.tsx';
-import { cn } from "../../..//lib/utils.ts"
+import { cn } from "../../../lib/utils.ts"
 import type { LessonPlan, LessonSection } from '../types.ts';
 
 interface LessonContentProps {
@@ -27,7 +27,7 @@ interface LessonContentProps {
   saveCurrentPlan: () => Promise<void>;
 }
 
-export const LessonContent = ({
+export const LessonContent = React.memo(({
   className,
   currentStep,
   lessonPlan,
@@ -41,14 +41,20 @@ export const LessonContent = ({
   generateLessonPlanText,
   saveCurrentPlan
 }: LessonContentProps) => {
+  const validateRef = React.useRef<(() => boolean) | undefined>();
+
   const handleNext = async () => {
-    await saveCurrentPlan();
-    setCurrentStep(prev => prev + 1);
+    if (validateRef.current?.()) {
+      await saveCurrentPlan();
+      setCurrentStep(prev => prev + 1);
+    }
   };
 
   const handlePrevious = async () => {
-    await saveCurrentPlan();
-    setCurrentStep(prev => prev - 1);
+    if (validateRef.current?.()) {
+      await saveCurrentPlan();
+      setCurrentStep(prev => prev - 1);
+    }
   };
 
   const [editedContent, setEditedContent] = useState<string>('');
@@ -73,13 +79,19 @@ export const LessonContent = ({
     URL.revokeObjectURL(url);
   };
 
+  const handleSave = async () => {
+    if (validateRef.current?.()) {
+      await saveCurrentPlan();
+    }
+  };
+
   return (
     <div className={cn("relative min-h-[calc(100vh-170px)] pb-16 ", className)}>
       <div className="space-y-4">
         {currentStep === 1 && (
           <>
             <SaveStatus
-              onSave={saveCurrentPlan}
+              onSave={handleSave}
               saving={saveInProgress}
               lastSaved={lastSaved}
               className="mb-2 flex justify-end absolute top-0 left-0"
@@ -87,7 +99,7 @@ export const LessonContent = ({
             <BasicInfoForm
               lessonPlan={lessonPlan}
               handleBasicInfoChange={handleBasicInfoChange}
-              onSave={saveCurrentPlan}
+              validateRef={validateRef}
             />
             <LessonBuilder
               sections={lessonPlan.sections}
@@ -97,23 +109,6 @@ export const LessonContent = ({
             />
           </>
         )}
-        
-        {/* {currentStep === 2 && (
-          <>
-            <SaveStatus
-              onSave={saveCurrentPlan}
-              saving={saveInProgress}
-              lastSaved={lastSaved}
-              className="mb-2 flex justify-end absolute top-0 left-0"
-            />
-            <LessonBuilder
-              sections={lessonPlan.sections}
-              onAddSection={addSection}
-              onUpdateSection={handleSectionUpdate}
-              onRemoveSection={removeSection}
-            />
-          </>
-        )} */}
         
         {currentStep === 2 && (
           <LessonPlanPreview 
@@ -134,4 +129,4 @@ export const LessonContent = ({
       </div>
     </div>
   );
-};
+});
