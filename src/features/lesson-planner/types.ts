@@ -23,16 +23,28 @@ export const LESSON_CATEGORIES = [
 
 export type LessonCategory = typeof LESSON_CATEGORIES[number];
 
+export type LessonScreens = {
+  screen1: string;
+  screen2: string;
+  screen3: string;
+  screen1Description: string;
+  screen2Description: string;
+  screen3Description: string;
+};
+
 export type LessonSection = {
   id: string;
   content: string;
-  spaceUsage?: string;
+  spaceUsage: string;
+  // For UI components
   screen1?: string;
   screen2?: string;
   screen3?: string;
   screen1Description?: string;
   screen2Description?: string;
   screen3Description?: string;
+  // For server communication
+  screens?: LessonScreens;
 };
 
 export type LessonPlanSections = {

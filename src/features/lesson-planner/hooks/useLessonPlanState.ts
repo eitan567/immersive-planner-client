@@ -191,10 +191,45 @@ const useLessonPlanState = (lessonId?: string) => {
     try {
       setSaveInProgress(true);
       
-      const updatesToSend = JSON.parse(JSON.stringify({
+      // Create a clean copy with proper structure for the server
+      const updatesToSend = {
         ...lessonPlan,
-        sections: lessonPlan.sections
-      }));
+        sections: {
+          opening: lessonPlan.sections.opening.map(section => ({
+            ...section,
+            screens: {
+              screen1: section.screen1 || '',
+              screen2: section.screen2 || '',
+              screen3: section.screen3 || '',
+              screen1Description: section.screen1Description || '',
+              screen2Description: section.screen2Description || '',
+              screen3Description: section.screen3Description || ''
+            }
+          })),
+          main: lessonPlan.sections.main.map(section => ({
+            ...section,
+            screens: {
+              screen1: section.screen1 || '',
+              screen2: section.screen2 || '',
+              screen3: section.screen3 || '',
+              screen1Description: section.screen1Description || '',
+              screen2Description: section.screen2Description || '',
+              screen3Description: section.screen3Description || ''
+            }
+          })),
+          summary: lessonPlan.sections.summary.map(section => ({
+            ...section,
+            screens: {
+              screen1: section.screen1 || '',
+              screen2: section.screen2 || '',
+              screen3: section.screen3 || '',
+              screen1Description: section.screen1Description || '',
+              screen2Description: section.screen2Description || '',
+              screen3Description: section.screen3Description || ''
+            }
+          }))
+        }
+      };
 
       await lessonPlanService.updateLessonPlan(lessonPlan.id, updatesToSend);
       setLastSaved(new Date());

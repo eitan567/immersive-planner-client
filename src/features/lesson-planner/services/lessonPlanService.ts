@@ -78,31 +78,66 @@ const validateLessonPlanSections = (json: Json): LessonPlanSections => {
 };
 
 // Convert database lesson plan to application lesson plan
-const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => ({
-  id: dbPlan.id,
-  userId: dbPlan.user_id,
-  topic: dbPlan.topic,
-  duration: dbPlan.duration,
-  gradeLevel: dbPlan.grade_level,
-  priorKnowledge: dbPlan.prior_knowledge || '',
-  position: dbPlan.position,
-  contentGoals: dbPlan.content_goals || '',
-  skillGoals: dbPlan.skill_goals || '',
-  sections: validateLessonPlanSections(dbPlan.sections),
-  created_at: dbPlan.created_at,
-  updated_at: dbPlan.updated_at,
-  status: dbPlan.status as 'draft' | 'published' || 'draft',
-  description: dbPlan.description || '',
-  basicInfo: {
-    title: dbPlan.topic,
+const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => {
+  const sections = validateLessonPlanSections(dbPlan.sections);
+  
+  // Transform sections to include both flat screen properties and nested screens object
+  const transformedSections: LessonPlanSections = {
+    opening: sections.opening.map(section => ({
+      ...section,
+      screen1: section.screens?.screen1 || '',
+      screen2: section.screens?.screen2 || '',
+      screen3: section.screens?.screen3 || '',
+      screen1Description: section.screens?.screen1Description || '',
+      screen2Description: section.screens?.screen2Description || '',
+      screen3Description: section.screens?.screen3Description || ''
+    })),
+    main: sections.main.map(section => ({
+      ...section,
+      screen1: section.screens?.screen1 || '',
+      screen2: section.screens?.screen2 || '',
+      screen3: section.screens?.screen3 || '',
+      screen1Description: section.screens?.screen1Description || '',
+      screen2Description: section.screens?.screen2Description || '',
+      screen3Description: section.screens?.screen3Description || ''
+    })),
+    summary: sections.summary.map(section => ({
+      ...section,
+      screen1: section.screens?.screen1 || '',
+      screen2: section.screens?.screen2 || '',
+      screen3: section.screens?.screen3 || '',
+      screen1Description: section.screens?.screen1Description || '',
+      screen2Description: section.screens?.screen2Description || '',
+      screen3Description: section.screens?.screen3Description || ''
+    }))
+  };
+
+  return {
+    id: dbPlan.id,
+    userId: dbPlan.user_id,
+    topic: dbPlan.topic,
     duration: dbPlan.duration,
     gradeLevel: dbPlan.grade_level,
     priorKnowledge: dbPlan.prior_knowledge || '',
+    position: dbPlan.position,
     contentGoals: dbPlan.content_goals || '',
-    skillGoals: dbPlan.skill_goals || ''
-  },
-  category: dbPlan.category
-});
+    skillGoals: dbPlan.skill_goals || '',
+    sections: transformedSections,
+    created_at: dbPlan.created_at,
+    updated_at: dbPlan.updated_at,
+    status: dbPlan.status as 'draft' | 'published' || 'draft',
+    description: dbPlan.description || '',
+    basicInfo: {
+      title: dbPlan.topic,
+      duration: dbPlan.duration,
+      gradeLevel: dbPlan.grade_level,
+      priorKnowledge: dbPlan.prior_knowledge || '',
+      contentGoals: dbPlan.content_goals || '',
+      skillGoals: dbPlan.skill_goals || ''
+    },
+    category: dbPlan.category
+  };
+};
 
 // Convert application lesson plan to database format
 const toDbLessonPlan = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at'>) => ({
