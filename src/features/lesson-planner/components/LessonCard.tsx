@@ -64,7 +64,7 @@ export function LessonCard({
   };
 
   return (
-    <Card className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col min-h-[200px] bg-[#f7f7f7]">
+    <Card className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col min-h-[200px] bg-[#f2f9ff]">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
@@ -107,7 +107,7 @@ export function LessonCard({
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex justify-end gap-2 pt-4 border-t mt-auto">
+      <CardFooter className="flex justify-end gap-2 p-2 border-t mt-auto">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
