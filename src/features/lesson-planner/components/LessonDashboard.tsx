@@ -151,10 +151,8 @@ export function LessonDashboard() {
   };
 
   const handleDelete = async (lessonId: string) => {
-    if (confirm('האם אתה בטוח שברצונך למחוק שיעור זה?')) {
-      await lessonPlanService.deleteLessonPlan(lessonId);
-      setLessons(lessons.filter(lesson => lesson.id !== lessonId));
-    }
+    await lessonPlanService.deleteLessonPlan(lessonId);
+    setLessons(lessons.filter(lesson => lesson.id !== lessonId));
   };
 
   const handlePublish = async (lessonId: string) => {
