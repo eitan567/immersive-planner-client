@@ -36,7 +36,26 @@ interface DashboardRightSidebarProps {
 }
 
 interface NewRightSidebarProps {
-  // Empty for now since new mode doesn't need a sidebar
+  saveInProgress: boolean;
+  lastSaved: Date | null;
+  lessonTitle?: string;
+  totalSteps: number;
+  onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
+  currentValues: Record<string, string>;
+  saveCurrentPlan: () => Promise<void>;
+  sections: LessonPlanSections;
+  everSaved: boolean;
+  createAndAddSection: (
+    phase: keyof LessonPlanSections,
+    content: string,
+    spaceUsage?: string,
+    screen1?: string,
+    screen2?: string,
+    screen3?: string,
+    screen1Description?: string,
+    screen2Description?: string,
+    screen3Description?: string
+  ) => Promise<void>;
 }
 
 interface LayoutProps {
@@ -100,12 +119,14 @@ export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, 
         )}
 
         <main className="flex-1 relative">
-          <FloatingSaveButton
-            onClick={handleSave}
-            saving={saveInProgress}
-            lastSaved={lastSaved}
-            className="absolute top-[46px] left-[48px]"
-          />
+          {mode === 'lesson' && (
+            <FloatingSaveButton
+              onClick={handleSave}
+              saving={saveInProgress}
+              lastSaved={lastSaved}
+              className="absolute top-[46px] left-[48px]"
+            />
+          )}
           <div className="absolute inset-0 overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md" dir="ltr">
             {children}
           </div>

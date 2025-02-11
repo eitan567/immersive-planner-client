@@ -48,8 +48,8 @@ const QUICK_ACTIONS = [
   {text:'הצע שכבת גיל',maxWidth:'min-w-[86px] mt-[5px] leading-7'},
 ];
 
-const VALID_SPACE_USAGE = ['whole', 'groups', 'individual', 'mixed'];
-const VALID_SCREEN_TYPES = ['video', 'image', 'padlet', 'website', 'genially', 'presentation'];
+// const VALID_SPACE_USAGE = ['whole', 'groups', 'individual', 'mixed'];
+// const VALID_SCREEN_TYPES = ['video', 'image', 'padlet', 'website', 'genially', 'presentation'];
 
 const SPACE_USAGE_MAP = {
   'מליאה': 'whole',
@@ -98,16 +98,16 @@ interface ChatResponse {
 
 type AIResponse = FieldUpdate | FieldUpdate[] | ChatResponse;
 
-const extractScreenType = (text: string): string => {
-  // Look for Hebrew screen type mentions in the text
-  if (text.includes('סרטון')) return 'video';
-  if (text.includes('תמונה') || text.includes('תמונות')) return 'image';
-  if (text.includes('פדלט')) return 'padlet';
-  if (text.includes('אתר')) return 'website';
-  if (text.includes('ג\'ניאלי')) return 'genially';
-  if (text.includes('מצגת')) return 'presentation';
-  return 'image'; // default value
-};
+// const extractScreenType = (text: string): string => {
+//   // Look for Hebrew screen type mentions in the text
+//   if (text.includes('סרטון')) return 'video';
+//   if (text.includes('תמונה') || text.includes('תמונות')) return 'image';
+//   if (text.includes('פדלט')) return 'padlet';
+//   if (text.includes('אתר')) return 'website';
+//   if (text.includes('ג\'ניאלי')) return 'genially';
+//   if (text.includes('מצגת')) return 'presentation';
+//   return 'image'; // default value
+// };
 
 export function mapScreenTypeToEnglish(hebrewValue: string): string {
   return SCREEN_TYPE_MAP[hebrewValue as keyof typeof SCREEN_TYPE_MAP] || hebrewValue;

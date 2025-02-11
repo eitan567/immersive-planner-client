@@ -85,6 +85,7 @@ const LessonEditor = React.memo(() => {
   const rightSidebarProps = React.useMemo(() => ({
     saveInProgress,
     lastSaved,
+    everSaved: !!lessonPlan?.id,
     lessonTitle: lessonPlan?.basicInfo?.title || '',
     totalSteps: (lessonPlan?.sections?.opening?.length || 0) +
                 (lessonPlan?.sections?.main?.length || 0) +

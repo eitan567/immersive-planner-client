@@ -36,7 +36,7 @@ export function CreateLessonAIModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleCreate = async () => {
+  const handleCreate = () => {
     if (!topic.trim()) {
       setError('נושא היחידה הוא שדה חובה');
       return;

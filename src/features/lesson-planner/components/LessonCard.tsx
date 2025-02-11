@@ -64,11 +64,11 @@ export function LessonCard({
   };
 
   return (
-    <Card className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col min-h-[200px] bg-[#f2f9ff]">
+    <Card className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col min-h-[100px] bg-[#f2f9ff] cursor-pointer" onClick={() => onEdit(id)}>
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
-            <CardTitle className="text-lg font-semibold text-[#f06094] line-clamp-2">
+            <CardTitle className="text-lg font-semibold text-[#f06094] line-clamp-1">
               {formatTitle(basicInfo.title)}
             </CardTitle>
           </div>
@@ -95,7 +95,7 @@ export function LessonCard({
           })}</time>
         </div>
       </CardHeader>
-      <CardContent className="py-2">
+      {/* <CardContent className="py-2">
         {basicInfo.duration && (
           <div className="text-sm text-gray-600">
             משך זמן: {basicInfo.duration}
@@ -106,7 +106,7 @@ export function LessonCard({
             שכבת גיל: {basicInfo.gradeLevel}
           </div>
         )}
-      </CardContent>
+      </CardContent> */}
       <CardFooter className="flex justify-end gap-2 p-2 border-t mt-auto">
         <AlertDialog>
           <AlertDialogTrigger asChild>
