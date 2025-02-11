@@ -8,6 +8,17 @@ import {
   CardContent,
   CardFooter,
 } from '../../../components/ui/card.tsx';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "../../../components/ui/alert-dialog.tsx";
 import type { LessonPlan } from '../types.ts';
 import { PenBox, Trash2, Upload } from 'lucide-react';
 
@@ -97,14 +108,33 @@ export function LessonCard({
         )}
       </CardContent>
       <CardFooter className="flex justify-end gap-2 pt-4 border-t mt-auto">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onDelete(id)}
-          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>מחיקת שיעור</AlertDialogTitle>
+              <AlertDialogDescription>
+                האם אתה בטוח שברצונך למחוק שיעור זה?
+                <br />
+                לא ניתן לבטל פעולה זו לאחר אישור.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>ביטול</AlertDialogCancel>
+              <AlertDialogAction onClick={() => onDelete(id)}>
+                מחק
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <Button
           variant="outline"
           size="sm"
@@ -114,14 +144,33 @@ export function LessonCard({
           <PenBox className="w-4 h-4" />
         </Button>
         {status !== 'published' && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPublish(id)}
-            className="text-green-600 hover:text-green-700 hover:bg-green-50"
-          >
-            <Upload className="w-4 h-4" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+              >
+                <Upload className="w-4 h-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>פרסום שיעור</AlertDialogTitle>
+                <AlertDialogDescription>
+                  האם אתה בטוח שברצונך לפרסם שיעור זה?
+                  <br />
+                  לאחר הפרסום השיעור יהיה זמין לצפייה.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>ביטול</AlertDialogCancel>
+                <AlertDialogAction onClick={() => onPublish(id)}>
+                  פרסם
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </CardFooter>
     </Card>

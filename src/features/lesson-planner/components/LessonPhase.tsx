@@ -3,6 +3,17 @@ import { Card, CardContent } from "../../../components/ui/card.tsx";
 import { Label } from "../../../components/ui/label.tsx";
 import { AITextarea } from "../../../components/ui/ai-textarea.tsx";
 import { Button } from "../../../components/ui/button.tsx";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "../../../components/ui/alert-dialog.tsx";
 import { 
   Select,
   SelectContent,
@@ -160,13 +171,30 @@ const LessonPhase = ({
                     </Select>                    
                   </div>
                 </div>
-                <Button 
-                  onClick={() => onRemoveSection(phase, index)}
-                  className="text-[#681bc2] border border-[#681bc2] flex items-center justify-center gap-2"
-                >
-                  <TrashIcon className="h-5 w-5" />
-                  מחק פעילות
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      className="text-[#681bc2] border border-[#681bc2] flex items-center justify-center gap-2"
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                      מחק פעילות
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>מחיקת פעילות</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        האם אתה בטוח שברצונך למחוק פעילות זו?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>ביטול</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => onRemoveSection(phase, index)}>
+                        מחק
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </Card>
           ))}
