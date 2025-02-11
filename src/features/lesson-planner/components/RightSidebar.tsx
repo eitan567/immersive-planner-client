@@ -65,17 +65,6 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   return (
     <aside className="w-[30rem] border-l border-slate-200 shrink-0">
       <div className="w-[30rem] p-6 space-y-6">
-        <Button 
-          variant="secondary" 
-          className="w-full flex items-center justify-center gap-2 mb-4" 
-          onClick={() => setShowExitDialog(true)}
-        >
-          <span>חזרה לדשבורד</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-        </Button>
-
         <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
           <AlertDialogContent className="max-w-xl">
             <AlertDialogHeader>
