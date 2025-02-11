@@ -1,9 +1,10 @@
 /** @jsxImportSource react */
 import React from 'react';
 import { Badge } from "../../components/ui/badge.tsx";
+import { Message } from './components/ChatMessage.tsx';
 
-export const renderMessageText = (text: string): React.ReactNode => {
-  const parts = text.split(/(<שדה:\s*[^>]+>)/);
+export const renderMessageText = (message: Message): React.ReactNode => {
+  const parts = message.text.split(/(<שדה:\s*[^>]+>)/);
   console.log(parts);
   return parts.map((part, index) => {
     const fieldMatch = part.match(/<שדה:\s*([^>]+)>/);
@@ -18,6 +19,15 @@ export const renderMessageText = (text: string): React.ReactNode => {
         </React.Fragment>
       );
     }
-    return part;
+    return (
+      <>
+        {part}
+        {index === 0 ? (
+          <div className="text-[11px] text-gray-600">
+            {message.value}
+          </div>
+        ) : null}
+      </>
+    );
   });
 };

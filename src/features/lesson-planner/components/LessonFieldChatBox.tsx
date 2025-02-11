@@ -189,6 +189,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
       setMessages(prev => [...prev, {
         text: currentMessage,
         sender: 'user',
+        value:'',
         timestamp: new Date()
       }]);
 
@@ -259,6 +260,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
           ...prev,
           ...updates.map(update => ({
             text: update.userResponse,
+            value: update.newValue,
             sender: 'ai' as const,
             timestamp: new Date()
           }))
@@ -378,6 +380,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
         setMessages(prev => [...prev, {
           text: (parsed as ChatResponse).response,
           sender: 'ai' as const,
+          value:'',
           timestamp: new Date()
         }]);
       }
@@ -387,6 +390,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
       setMessages(prev => [...prev, {
         text: error instanceof Error ? error.message : 'מצטער, נתקלתי בבעיה בעיבוד הבקשה. אנא נסה שנית.',
         sender: 'ai',
+        value:'',
         timestamp: new Date()
       }]);
     } finally {
@@ -404,6 +408,7 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
 
   const handleCopyMessage = async (text: string) => {
     try {
+      console.log('Copying text:', text);
       await navigator.clipboard.writeText(text);
     } catch (err) {
       console.error('Failed to copy text:', err);
@@ -461,9 +466,9 @@ export const LessonFieldChatBox: React.FC<LessonFieldChatBoxProps> = ({
                   דוגמאות לבניית השיעור:
                   <br />
                   <button
-                    onClick={() => handleQuickAction("תציע פעילות מעניינת לפתיחת השיעור")}
+                    onClick={() => handleQuickAction("הצע פעילות מעניינת לפתיחת השיעור")}
                     className="text-[#540ba9] hover:underline cursor-pointer"
-                  >"תציע פעילות מעניינת לפתיחת השיעור"</button>
+                  >"הצע פעילות מעניינת לפתיחת השיעור"</button>
                   <br />
                   <button
                     onClick={() => handleQuickAction("תשפר את השימוש במרחב בגוף השיעור")}

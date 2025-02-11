@@ -7,6 +7,7 @@ import { renderMessageText } from "../utils.tsx";
 export interface Message {
   text: string;
   sender: 'user' | 'ai';
+  value: string
   timestamp: Date;
 }
 
@@ -18,7 +19,7 @@ interface ChatMessageProps {
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onCopy, onResend }) => {
   return (
-    <div className={`flex gap-2 ${message.sender === 'ai' ? 'flex-row-reverse' : ''}`}>
+    <div className={`flex gap-2 ${message.sender === 'ai' ? '' : ''}`}>
       <div className="shrink-0">
         {message.sender === 'user' ? (
           <MdFace className="h-6 w-6 text-[darkslateblue]" />
@@ -31,7 +32,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onCopy, onRes
           ? 'bg-[darkslateblue] text-white px-[9px] pt-[3px] pb-[6px]'
           : 'bg-[honeydew] border rounded-md min-w-[210px]'
       }`}>
-        {renderMessageText(message.text)}
+        {renderMessageText(message)}
         <div className="flex gap-2 mt-2 justify-end">
           {message.sender === 'user' ? (
             <>
