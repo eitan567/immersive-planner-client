@@ -40,6 +40,7 @@ export const FIELD_LABELS: Record<string, string> = {
   position: 'מיקום בתוכן',
   contentGoals: 'מטרות ברמת התוכן',
   skillGoals: 'מטרות ברמת המיומנויות',
+  category: 'קטגוריה',
   
   // Lesson section fields
   'opening.0.content': 'פתיחה - תוכן/פעילות',
@@ -78,6 +79,7 @@ export const QUICK_ACTIONS: QuickAction[] = [
 
 // Additional quick actions for the dropdown menu
 export const DROPDOWN_QUICK_ACTIONS: QuickAction[] = [
+  {text: 'התאם את הקטגוריה לנושא היחידה'},
   {text: 'הצע רעיונות גיוון לפעילות הקיימת בגוף השיעור'},
   {text: 'בדוק את רמת הקושי של החידות בפתיחה והצע התאמות לשכבת הגיל'},
   {text: 'הצע דרכים לשילוב משחקיות בגוף השיעור'},
@@ -124,4 +126,34 @@ export const SCREEN_TYPE_MAP = {
   'אתר': 'website',
   'ג\'ניאלי': 'genially',
   'מצגת': 'presentation'
+} as const;
+
+export const POSITION_MAP = {
+  'פתיחת נושא': 'opening',
+  'הקנייה': 'teaching',
+  'תרגול': 'practice',
+  'סיכום נושא': 'summary'
+} as const;
+
+export const CATEGORY_MAP = {
+  'מתמטיקה': 'mathematics',
+  'אנגלית': 'english',
+  'עברית': 'hebrew',
+  'תנ״ך': 'bible',
+  'היסטוריה': 'history',
+  'אזרחות': 'civics',
+  'ספרות': 'literature',
+  'פיזיקה': 'physics',
+  'כימיה': 'chemistry',
+  'ביולוגיה': 'biology',
+  'מדעים': 'science',
+  'גיאוגרפיה': 'geography',
+  'מחשבים': 'computers',
+  'אומנות': 'art',
+  'מוזיקה': 'music',
+  'חינוך גופני': 'physical_education',
+  'פילוסופיה': 'philosophy',
+  'פסיכולוגיה': 'psychology',
+  'סוציולוגיה': 'sociology',
+  'חינוך חברתי': 'social_education'
 } as const;

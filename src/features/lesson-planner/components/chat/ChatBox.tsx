@@ -239,7 +239,7 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                   קיצורי דרך
                 </Button>
                 {shortcutsOpen && (
-                  <div className="absolute bottom-full p-1 -left-2 bg-[#f3f2f0] border border-gray-200 rounded-lg shadow-lg p-2 w-[26em] before:content-[''] before:absolute before:bottom-[-9px] before:left-[45px] before:w-4 before:h-4 before:bg-[#f3f2f0] before:border-b before:border-r before:border-gray-200 before:rotate-45 before:transform">
+                  <div className="absolute bottom-7 p-1 -left-2 bg-[#f3f2f0] border border-gray-200 rounded-lg shadow-lg p-2 w-[26em] before:content-[''] before:absolute before:bottom-[-9px] before:left-[27px] before:w-4 before:h-4 before:bg-[#f3f2f0] before:border-b before:border-r before:border-gray-200 before:rotate-45 before:transform">
                     <div className='bg-[#f8f8f8] max-h-[400px] overflow-y-auto z-50 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md'>
                       <div className="grid gap-1" style={{ direction: 'rtl' }}>
                         {DROPDOWN_QUICK_ACTIONS.map((action, index) => (

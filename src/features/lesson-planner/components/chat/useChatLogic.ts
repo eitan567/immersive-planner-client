@@ -1,11 +1,24 @@
 import { useState } from 'react';
 import { useMcpTool } from '../../../../hooks/useMcp.ts';
 import { Message } from '../ChatMessage.tsx';
-import { AIResponse, FieldUpdate, FIELD_LABELS, SPACE_USAGE_MAP, SCREEN_TYPE_MAP, ChatResponse } from './types.ts';
+import { AIResponse, FieldUpdate, FIELD_LABELS, SPACE_USAGE_MAP, SCREEN_TYPE_MAP, POSITION_MAP, CATEGORY_MAP, ChatResponse } from './types.ts';
 import type { LessonPlanSections } from '../../types.ts';
 
 export function mapScreenTypeToEnglish(hebrewValue: string): string {
   return SCREEN_TYPE_MAP[hebrewValue as keyof typeof SCREEN_TYPE_MAP] || hebrewValue;
+}
+
+export function mapPositionToEnglish(hebrewValue: string): string {
+  return POSITION_MAP[hebrewValue as keyof typeof POSITION_MAP] || hebrewValue;
+}
+
+export function mapCategoryToEnglish(hebrewValue: string): string {
+  return CATEGORY_MAP[hebrewValue as keyof typeof CATEGORY_MAP] || hebrewValue;
+}
+
+export function mapCategoryToHebrew(englishValue: string): string {
+  const reverseMap = Object.fromEntries(Object.entries(CATEGORY_MAP).map(([k, v]) => [v, k]));
+  return reverseMap[englishValue] || englishValue;
 }
 
 function getHebrewFieldLabel(fieldName: string): string {
@@ -164,13 +177,20 @@ export function useChatLogic({
 
           // שימוש בערך ברירת מחדל אם chat חסר
           update.chat = update.chat || `עדכנתי את הערך בשדה ${getHebrewFieldLabel(update.field)}`;
+
+          // מיפוי ערכים מעברית לאנגלית
+          if (update.field === 'position') {
+            update.value = mapPositionToEnglish(update.value);
+          } else if (update.field === 'category') {
+            update.value = mapCategoryToEnglish(update.value);
+          }
         }
 
         setMessages(prev => [
           ...prev,
           ...updates.map(update => ({
             text: update.chat || '',
-            value: update.value,
+            value: update.field === 'category' ? mapCategoryToHebrew(update.value) : update.value,
             sender: 'ai' as const,
             timestamp: new Date()
           }))

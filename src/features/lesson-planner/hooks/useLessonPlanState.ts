@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext.tsx';
 import type { LessonPlan, LessonPlanSections, LessonSection } from '../types.ts';
 import { lessonPlanService } from '../services/lessonPlanService.ts';
+import { mapCategoryToHebrew } from '../components/chat/useChatLogic.ts';
 
 const STORAGE_KEY = 'currentLessonPlanId';
 const STEP_STORAGE_KEY = 'currentLessonPlanStep';
@@ -189,7 +190,7 @@ const useLessonPlanState = (lessonId?: string) => {
 
       if (value === undefined) return prevPlan;
 
-      return { ...prevPlan, [field]: value };
+      return { ...prevPlan, [field]: field === 'category' ? mapCategoryToHebrew(value) : value };
     });
     setUnsavedChanges(true);
   };
