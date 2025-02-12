@@ -20,9 +20,9 @@ export interface LessonFieldChatBoxProps {
 }
 
 export interface FieldUpdate {
-  fieldToUpdate: string;
-  userResponse: string;
-  newValue: string;
+  field: string;
+  value: string;
+  chat?: string;
 }
 
 export interface ChatResponse {

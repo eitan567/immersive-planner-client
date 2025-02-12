@@ -8,6 +8,47 @@ export function mapScreenTypeToEnglish(hebrewValue: string): string {
   return SCREEN_TYPE_MAP[hebrewValue as keyof typeof SCREEN_TYPE_MAP] || hebrewValue;
 }
 
+function getHebrewFieldLabel(fieldName: string): string {
+  // אם זה שדה רגיל שקיים ב-FIELD_LABELS
+  if (fieldName in FIELD_LABELS) {
+    return FIELD_LABELS[fieldName];
+  }
+
+  // טיפול בשדות של פעילויות (פתיחה, גוף, סיכום)
+  const parts = fieldName.split('.');
+  if (parts.length >= 3) {
+    const [phase, index, ...rest] = parts;
+    const fieldType = rest.join('.');
+    
+    // מיפוי שמות השלבים בעברית
+    const phaseNames: Record<string, string> = {
+      'opening': 'פתיחה',
+      'main': 'גוף השיעור',
+      'summary': 'סיכום'
+    };
+    
+    // מיפוי סוגי השדות בעברית
+    const fieldTypes: Record<string, string> = {
+      'content': 'תוכן/פעילות',
+      'spaceUsage': 'שימוש במרחב הפיזי',
+      'screen1': 'מסך 1',
+      'screen2': 'מסך 2',
+      'screen3': 'מסך 3',
+      'screen1Description': 'תיאור מסך 1',
+      'screen2Description': 'תיאור מסך 2',
+      'screen3Description': 'תיאור מסך 3'
+    };
+    
+    const phaseName = phaseNames[phase] || phase;
+    const fieldTypeName = fieldTypes[fieldType] || fieldType;
+    
+    return `${phaseName} ${Number(index) + 1} - ${fieldTypeName}`;
+  }
+  
+  // אם לא מצאנו תרגום מתאים, נחזיר את השם המקורי
+  return fieldName;
+}
+
 interface UseChatLogicProps {
   onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
@@ -117,16 +158,19 @@ export function useChatLogic({
         const updates = Array.isArray(parsed) ? parsed as FieldUpdate[] : [parsed as FieldUpdate];
 
         for (const update of updates) {
-          if (!update.fieldToUpdate || !update.userResponse || !update.newValue) {
+          if (!update.field || !update.value) {
             throw new Error('תשובת המערכת חסרה שדות נדרשים');
           }
+
+          // שימוש בערך ברירת מחדל אם chat חסר
+          update.chat = update.chat || `עדכנתי את הערך בשדה ${getHebrewFieldLabel(update.field)}`;
         }
 
         setMessages(prev => [
           ...prev,
           ...updates.map(update => ({
-            text: update.userResponse,
-            value: update.newValue,
+            text: update.chat || '',
+            value: update.value,
             sender: 'ai' as const,
             timestamp: new Date()
           }))
@@ -137,8 +181,7 @@ export function useChatLogic({
         const otherUpdates: [string, string][] = [];
         
         for (const update of updates) {
-          const { fieldToUpdate, newValue } = update;
-          const parts = fieldToUpdate.split('.');
+          const parts = update.field.split('.');
           
           if (['opening', 'main', 'summary'].includes(parts[0]) && parts.length > 2) {
             const activityType = parts[0];
@@ -154,9 +197,9 @@ export function useChatLogic({
               };
             }
             
-            activities[activityKey][fieldName] = newValue;
+            activities[activityKey][fieldName] = update.value;
           } else {
-            otherUpdates.push([fieldToUpdate, newValue]);
+            otherUpdates.push([update.field, update.value]);
           }
         }
 

@@ -20,7 +20,7 @@ export function FloatingSaveButton({
   className
 }: FloatingSaveButtonProps) {
   return (
-    <div className={cn("fixed bottom-24 left-6 z-50 max-w-[calc(100%-3rem)] max-h-[calc(100vh-6rem)]", className)}>
+    <div className={cn("fixed bottom-24 left-6 z-50 h-[50px]", className)}>
       <Button 
         data-save-button
         onClick={onClick}

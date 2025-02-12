@@ -162,7 +162,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
             "p-6 z-[9999] bg-[#f9f6ff] rounded-lg shadow-lg border border-gray-200",
             isChatMode
               ? "fixed inset-x-[15%] top-[10%] bottom-[10%] w-[70%]"
-              : "p-4 left-[-8px] top-[45px] absolute w-[-webkit-fill-available] before:content-[''] before:absolute before:top-[-9px] before:left-[45px] before:w-4 before:h-4 before:bg-[#f9f6ff] before:border-t before:border-l before:border-gray-200 before:rotate-45 before:transform"
+              : "p-4 left-[-8px] top-[45px] absolute w-[-webkit-fill-available] before:content-[''] before:absolute before:top-[-9px] before:left-[25px] before:w-4 before:h-4 before:bg-[#f9f6ff] before:border-t before:border-l before:border-gray-200 before:rotate-45 before:transform"
           )}>
             <div className="flex justify-between items-center mb-2">
               <h1 className="text-[1.2rem] font-normal text-[#540ba9]">
