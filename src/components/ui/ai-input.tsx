@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils.ts"
 import { SiProbot } from "react-icons/si";
 import { MdFace } from "react-icons/md";
 import { useMcpTool } from '../../hooks/useMcp.ts';
-import { SparklesIcon, XMarkIcon, PaperAirplaneIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon, XMarkIcon, PaperAirplaneIcon, ChatBubbleLeftRightIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { Textarea } from "./textarea.tsx";
 
 interface AIInputProps<T extends string = string> extends Omit<React.ComponentProps<"input">, "onChange"> {
@@ -26,7 +26,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
     const [suggestion, setSuggestion] = useState('');
     const [chatMessage, setChatMessage] = useState('');
     const [messages, setMessages] = useState<Array<{text: string, sender: 'user' | 'ai', timestamp: Date}>>([]);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<{ message: string; originalError?: string } | null>(null);
 
     const generateSuggestion = async (message?: string): Promise<string> => {
       setLoading(true);
@@ -58,7 +58,14 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
         return newSuggestion;
         
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'שגיאה בקבלת הצעה');
+        let parsedError;
+        try {
+          const errorMessage = error instanceof Error ? error.message : 'שגיאה בקבלת הצעה';
+          parsedError = JSON.parse(errorMessage);
+        } catch {
+          parsedError = { message: error instanceof Error ? error.message : 'שגיאה בקבלת הצעה' };
+        }
+        setError(parsedError);
         console.error('Failed to generate suggestion:', error);
         throw error;
       } finally {
@@ -83,7 +90,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
         setSuggestion('');
         setError(null);
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'שגיאה בשמירת השינויים');
+        setError({ message: error instanceof Error ? error.message : 'שגיאה בשמירת השינויים' });
         console.error('Failed to apply suggestion:', error);
       }
     };
@@ -254,8 +261,19 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                        <p className="mt-2 text-sm text-gray-600">מייצר הצעה...</p>
                      </div>
                    ) : error ? (
-                     <div className="text-center py-4">
-                       <p className="text-sm text-red-600">{error}</p>
+                     <div className="text-center py-4 relative">
+                       <div className="flex items-center justify-center gap-2 text-red-600">
+                       <ExclamationCircleIcon className="h-5 w-5 text-red-600" />
+                       <p className="text-sm" dir="rtl">{error.message}</p>
+                       {error && error.originalError && (
+                         <div className="group relative inline-block">
+                           <span className="cursor-help text-xl">ℹ️</span>
+                           <div className="invisible group-hover:visible absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 p-2 bg-gray-900 text-white text-xs rounded whitespace-nowrap">
+                             {error.originalError}
+                           </div>
+                         </div>
+                         )}
+                       </div>
                        <Button onClick={() => generateSuggestion()} className="mt-2">
                          נסה שוב
                        </Button>
@@ -291,8 +309,19 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                      <p className="mt-2 text-sm text-gray-600">מייצר הצעה...</p>
                    </div>
                  ) : error ? (
-                   <div className="text-center py-4">
-                     <p className="text-sm text-red-600">{error}</p>
+                   <div className="text-center py-4 relative">
+                     <div className="flex items-center justify-center gap-2 text-red-600">
+                       <ExclamationCircleIcon className="h-5 w-5 text-red-600" />
+                       <p className="text-sm" dir="rtl">{error.message}</p>
+                       {error && error.originalError && (
+                         <div className="group relative inline-block">
+                           <span className="cursor-help text-xl">ℹ️</span>
+                           <div className="invisible group-hover:visible absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 p-2 bg-gray-900 text-white text-xs rounded whitespace-nowrap">
+                             {error.originalError}
+                           </div>
+                         </div>
+                       )}
+                     </div>
                      <Button
                        onClick={() => generateSuggestion()}
                        className="mt-2"
