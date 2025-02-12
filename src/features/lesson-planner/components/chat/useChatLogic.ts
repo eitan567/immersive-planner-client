@@ -132,87 +132,68 @@ export function useChatLogic({
           }))
         ]);
 
-        if (currentMessage.includes('פעילות')) {
-          const activityUpdates = updates.filter(update => 
-            update.fieldToUpdate.includes('.content') || 
-            update.fieldToUpdate.includes('.spaceUsage') ||
-            update.fieldToUpdate.includes('.screen1') ||
-            update.fieldToUpdate.includes('.screen2') ||
-            update.fieldToUpdate.includes('.screen3') ||
-            update.fieldToUpdate.includes('.screen1Description') ||
-            update.fieldToUpdate.includes('.screen2Description') ||
-            update.fieldToUpdate.includes('.screen3Description')
-          );
+        // ארגון העדכונים לפי סוג הפעילות
+        const activities: Record<string, Record<string, string>> = {};
+        const otherUpdates: [string, string][] = [];
+        
+        for (const update of updates) {
+          const { fieldToUpdate, newValue } = update;
+          const parts = fieldToUpdate.split('.');
+          
+          if (['opening', 'main', 'summary'].includes(parts[0]) && parts.length > 2) {
+            const activityType = parts[0];
+            const activityIndex = parts[1];
+            const fieldName = parts.slice(2).join('.');
+            
+            const activityKey = `${activityType}.${activityIndex}`;
+            
+            if (!activities[activityKey]) {
+              activities[activityKey] = {
+                type: activityType,
+                index: activityIndex
+              };
+            }
+            
+            activities[activityKey][fieldName] = newValue;
+          } else {
+            otherUpdates.push([fieldToUpdate, newValue]);
+          }
+        }
 
-          if (activityUpdates.length > 0) {
-            const [phase] = activityUpdates[0].fieldToUpdate.split('.');
-            if (['opening', 'main', 'summary'].includes(phase)) {
-              const content = activityUpdates.find(u => u.fieldToUpdate.includes('.content'))?.newValue || '';
-              
-              const hebrewSpaceUsage = activityUpdates.find(u => u.fieldToUpdate.includes('.spaceUsage'))?.newValue || '';
-              const spaceUsage = SPACE_USAGE_MAP[hebrewSpaceUsage as keyof typeof SPACE_USAGE_MAP] || undefined;
-              
-              const screen1Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen1') && !u.fieldToUpdate.includes('Description'));
-              const screen2Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen2') && !u.fieldToUpdate.includes('Description'));
-              const screen3Update = activityUpdates.find(u => u.fieldToUpdate.includes('.screen3') && !u.fieldToUpdate.includes('Description'));
+        // יצירת פעילויות חדשות
+        for (const activityKey of Object.keys(activities)) {
+          const activity = activities[activityKey];
+          
+          if (activity.content || activity.spaceUsage) {
+            const hebrewSpaceUsage = activity.spaceUsage || '';
+            const spaceUsage = SPACE_USAGE_MAP[hebrewSpaceUsage as keyof typeof SPACE_USAGE_MAP] || undefined;
+            
+            const screen1 = activity.screen1 ? mapScreenTypeToEnglish(activity.screen1) : undefined;
+            const screen2 = activity.screen2 ? mapScreenTypeToEnglish(activity.screen2) : undefined;
+            const screen3 = activity.screen3 ? mapScreenTypeToEnglish(activity.screen3) : undefined;
 
-              const screen1Description = activityUpdates.find(u => u.fieldToUpdate.includes('.screen1Description'))?.newValue;
-              const screen2Description = activityUpdates.find(u => u.fieldToUpdate.includes('.screen2Description'))?.newValue;
-              const screen3Description = activityUpdates.find(u => u.fieldToUpdate.includes('.screen3Description'))?.newValue;
-
-              const screen1 = screen1Update ? mapScreenTypeToEnglish(screen1Update.newValue) : undefined;
-              const screen2 = screen2Update ? mapScreenTypeToEnglish(screen2Update.newValue) : undefined;
-              const screen3 = screen3Update ? mapScreenTypeToEnglish(screen3Update.newValue) : undefined;
-
-              try {
-                await createAndAddSection(
-                  phase as keyof LessonPlanSections,
-                  content,
-                  spaceUsage,
-                  screen1,
-                  screen2,
-                  screen3,
-                  screen1Description,
-                  screen2Description,
-                  screen3Description
-                );
-                return;
-              } catch (error) {
-                console.error('Failed to create activity:', error);
-                throw error;
-              }
+            try {
+              await createAndAddSection(
+                activity.type as keyof LessonPlanSections,
+                activity.content || '',
+                spaceUsage,
+                screen1,
+                screen2,
+                screen3,
+                activity.screen1Description,
+                activity.screen2Description,
+                activity.screen3Description
+              );
+            } catch (error) {
+              console.error('Failed to create activity:', error);
+              throw error;
             }
           }
         }
 
-        const batchUpdates = updates.map(update => {
-          const fieldName = update.fieldToUpdate;
-          const newValue = update.newValue;
-
-          if (fieldName.includes('.')) {
-            const [phase, field] = fieldName.split('.');
-            
-            if (phase && field && ['opening', 'main', 'summary'].includes(phase) &&
-                ['content', 'spaceUsage', 'screen1', 'screen2', 'screen3', 
-                 'screen1Description', 'screen2Description', 'screen3Description'].includes(field)) {
-              return [fieldName, newValue] as [string, string];
-            }
-            return null;
-          }
-          
-          return [fieldName, newValue] as [string, string];
-        });
-
-        const validUpdates = batchUpdates.filter((update): update is [string, string] => {
-          if (!update) return false;
-          const [fieldName] = update;
-          
-          return FIELD_LABELS[fieldName] !== undefined || 
-                 /^(opening|main|summary)\.\d+\.(content|spaceUsage|screen[1-3])$/.test(fieldName);
-        });
-
-        if (validUpdates.length > 0) {
-          await onUpdateField(validUpdates);
+        // עדכון שדות אחרים
+        if (otherUpdates.length > 0) {
+          await onUpdateField(otherUpdates);
           await saveCurrentPlan();
         }
       } else {
