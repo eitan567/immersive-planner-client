@@ -233,7 +233,7 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                     e.stopPropagation();
                     setShortcutsOpen(prev => !prev);
                   }}
-                  className="text-xs text-[#540ba9] hover:text-[#540ba9] hover:bg-[#fff4fc] py-0 h-5"
+                  className="text-[10px] bg-[#540ba9] text-white hover:text-[#540ba9] hover:bg-[#fff4fc] transition-colors outline-none px-[7px] pb-[1px] pt-0 h-5 border border-solid border-[#5b398b] rounded-md"
                   variant="ghost"
                 >
                   קיצורי דרך
