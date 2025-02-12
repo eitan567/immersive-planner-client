@@ -4,9 +4,10 @@ import { Input } from "../../../../components/ui/input.tsx";
 import { Card } from "../../../../components/ui/card.tsx";
 import { cn } from "../../../../lib/utils.ts";
 import { XMarkIcon, PaperAirplaneIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import { ShortcutsMenu } from './ShortcutsMenu.tsx';
 import { ChatMessage } from "../ChatMessage.tsx";
 import { QuickActions } from "../QuickActions.tsx";
-import { QUICK_ACTIONS } from './types.ts';
+import { QUICK_ACTIONS, DROPDOWN_QUICK_ACTIONS, QuickAction } from './types.ts';
 import { useChatLogic } from './useChatLogic.ts';
 import type { LessonFieldChatBoxProps } from './types.ts';
 
@@ -19,7 +20,23 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
   createAndAddSection
 }) => {
   const [isOpen, setIsOpen] = React.useState(true);
+  const [shortcutsOpen, setShortcutsOpen] = React.useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const shortcutsRef = useRef<HTMLDivElement>(null);
+
+  // Close shortcuts menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (shortcutsRef.current && !shortcutsRef.current.contains(event.target as Node)) {
+        setShortcutsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   
   const {
     messages,
@@ -162,7 +179,7 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
 
             <QuickActions actions={QUICK_ACTIONS} onActionClick={handleQuickAction} />
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <Input
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
@@ -184,7 +201,9 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                 <PaperAirplaneIcon className="h-4 w-4 rotate-180 border-none outline-none shadow-none text-[#540ba9]" />
               </Button>
             </div>
-            <div className="flex justify-end text-xs border border-solid border-[#5b398b] w-fit rounded-lg h-5 bg-gray-100 gap-0">
+            <div className="flex justify-between items-center relative">
+              {/* כפתורי שיחה/פקודה */}
+              <div className="flex text-xs border border-solid border-[#5b398b] w-fit rounded-lg h-5 bg-gray-100 gap-0">
               <button
                 onClick={() => setMode('command')}
                 className={`text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
@@ -205,6 +224,41 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
               >
                 שיחה
               </button>
+              </div>
+
+              {/* קיצורי דרך */}
+              <div className="relative" ref={shortcutsRef}>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShortcutsOpen(prev => !prev);
+                  }}
+                  className="text-xs text-[#540ba9] hover:text-[#540ba9] hover:bg-[#fff4fc] py-0 h-5"
+                  variant="ghost"
+                >
+                  קיצורי דרך
+                </Button>
+                {shortcutsOpen && (
+                  <div className="absolute bottom-full p-1 -left-2 bg-[#f3f2f0] border border-gray-200 rounded-lg shadow-lg p-2 w-[26em] before:content-[''] before:absolute before:bottom-[-9px] before:left-[45px] before:w-4 before:h-4 before:bg-[#f3f2f0] before:border-b before:border-r before:border-gray-200 before:rotate-45 before:transform">
+                    <div className='bg-[#f8f8f8] max-h-[400px] overflow-y-auto z-50 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md'>
+                      <div className="grid gap-1" style={{ direction: 'rtl' }}>
+                        {DROPDOWN_QUICK_ACTIONS.map((action, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              handleQuickAction(action.text);
+                              setShortcutsOpen(false);
+                            }}
+                            className="text-right px-3 py-2 text-sm text-gray-800 hover:bg-[#edede8] rounded-md w-full transition-colors"
+                          >
+                            {action.text}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -4,7 +4,7 @@ import { cn } from "../../../lib/utils.ts";
 
 interface QuickAction {
   text: string;
-  maxWidth: string;
+  maxWidth?: string;
 }
 
 interface QuickActionsProps {
