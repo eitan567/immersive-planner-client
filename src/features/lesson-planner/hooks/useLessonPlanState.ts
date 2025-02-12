@@ -196,10 +196,15 @@ const useLessonPlanState = (lessonId?: string) => {
   };
 
   const saveCurrentPlan = async () => {
-    if (!lessonPlan || !user || saveInProgress) return;
+    console.log('saveCurrentPlan called');
+    if (!lessonPlan || !user || saveInProgress) {
+      console.log('saveCurrentPlan aborted: missing lessonPlan, user, or saveInProgress is true');
+      return;
+    }
     
     // Skip saving if category is not selected or topic is empty
     if (!lessonPlan.category || !lessonPlan.topic.trim()) {
+      console.log('saveCurrentPlan aborted: missing category or topic');
       return;
     }
 
@@ -208,7 +213,7 @@ const useLessonPlanState = (lessonId?: string) => {
       const { id, created_at, updated_at, ...planWithoutId } = lessonPlan;
       const newPlan = await lessonPlanService.createLessonPlan(planWithoutId);
       setLessonPlan(newPlan);
-      return;
+      console.log('Temporary lesson detected, creating new DB record');
     }
     
     try {
@@ -258,7 +263,9 @@ const useLessonPlanState = (lessonId?: string) => {
       setLastSaved(new Date());
       setUnsavedChanges(false);
       localStorage.setItem(STORAGE_KEY, lessonPlan.id);
+      console.log('Lesson plan saved successfully');
     } catch (err) {
+      console.error('Error saving lesson plan:', err);
       setError(err instanceof Error ? err.message : 'Error saving plan');
     } finally {
       setSaveInProgress(false);

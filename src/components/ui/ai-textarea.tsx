@@ -25,6 +25,17 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
     const [chatMessage, setChatMessage] = useState('');
     const [messages, setMessages] = useState<Array<{text: string, sender: 'user' | 'ai', timestamp: Date}>>([]);
     const [error, setError] = useState<string | null>(null);
+    const fieldTypeMapping: Record<string, string> = {
+      'תוכן': 'content',
+      'נושא': 'topic',
+      'משך': 'duration',
+      'פעילות': 'activity',
+      'ידע מוקדם': 'priorKnowledge',
+      'רמה': 'gradeLevel',
+      'מטרות תוכן': 'contentGoals',
+      'מטרות כישורים': 'skillGoals',
+      'מיקום': 'position'
+    };
 
     const generateSuggestion = async (message?: string): Promise<string> => {
       setLoading(true);
@@ -38,7 +49,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
           arguments: {
             context,
             currentValue: value?.toString() || '',
-            type: fieldType,
+            type: fieldTypeMapping[fieldType] || fieldType,
             ...(message && { message })
           }
         });

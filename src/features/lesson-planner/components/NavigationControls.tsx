@@ -34,7 +34,7 @@ export const NavigationControls = ({
         </Button>
       )}
       <div className="flex-grow" />
-      {currentStep < 3 ? (
+      {currentStep < 2 ? (
         <Button 
           onClick={onNext}
           disabled={saving}

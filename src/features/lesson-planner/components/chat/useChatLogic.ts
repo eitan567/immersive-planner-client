@@ -178,7 +178,6 @@ export function useChatLogic({
           // שימוש בערך ברירת מחדל אם chat חסר
           update.chat = update.chat || `עדכנתי את הערך בשדה ${getHebrewFieldLabel(update.field)}`;
 
-          // מיפוי ערכים מעברית לאנגלית
           if (update.field === 'position') {
             update.value = mapPositionToEnglish(update.value);
           } else if (update.field === 'category') {

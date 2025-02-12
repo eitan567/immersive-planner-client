@@ -50,17 +50,24 @@ export const LessonContent = React.memo(({
   }, []);
 
   const handleNext = async () => {
+    console.log('handleNext called');
     if (validateRef.current?.()) {
+      console.log('Validation passed');
       await saveCurrentPlan();
       setCurrentStep(prev => prev + 1);
     }
   };
 
   const handlePrevious = async () => {
-    if (validateRef.current?.()) {
-      await saveCurrentPlan();
-      setCurrentStep(prev => prev - 1);
+    console.log('handlePrevious called');
+    if (currentStep === 1) {
+      if (!validateRef.current?.()) {
+        console.log('Validation failed on step 1; preventing navigation');
+        return;
+      }
     }
+    await saveCurrentPlan();
+    setCurrentStep(prev => prev - 1);
   };
 
   const [editedContent, setEditedContent] = useState<string>('');
@@ -84,13 +91,7 @@ export const LessonContent = React.memo(({
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
-
-  const handleSave = async () => {
-    if (validateRef.current?.()) {
-      await saveCurrentPlan();
-    }
-  };
-
+  
   return (
     <div className={cn("relative min-h-[calc(100vh-170px)] pb-16 ", className)}>      
       <div className="space-y-4">
@@ -123,7 +124,7 @@ export const LessonContent = React.memo(({
           currentStep={currentStep}
           onPrevious={handlePrevious}
           onNext={handleNext}
-          onExport={currentStep === 3 ? handleExportWrapper : undefined}
+          onExport={currentStep === 2 ? handleExportWrapper : undefined}
           saving={saveInProgress}
         />
       </div>

@@ -43,8 +43,7 @@ const LessonPlanPreview = ({ content: initialContent, onContentChange }: LessonP
             fontFeatureSettings: '"kern"',
             WebkitFontSmoothing: 'antialiased'
           }}
-          context={content}
-          fieldType="content"
+          context={content}          
         />
       </CardContent>
     </Card>
