@@ -20,12 +20,12 @@ export function FloatingSaveButton({
   className
 }: FloatingSaveButtonProps) {
   return (
-    <div className={cn("fixed bottom-24 left-6 z-50 h-[50px]", className)}>
+    <div className={cn("fixed bottom-24 left-6 z-50 h-11", className)}>
       <Button 
         data-save-button
         onClick={onClick}
         disabled={saving}
-        className="bg-white text-[#681bc2] border border-[#681bc2] h-[50px] flex flex-col items-center gap-1 hover:!bg-[#681bc2] hover:!text-white"
+        className="bg-white text-[#681bc2] border border-[#681bc2] h-11 flex flex-col items-center hover:!bg-[#681bc2] hover:!text-white"
       >
         {saving ? savingText : buttonText}
         {lastSaved && (

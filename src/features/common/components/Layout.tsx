@@ -119,16 +119,18 @@ export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, 
         )}
 
         <main className="flex-1 relative">
+          <div className="absolute inset-0 bg-[#f9f9f9] z-0 mb-14 border-t border-b border-gray-300" >
           {mode === 'lesson' && (
             <FloatingSaveButton
               onClick={handleSave}
               saving={saveInProgress}
               lastSaved={lastSaved}
-              className="absolute top-[46px] left-[48px]"
+              className="absolute -bottom-12 right-3 h-10"
             />
           )}
           <div className="absolute inset-0 overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md" dir="ltr">
             {children}
+          </div>
           </div>
         </main>
 

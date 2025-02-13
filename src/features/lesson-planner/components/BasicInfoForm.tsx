@@ -72,7 +72,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
 
   return (
     <div className="space-y-2 rtl">
-      <h1 className="text-[1.2rem] font-semibold text-[#540ba9] py-[23px]">פרטי השיעור</h1>
+      <h1 className="text-[1.2rem] font-semibold text-[#540ba9] pt-3">פרטי השיעור</h1>
 
       <div className="text-right">
         <Label className="text-right">קטגוריה *</Label>

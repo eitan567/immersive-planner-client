@@ -3,6 +3,7 @@ import { useAuth } from '../../auth/AuthContext.tsx';
 import type { LessonPlan, LessonPlanSections, LessonSection } from '../types.ts';
 import { lessonPlanService } from '../services/lessonPlanService.ts';
 import { mapCategoryToHebrew } from '../components/chat/useChatLogic.ts';
+import { translateContent } from "../../../utils/translations.ts";
 
 const STORAGE_KEY = 'currentLessonPlanId';
 const STEP_STORAGE_KEY = 'currentLessonPlanStep';
@@ -379,7 +380,7 @@ const useLessonPlanState = (lessonId?: string) => {
       }
     });
 
-    return text;
+    return translateContent(text);
 };
 
   const createAndAddSection = async (
