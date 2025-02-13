@@ -28,15 +28,12 @@ interface LessonContentProps {
 export const LessonContent = React.memo(({
   className,
   currentStep,
-  lessonPlan,
-  saveInProgress,
+  lessonPlan,  
   handleBasicInfoChange,
   addSection,
   handleSectionUpdate,
-  removeSection,
-  setCurrentStep,
-  generateLessonPlanText,
-  saveCurrentPlan
+  removeSection,  
+  generateLessonPlanText  
 }: LessonContentProps) => {
   const validateRef = React.useRef<(() => boolean) | undefined>();
   
@@ -46,27 +43,6 @@ export const LessonContent = React.memo(({
       (window as any).__lessonValidateRef = validateRef;
     }
   }, []);
-
-  const handleNext = async () => {
-    console.log('handleNext called');
-    if (validateRef.current?.()) {
-      console.log('Validation passed');
-      await saveCurrentPlan();
-      setCurrentStep(prev => prev + 1);
-    }
-  };
-
-  const handlePrevious = async () => {
-    console.log('handlePrevious called');
-    if (currentStep === 1) {
-      if (!validateRef.current?.()) {
-        console.log('Validation failed on step 1; preventing navigation');
-        return;
-      }
-    }
-    await saveCurrentPlan();
-    setCurrentStep(prev => prev - 1);
-  };
 
   const [editedContent, setEditedContent] = useState<string>('');
 
@@ -78,18 +54,6 @@ export const LessonContent = React.memo(({
     setEditedContent(newContent);
   };
 
-  const handleExportWrapper = () => {
-    const blob = new Blob([editedContent], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'lesson-plan.txt';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-  
   return (
     <div className={cn("relative min-h-[calc(100vh-170px)] ", className)}>      
       <div className="space-y-4">
@@ -113,6 +77,7 @@ export const LessonContent = React.memo(({
           <LessonPlanPreview 
             content={editedContent} 
             onContentChange={handleContentChange}
+            lesson={lessonPlan}
           />
         )}
       </div>

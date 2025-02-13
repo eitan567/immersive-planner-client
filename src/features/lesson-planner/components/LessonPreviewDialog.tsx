@@ -122,13 +122,16 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl h-[75vh] bg-white" onClick={(e) => e.stopPropagation()}>
-        <DialogHeader>
+        {/* <DialogHeader>
           <DialogTitle>
             תצוגה מקדימה - {lesson.basicInfo.title}
           </DialogTitle>
-        </DialogHeader>
+        </DialogHeader> */}
         <div className="flex flex-col h-full overflow-hidden">
-          <LessonPlanPreview content={getLessonContent(lesson)} aiClassName='min-h-fit' className="h-[-webkit-fill-available]" cardContentClassName="h-[-webkit-fill-available] min-h-[-webkit-fill-available]"/>
+          <LessonPlanPreview lesson={lesson} content={getLessonContent(lesson)} 
+            aiClassName='max-h-[calc(100vh-460px)]' 
+            className="h-[calc(100vh-300px)] max-h-[calc(100vh-300px)] border-none shadow-none" 
+            cardContentClassName="h-[calc(100vh-400px)]"/>
           <DialogFooter>
             <Button
               onClick={handleExport}
