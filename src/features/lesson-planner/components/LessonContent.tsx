@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BasicInfoForm } from './BasicInfoForm.tsx';
 import { LessonBuilder } from './LessonBuilder.tsx';
 import LessonPlanPreview from './LessonPlanPreview.tsx';
-import { NavigationControls } from './NavigationControls.tsx';
 import { cn } from "../../../lib/utils.ts"
 import type { LessonPlan, LessonSection } from '../types.ts';
 
@@ -92,7 +91,7 @@ export const LessonContent = React.memo(({
   };
   
   return (
-    <div className={cn("relative min-h-[calc(100vh-170px)] pb-16 ", className)}>      
+    <div className={cn("relative min-h-[calc(100vh-170px)] ", className)}>      
       <div className="space-y-4">
         {currentStep === 1 && (
           <>
@@ -116,16 +115,6 @@ export const LessonContent = React.memo(({
             onContentChange={handleContentChange}
           />
         )}
-      </div>
-      
-      <div className="absolute bottom-0 left-0 right-0">
-        <NavigationControls
-          currentStep={currentStep}
-          onPrevious={handlePrevious}
-          onNext={handleNext}
-          onExport={currentStep === 2 ? handleExportWrapper : undefined}
-          saving={saveInProgress}
-        />
       </div>
     </div>
   );

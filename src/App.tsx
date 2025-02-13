@@ -191,7 +191,28 @@ const LessonEditor = React.memo(() => {
       leftSidebarProps={leftSidebarProps}
       saveCurrentPlan={saveCurrentPlan}
       saveInProgress={saveInProgress}
-      lastSaved={lastSaved}      
+      lastSaved={lastSaved}
+      navigationProps={{
+        currentStep,
+        onPrevious: async () => {
+          if (currentStep === 1) {
+            const validateRef = (window as any).__lessonValidateRef;
+            if (!validateRef?.current?.()) {
+              return;
+            }
+          }
+          await saveCurrentPlan();
+          setCurrentStep(prev => prev - 1);
+        },
+        onNext: async () => {
+          const validateRef = (window as any).__lessonValidateRef;
+          if (!validateRef?.current || validateRef.current()) {
+            await saveCurrentPlan();
+            setCurrentStep(prev => prev + 1);
+          }
+        },
+        onExport: currentStep === 2 ? handleExport : undefined
+      }}      
     >
       <div className="p-6 min-h-full">
         <div dir="rtl" className="mx-auto space-y-0">

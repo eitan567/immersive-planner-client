@@ -22,12 +22,12 @@ export const NavigationControls = ({
   saving = false
 }: NavigationControlsProps) => {
   return (
-    <div className="flex justify-between mt-4 rtl">
+    <div className="flex justify-between rtl">
       {currentStep > 1 && (
         <Button 
           onClick={onPrevious}
           disabled={saving}
-          className="text-[#681bc2] border border-[#681bc2] flex items-center gap-2 hover:!bg-[#681bc2] hover:!text-white"
+          className="text-[#681bc2] border border-[#681bc2] flex items-center hover:!bg-[#681bc2] hover:!text-white"
         >
           <ArrowRightIcon className="h-5 w-5" />
           {saving ? 'שומר...' : 'הקודם'}

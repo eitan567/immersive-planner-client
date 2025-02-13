@@ -6,6 +6,7 @@ import { LeftSidebar } from './LeftSidebar.tsx';
 import { DashboardRightSidebar } from './DashboardRightSidebar.tsx';
 import type { LessonPlanSections } from '../../lesson-planner/types.ts';
 import { FloatingSaveButton } from '../../lesson-planner/components/FloatingSaveButton.tsx';
+import { NavigationControls } from '../../lesson-planner/components/NavigationControls.tsx';
 
 interface LessonRightSidebarProps {
   saveInProgress: boolean;
@@ -76,9 +77,15 @@ interface LayoutProps {
     saveCurrentPlan: () => Promise<void>;
     sections: LessonPlanSections;
   };
+  navigationProps?: {
+    currentStep: number;
+    onPrevious: () => Promise<void>;
+    onNext: () => Promise<void>;
+    onExport?: () => void;
+  };
 }
 
-export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, children, user, mode, rightSidebarProps, leftSidebarProps }: LayoutProps) => {
+export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, children, user, mode, rightSidebarProps, leftSidebarProps, navigationProps }: LayoutProps) => {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
 
@@ -121,12 +128,24 @@ export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, 
         <main className="flex-1 relative">
           <div className="absolute inset-0 bg-[#f9f9f9] z-0 mb-14 border-t border-b border-gray-300" >
           {mode === 'lesson' && (
-            <FloatingSaveButton
-              onClick={handleSave}
-              saving={saveInProgress}
-              lastSaved={lastSaved}
-              className="absolute -bottom-12 right-3 h-10"
-            />
+            <div className="absolute -bottom-12 right-0 w-full px-3">
+              {navigationProps?.currentStep === 1 && (<FloatingSaveButton
+                onClick={handleSave}
+                saving={saveInProgress}
+                lastSaved={lastSaved}
+                className="right-3 w-fit"
+              />
+              )}
+              {navigationProps && (
+                <NavigationControls
+                  currentStep={navigationProps.currentStep}
+                  onPrevious={navigationProps.onPrevious}
+                  onNext={navigationProps.onNext}
+                  onExport={navigationProps.onExport}
+                  saving={saveInProgress}
+                />
+              )}
+            </div>
           )}
           <div className="absolute inset-0 overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md" dir="ltr">
             {children}
