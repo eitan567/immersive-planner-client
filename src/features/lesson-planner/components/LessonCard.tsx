@@ -21,6 +21,7 @@ import {
 } from "../../../components/ui/alert-dialog.tsx";
 import type { LessonPlan } from '../types.ts';
 import { PenBox, Trash2, Upload } from 'lucide-react';
+import { LessonPreviewDialog } from './LessonPreviewDialog.tsx';
 
 interface LessonCardProps {
   lesson: LessonPlan;
@@ -108,6 +109,7 @@ export function LessonCard({
         )}
       </CardContent> */}
       <CardFooter className="flex justify-end gap-2 p-2 border-t mt-auto">
+        <LessonPreviewDialog lesson={lesson} />
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
