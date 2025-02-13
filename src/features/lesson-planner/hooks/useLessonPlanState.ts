@@ -334,45 +334,53 @@ const useLessonPlanState = (lessonId?: string) => {
     if (!lessonPlan) return '';
 
     let text = '';
-    text += `Topic: ${lessonPlan.topic}\n`;
-    text += `Duration: ${lessonPlan.duration}\n`;
-    text += `Grade Level: ${lessonPlan.gradeLevel}\n`;
-    text += `Prior Knowledge: ${lessonPlan.priorKnowledge}\n`;
-    text += `Position: ${lessonPlan.position}\n\n`;
-    text += `Content Goals:\n${lessonPlan.contentGoals}\n\n`;
-    text += `Skill Goals:\n${lessonPlan.skillGoals}\n\n`;
+    text += `נושא היחידה: ${lessonPlan.topic}\n`;
+    text += `זמן כולל: ${lessonPlan.duration}\n`;
+    text += `שכבת גיל: ${lessonPlan.gradeLevel}\n`;
+    text += `ידע קודם נדרש: ${lessonPlan.priorKnowledge}\n`;
+    text += `מיקום בתוכן: ${lessonPlan.position}\n\n`;
+    text += `מטרות ברמת התוכן:\n${lessonPlan.contentGoals}\n\n`;
+    text += `מטרות ברמת המיומנויות:\n${lessonPlan.skillGoals}\n\n`;
 
-    ['opening', 'main', 'summary'].forEach((phase) => {
-      text += `\n== ${phase.toUpperCase()} ==\n`;
-      lessonPlan.sections[phase as PhaseType].forEach((section, i) => {
-        text += `\nActivity ${i + 1}:\n`;
-        text += `Content: ${section.content}\n`;
-        if (section.screen1) {
-          text += `Screen 1: ${section.screen1}\n`;
-          if (section.screen1Description) {
-            text += `Screen 1 Description: ${section.screen1Description}\n`;
+    ['פתיחה', 'גוף השיעור', 'סיכום'].forEach((phase) => {
+      text += `\n== ${phase} ==\n`;
+      const phaseMap: Record<string, PhaseType> = {
+        'פתיחה': 'opening',
+        'גוף השיעור': 'main',
+        'סיכום': 'summary'
+      };
+      const mappedPhase = phaseMap[phase];
+      if (mappedPhase) {
+        lessonPlan.sections[mappedPhase].forEach((section, i) => {
+          text += `\nפעילות ${i + 1}:\n`;
+          text += `תוכן/פעילות: ${section.content}\n`;
+          if (section.screen1) {
+            text += `מסך 1: ${section.screen1}\n`;
+            if (section.screen1Description) {
+              text += `תיאור מסך 1: ${section.screen1Description}\n`;
+            }
           }
-        }
-        if (section.screen2) {
-          text += `Screen 2: ${section.screen2}\n`;
-          if (section.screen2Description) {
-            text += `Screen 2 Description: ${section.screen2Description}\n`;
+          if (section.screen2) {
+            text += `מסך 2: ${section.screen2}\n`;
+            if (section.screen2Description) {
+              text += `תיאור מסך 2: ${section.screen2Description}\n`;
+            }
           }
-        }
-        if (section.screen3) {
-          text += `Screen 3: ${section.screen3}\n`;
-          if (section.screen3Description) {
-            text += `Screen 3 Description: ${section.screen3Description}\n`;
+          if (section.screen3) {
+            text += `מסך 3: ${section.screen3}\n`;
+            if (section.screen3Description) {
+              text += `תיאור מסך 3: ${section.screen3Description}\n`;
+            }
           }
-        }
-        if (section.spaceUsage) {
-          text += `Space Usage: ${section.spaceUsage}\n`;
-        }
-      });
+          if (section.spaceUsage) {
+            text += `שימוש במרחב הפיזי: ${section.spaceUsage}\n`;
+          }
+        });
+      }
     });
 
     return text;
-  };
+};
 
   const createAndAddSection = async (
     phase: PhaseType,

@@ -31,7 +31,6 @@ export const LessonContent = React.memo(({
   currentStep,
   lessonPlan,
   saveInProgress,
-  lastSaved,
   handleBasicInfoChange,
   addSection,
   handleSectionUpdate,

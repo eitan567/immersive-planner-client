@@ -34,7 +34,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
       'רמה': 'gradeLevel',
       'מטרות תוכן': 'contentGoals',
       'מטרות כישורים': 'skillGoals',
-      'מיקום': 'position'
+      'מיקום בתוכן': 'position'
     };
 
     const generateSuggestion = async (message?: string): Promise<string> => {
