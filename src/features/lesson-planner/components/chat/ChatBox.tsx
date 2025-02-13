@@ -134,9 +134,9 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                   דוגמאות לפרטי השיעור:
                   <br />
                   <button
-                    onClick={() => handleQuickAction("שנה את נושא היחידה ל'אנרגיה מתחדשת'")}
+                    onClick={() => handleQuickAction("שנה את נושא היחידה בהתאם לקטגוריה")}
                     className="text-[#540ba9] hover:underline cursor-pointer"
-                  >"שנה את נושא היחידה ל'אנרגיה מתחדשת'"</button>
+                  >"שנה את נושא היחידה בהתאם לקטגוריה"</button>
                   <br />
                   <button
                     onClick={() => handleQuickAction("תעזור לי לנסח טוב יותר את מטרות התוכן")}

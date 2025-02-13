@@ -217,7 +217,7 @@ const LessonEditor = React.memo(() => {
       <div className="p-6 min-h-full">
         <div dir="rtl" className="mx-auto space-y-0">
           {error && <ErrorAlert message={error} />}
-          <Card>
+          <Card className='border-0 shadow-none'>
             <CardContent className='min-h-[calc(100vh-160px)] pt-0'>
               {lessonPlan && (
                 <LessonContent

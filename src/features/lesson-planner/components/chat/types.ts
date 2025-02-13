@@ -79,7 +79,9 @@ export const QUICK_ACTIONS: QuickAction[] = [
 
 // Additional quick actions for the dropdown menu
 export const DROPDOWN_QUICK_ACTIONS: QuickAction[] = [
+  {text: 'הצע רעיון לכול שאר השדות בהתאם לנושא היחידה הקיים'},
   {text: 'התאם את הקטגוריה לנושא היחידה'},
+  {text: 'הצע נושא יחידה בהתאם לקטגוריה'},
   {text: 'הצע רעיונות גיוון לפעילות הקיימת בגוף השיעור'},
   {text: 'בדוק את רמת הקושי של החידות בפתיחה והצע התאמות לשכבת הגיל'},
   {text: 'הצע דרכים לשילוב משחקיות בגוף השיעור'},
