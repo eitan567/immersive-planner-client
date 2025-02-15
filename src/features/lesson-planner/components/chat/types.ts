@@ -74,9 +74,12 @@ export const QUICK_ACTIONS: QuickAction[] = [
   {text:'הצע זמן כולל',maxWidth:'min-w-[92px] mt-[5px] leading-7'},
   {text:'הצע ידע קודם נדרש',maxWidth:'max-w-[90px] mt-[5px]'},
   {text:'הצע שכבת גיל',maxWidth:'min-w-[86px] mt-[5px] leading-7'},
-  {text:'הצע פעילות סיכום',maxWidth:'min-w-[92px] mt-[5px] leading-7',bgColor:'bg-gray-200'},
-  {text:'הצע פעילות פתיחה',maxWidth:'max-w-[86px]',bgColor:'bg-gray-200'},
-  {text:'הצע פעילות גוף השיעור',maxWidth:'max-w-[86px] mt-[5px]',bgColor:'bg-gray-200'},
+  {text:'הצע מיקום בתוכן',maxWidth:'min-w-[86px] mt-[5px] leading-7'},
+  {text:'הצע פעילות סיכום',maxWidth:'min-w-[92px] mt-[5px] leading-7',bgColor:'bg-[#ffb8f2]'},
+  {text:'הצע פעילות פתיחה',maxWidth:'max-w-[86px]',bgColor:'bg-[#ffb8f2]'},
+  {text:'הצע פעילות גוף השיעור',maxWidth:'max-w-[86px] mt-[5px]',bgColor:'bg-[#ffb8f2]'},
+  {text:'הצע ערכים בכל השדות הריקים',maxWidth:'max-w-[86px] mt-[5px]',bgColor:'bg-[#ff8eea]'},
+  {text:'הצע ערכים בכל השדות',maxWidth:'max-w-[86px] mt-[5px]',bgColor:'bg-[#ff8eea]'},
 ];
 
 // Additional quick actions for the dropdown menu
@@ -145,7 +148,7 @@ export const CATEGORY_MAP = {
   'עברית': 'hebrew',
   'תנ״ך': 'bible',
   'היסטוריה': 'history',
-  'אזרחות': 'civics',
+  'אזרחות': 'citizenship',
   'ספרות': 'literature',
   'פיזיקה': 'physics',
   'כימיה': 'chemistry',
@@ -159,5 +162,16 @@ export const CATEGORY_MAP = {
   'פילוסופיה': 'philosophy',
   'פסיכולוגיה': 'psychology',
   'סוציולוגיה': 'sociology',
-  'חינוך חברתי': 'social_education'
+  'חינוך חברתי': 'social_education',
+  'טכנולוגיה': 'technology',
+  'כלכלה': 'economics',
+  'סטטיסטיקה': 'statistics',
+  'פיננסים': 'finance',
+  'מנהיגות': 'leadership',
+  'תקשורת': 'communication',
+  'ארכיטקטורה': 'architecture',
+  'עיצוב': 'design',  
+  'פיתוח תוכנה': 'software_development',
+  'בינה מלאכותית': 'artificial_intelligence',
+  'אבטחת מידע': 'cyber_security'
 } as const;

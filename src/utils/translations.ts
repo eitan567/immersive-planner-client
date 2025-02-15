@@ -28,7 +28,7 @@ export const CATEGORY_TRANSLATIONS = {
   "hebrew": "עברית",
   "bible": "תנ״ך",
   "history": "היסטוריה",
-  "civics": "אזרחות",
+  "citizenship": "אזרחות",
   "literature": "ספרות",
   "physics": "פיזיקה",
   "chemistry": "כימיה",
@@ -42,7 +42,18 @@ export const CATEGORY_TRANSLATIONS = {
   "philosophy": "פילוסופיה",
   "psychology": "פסיכולוגיה",
   "sociology": "סוציולוגיה",
-  "social_education": "חינוך חברתי"
+  "social_education": "חינוך חברתי",
+  "technology": "טכנולוגיה",
+  "economics": "כלכלה",
+  "statistics": "סטטיסטיקה",
+  "finance": "פיננסים",
+  "leadership": "מנהיגות",
+  "communication": "תקשורת",
+  "architecture": "ארכיטקטורה",
+  "design": "עיצוב",
+  "software_development": "פיתוח תוכנה",
+  "artificial_intelligence": "בינה מלאכותית",
+  "cyber_security": "אבטחת מידע"
 };
 
 export const FIELD_TRANSLATIONS = {
