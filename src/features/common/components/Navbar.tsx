@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext.tsx';
 import { UserDropdown } from './UserDropdown.tsx';
 
@@ -10,6 +11,7 @@ interface NavbarProps {
 }
 
 export const Navbar = React.memo(({ user }: NavbarProps) => {
+ const location = useLocation();
   const { signOut } = useAuth();
     
   const handleSignOut = React.useCallback(async () => {
@@ -46,7 +48,9 @@ export const Navbar = React.memo(({ user }: NavbarProps) => {
         </div>
       </div>      
       <div className="flex items-center">
+{location.pathname !== "/" && (
         <a href="/" className="ml-6 text-[#540ba9] hover:text-[#28026fa6]">חזרה לדשבורד</a>
+)}
       </div>
       {/* Right side - User Profile and Logout */}
       <div className="flex items-center space-x-4 mr-6">
