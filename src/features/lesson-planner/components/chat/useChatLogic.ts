@@ -256,7 +256,7 @@ export function useChatLogic({
         // עדכון שדות אחרים
         if (otherUpdates.length > 0) {
           await onUpdateField(otherUpdates);
-          await saveCurrentPlan();
+          // await saveCurrentPlan();
         }
       } else {
         setMessages(prev => [...prev, {

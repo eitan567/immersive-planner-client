@@ -74,11 +74,11 @@ const LessonEditor = React.memo(() => {
           handleBasicInfoChange(field as keyof LessonPlan, val);
         }
       }
-      await saveCurrentPlan();
+      // await saveCurrentPlan();
     } else if (value && validFields.includes(fieldName as keyof LessonPlan)) {
       // Handle single update
       handleBasicInfoChange(fieldName as keyof LessonPlan, value);
-      await saveCurrentPlan();
+      // await saveCurrentPlan();
     }
   }, [handleBasicInfoChange, saveCurrentPlan, lessonPlan]);
 
