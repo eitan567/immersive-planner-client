@@ -48,7 +48,7 @@ export const UserDropdown = React.memo(({ user, onSignOut }: UserDropdownProps) 
     target.onerror = null; // Prevent infinite loop
   }, []);
 
-  console.log('Rendering UserDropdown');
+  // console.log('Rendering UserDropdown');
 
   return (
     <DropdownMenu.Root>

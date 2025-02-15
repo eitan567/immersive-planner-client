@@ -48,9 +48,9 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   createAndAddSection,
   everSaved
 }) => {
-  useEffect(() => {
-    console.log('Sidebar currentValues:', currentValues);
-  }, []);
+  // useEffect(() => {
+  //   console.log('Sidebar currentValues:', currentValues);
+  // }, []);
 
   const navigate = useNavigate();
   const [showExitDialog, setShowExitDialog] = React.useState(false);

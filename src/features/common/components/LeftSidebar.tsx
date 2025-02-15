@@ -37,10 +37,10 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   currentValues,
   saveCurrentPlan
 }) => {
-  // הוסף לוג לבדיקת הערכים
-  useEffect(() => {
-    console.log('Sidebar currentValues:', currentValues);
-  }, []);
+  // // הוסף לוג לבדיקת הערכים
+  // useEffect(() => {
+  //   console.log('Sidebar currentValues:', currentValues);
+  // }, []);
 
   return (
     <aside className="w-[30rem] border-r border-slate-200 shrink-0">
