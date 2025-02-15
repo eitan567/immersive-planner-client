@@ -138,24 +138,29 @@ const useLessonPlanState = (lessonId?: string) => {
         setLoading(true);
         let plan: LessonPlan | null = null;
         
-        // Check if we have a saved ID in localStorage
-        const savedId = localStorage.getItem(STORAGE_KEY);
-        
-        // If we're at /lesson/new but have a saved ID, load that lesson
-        if (!lessonId && savedId) {
+        // First try to load by URL ID
+        if (lessonId) {
           try {
-            plan = await lessonPlanService.getLessonPlan(savedId);
+            plan = await lessonPlanService.getLessonPlan(lessonId);
           } catch (err) {
-            // If failed to load saved lesson (e.g. was deleted), clear localStorage
-            localStorage.removeItem(STORAGE_KEY);
+            console.error('Failed to load lesson by ID:', err);
+            throw err;
           }
         }
-        // If we have a specific lessonId in URL, load that
-        else if (lessonId) {
-          plan = await lessonPlanService.getLessonPlan(lessonId);
+        // Then try to load from localStorage if no URL ID
+        else {
+          const savedId = localStorage.getItem(STORAGE_KEY);
+          if (savedId) {
+            try {
+              plan = await lessonPlanService.getLessonPlan(savedId);
+            } catch (err) {
+              console.error('Failed to load from localStorage:', err);
+              localStorage.removeItem(STORAGE_KEY);
+            }
+          }
         }
-        
-        // If no plan was loaded, create a new one
+
+        // If no plan was loaded, create a new empty one
         if (!plan) {
           plan = {
             ...createEmptyLessonPlan(user.id),
@@ -264,8 +269,10 @@ const useLessonPlanState = (lessonId?: string) => {
         const { id, created_at, updated_at, ...planWithoutId } = lessonPlan;
         const preparedPlan = preparePlanForSave(planWithoutId);
         savedPlan = await lessonPlanService.createLessonPlan(preparedPlan);
-        // Save the ID in localStorage immediately after creation
+        
+        // Save ID to localStorage after first successful save
         localStorage.setItem(STORAGE_KEY, savedPlan.id);
+        
         // Navigate to the edit page after first save if navigate function is provided
         if (navigate) {
           navigate(`/lesson/${savedPlan.id}`);
@@ -280,7 +287,6 @@ const useLessonPlanState = (lessonId?: string) => {
       setLessonPlan(savedPlan);
       setLastSaved(new Date());
       setUnsavedChanges(false);
-      localStorage.setItem(STORAGE_KEY, savedPlan.id);
       console.log(lessonPlan.id ? 'Lesson plan updated successfully' : 'New lesson plan created successfully');
     } catch (err) {
       console.error('Error saving lesson plan:', err);
@@ -399,7 +405,7 @@ const useLessonPlanState = (lessonId?: string) => {
     });
 
     return translateContent(text);
-};
+  };
 
   const createAndAddSection = async (
     phase: PhaseType,

@@ -16,39 +16,41 @@ export const UserDropdown = React.memo(({ user, onSignOut }: UserDropdownProps) 
   const avatarUrl = React.useMemo(() => {
     if (!user?.user_metadata) return null;
     
+    let url = null;
+    
     // Google specific paths
-    if (user.user_metadata.picture) return user.user_metadata.picture;
-    if (user.user_metadata.avatar_url) return user.user_metadata.avatar_url;
+    if (user.user_metadata.picture) {
+      // Properly encode the Google URL
+      url = user.user_metadata.picture;
+      if (url.includes('googleusercontent.com')) {
+        // Remove any existing size parameters
+        url = url.split('=')[0];
+        // Properly encode the URL
+        url = encodeURI(url);
+        // Add a small size parameter to improve loading speed
+        url = `${url}=s96-c`;
+      }
+    }
+    // Rest of the URL handling logic...
     
-    // Facebook specific path
-    if (user.user_metadata.picture?.data?.url) return user.user_metadata.picture.data.url;
-    
-    // Microsoft specific paths
-    if (user.user_metadata.photo) return user.user_metadata.photo;
-    
-    // Generic OAuth paths
-    if (user.user_metadata.profile?.picture) return user.user_metadata.profile.picture;
-    if (user.user_metadata.profile?.avatar_url) return user.user_metadata.profile.avatar_url;
-    
-    return null;
+    return url;
   }, [user?.user_metadata]);
-
-  // Memoize the error handler to prevent recreating it on every render
-  const handleImageError = React.useCallback(async (e: React.SyntheticEvent<HTMLImageElement>) => {
-    
-    console.error('Avatar image failed to load:', avatarUrl);
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    const metadata = user.user_metadata;
-    
+  
+  // Simple error handler that just falls back to the Hebrew letter
+  const handleImageError = React.useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
-    target.src = metadata?.avatar_url || ''; // Clear broken image
-    target.onerror = null; // Prevent infinite loop
+    target.onerror = null;
+    target.style.display = 'none';
+    
+    // Log the failure for debugging
+    console.debug('Avatar load failed:', {
+      originalUrl: target.src,
+      provider: target.src.includes('googleusercontent.com') ? 'Google' :
+               target.src.includes('fbcdn.net') ? 'Facebook' :
+               target.src.includes('githubusercontent.com') ? 'GitHub' :
+               'Unknown'
+    });
   }, []);
-
-  // console.log('Rendering UserDropdown');
 
   return (
     <DropdownMenu.Root>
@@ -57,10 +59,12 @@ export const UserDropdown = React.memo(({ user, onSignOut }: UserDropdownProps) 
           <div className="h-10 w-10 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center border-2 border-white/30 overflow-hidden mr-2">
             {avatarUrl ? (
               <img 
-                src={avatarUrl?.split('=')[0]} 
+                src={avatarUrl} 
                 alt="User avatar" 
                 className="h-full w-full object-cover"
                 onError={handleImageError}
+                crossOrigin="anonymous" // Add this line
+                referrerPolicy="no-referrer" // Add this line
               />
             ) : (
               <span className="text-slate-600">מ</span>

@@ -49,6 +49,7 @@ export function LessonDashboard() {
   });
 
   const handleCreateEmpty = () => {
+    localStorage.removeItem('currentLessonPlanId');
     navigate('/lesson/new');
   };
 
@@ -76,6 +77,8 @@ export function LessonDashboard() {
 
   const handleCreateAI = async (data: { topic: string, materials: string, category: LessonCategory }) => {
     try {
+      localStorage.removeItem('currentLessonPlanId');
+      
       const lessonPlan = await lessonPlanService.createLessonPlan({
         userId: user!.id,
         topic: data.topic,
@@ -239,6 +242,9 @@ export function LessonDashboard() {
           onCreateEmpty: handleCreateEmpty,
           onCreateAI: () => setIsAIModalOpen(true)
         }}
+        saveCurrentPlan={async () => {}}
+        saveInProgress={false}
+        lastSaved={null}
       >
         {dashboardContent}
       </Layout>
