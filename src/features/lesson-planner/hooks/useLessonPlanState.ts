@@ -137,26 +137,32 @@ const useLessonPlanState = (lessonId?: string) => {
       try {
         setLoading(true);
         let plan: LessonPlan | null = null;
-
-        if (lessonId) {
+        
+        // Check if we have a saved ID in localStorage
+        const savedId = localStorage.getItem(STORAGE_KEY);
+        
+        // If we're at /lesson/new but have a saved ID, load that lesson
+        if (!lessonId && savedId) {
+          try {
+            plan = await lessonPlanService.getLessonPlan(savedId);
+          } catch (err) {
+            // If failed to load saved lesson (e.g. was deleted), clear localStorage
+            localStorage.removeItem(STORAGE_KEY);
+          }
+        }
+        // If we have a specific lessonId in URL, load that
+        else if (lessonId) {
           plan = await lessonPlanService.getLessonPlan(lessonId);
         }
-
-        // For new lessons without an ID, use temporary state without DB creation
-        if (!plan && !lessonId) {
-          const emptyPlan = {
+        
+        // If no plan was loaded, create a new one
+        if (!plan) {
+          plan = {
             ...createEmptyLessonPlan(user.id),
-            id: 'temp-' + crypto.randomUUID(),
+            id: '',
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           };
-          plan = emptyPlan;
-        } else if (!plan) {
-          const emptyPlan = createEmptyLessonPlan(user.id);
-          plan = await lessonPlanService.createLessonPlan(emptyPlan);
-          if (plan.id) {
-            localStorage.setItem(STORAGE_KEY, plan.id);
-          }
         }
 
         setLessonPlan(plan);
@@ -196,7 +202,7 @@ const useLessonPlanState = (lessonId?: string) => {
     setUnsavedChanges(true);
   };
 
-  const saveCurrentPlan = async () => {
+  const saveCurrentPlan = async (navigate?: (path: string) => void) => {
     console.log('saveCurrentPlan called');
     if (!lessonPlan || !user || saveInProgress) {
       console.log('saveCurrentPlan aborted: missing lessonPlan, user, or saveInProgress is true');
@@ -209,22 +215,15 @@ const useLessonPlanState = (lessonId?: string) => {
       return;
     }
 
-    // For temporary lessons, create new DB record
-    if (lessonPlan.id.startsWith('temp-')) {
-      const { id, created_at, updated_at, ...planWithoutId } = lessonPlan;
-      const newPlan = await lessonPlanService.createLessonPlan(planWithoutId);
-      setLessonPlan(newPlan);
-      console.log('Temporary lesson detected, creating new DB record');
-    }
-    
     try {
       setSaveInProgress(true);
       
-      // Create a clean copy with proper structure for the server
-      const updatesToSend = {
-        ...lessonPlan,
+      let savedPlan: LessonPlan;
+      
+      const preparePlanForSave = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at'>) => ({
+        ...plan,
         sections: {
-          opening: lessonPlan.sections.opening.map(section => ({
+          opening: plan.sections.opening.map(section => ({
             ...section,
             screens: {
               screen1: section.screen1 || '',
@@ -235,7 +234,7 @@ const useLessonPlanState = (lessonId?: string) => {
               screen3Description: section.screen3Description || ''
             }
           })),
-          main: lessonPlan.sections.main.map(section => ({
+          main: plan.sections.main.map(section => ({
             ...section,
             screens: {
               screen1: section.screen1 || '',
@@ -246,7 +245,7 @@ const useLessonPlanState = (lessonId?: string) => {
               screen3Description: section.screen3Description || ''
             }
           })),
-          summary: lessonPlan.sections.summary.map(section => ({
+          summary: plan.sections.summary.map(section => ({
             ...section,
             screens: {
               screen1: section.screen1 || '',
@@ -258,13 +257,31 @@ const useLessonPlanState = (lessonId?: string) => {
             }
           }))
         }
-      };
+      });
 
-      await lessonPlanService.updateLessonPlan(lessonPlan.id, updatesToSend);
+      // For new lessons without an ID, create new DB record
+      if (!lessonPlan.id) {
+        const { id, created_at, updated_at, ...planWithoutId } = lessonPlan;
+        const preparedPlan = preparePlanForSave(planWithoutId);
+        savedPlan = await lessonPlanService.createLessonPlan(preparedPlan);
+        // Save the ID in localStorage immediately after creation
+        localStorage.setItem(STORAGE_KEY, savedPlan.id);
+        // Navigate to the edit page after first save if navigate function is provided
+        if (navigate) {
+          navigate(`/lesson/${savedPlan.id}`);
+        }
+      } else {
+        // For existing lessons, update the record
+        const { id, created_at, updated_at, ...planWithoutMeta } = lessonPlan;
+        const preparedPlan = preparePlanForSave(planWithoutMeta);
+        savedPlan = await lessonPlanService.updateLessonPlan(lessonPlan.id, preparedPlan);
+      }
+      
+      setLessonPlan(savedPlan);
       setLastSaved(new Date());
       setUnsavedChanges(false);
-      localStorage.setItem(STORAGE_KEY, lessonPlan.id);
-      console.log('Lesson plan saved successfully');
+      localStorage.setItem(STORAGE_KEY, savedPlan.id);
+      console.log(lessonPlan.id ? 'Lesson plan updated successfully' : 'New lesson plan created successfully');
     } catch (err) {
       console.error('Error saving lesson plan:', err);
       setError(err instanceof Error ? err.message : 'Error saving plan');
@@ -335,6 +352,7 @@ const useLessonPlanState = (lessonId?: string) => {
     if (!lessonPlan) return '';
 
     let text = '';
+    text += `קטגוריה: ${lessonPlan.category}\n`;
     text += `נושא היחידה: ${lessonPlan.topic}\n`;
     text += `זמן כולל: ${lessonPlan.duration}\n`;
     text += `שכבת גיל: ${lessonPlan.gradeLevel}\n`;

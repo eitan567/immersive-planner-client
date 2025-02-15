@@ -23,6 +23,7 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
     let content = '';
 
     // כותרת ומידע בסיסי
+    content += `קטגוריה: ${lesson.category}\n`;
     content += `נושא היחידה: ${lesson.topic}\n`;
     content += `זמן כולל: ${lesson.duration}\n`;
     content += `שכבת גיל: ${lesson.gradeLevel}\n`;

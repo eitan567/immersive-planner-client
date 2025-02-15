@@ -65,7 +65,7 @@ export function LessonCard({
   };
 
   return (
-    <Card className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col min-h-[100px] bg-[#f2f9ff] cursor-pointer" onClick={() => onEdit(id)}>
+    <Card className="bg-white shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col min-h-[100px] bg-[#f2f9ff] cursor-pointer">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
