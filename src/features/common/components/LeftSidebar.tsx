@@ -63,7 +63,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           saveCurrentPlan={saveCurrentPlan}
           createAndAddSection={createAndAddSection}
           sections={sections}
-          className="h-[calc(100vh-510px)]"
+          className="h-[calc(100vh-500px)]"
         />
 
       </div>
