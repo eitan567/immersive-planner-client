@@ -63,18 +63,20 @@ export const FIELD_LABELS: Record<string, string> = {
 export interface QuickAction {
   text: string;
   maxWidth?: string;
+  bgColor?: string;
 }
 
 // Original quick actions that appear below the chat
 export const QUICK_ACTIONS: QuickAction[] = [
-  {text:'הצע שם חדש לנושא היחידה',maxWidth:'max-w-[86px]'},
-  {text:'נסח מחדש מטרות ברמת התוכן',maxWidth:'max-w-[92px]'},
-  {text:'שפר מטרות ברמת המיומנויות',maxWidth:'max-w-[90px]'},
-  {text:'הצע רעיונות לפתיחת השיעור',maxWidth:'max-w-[86px]'},
-  {text:'שפר פעילות בגוף השיעור',maxWidth:'max-w-[86px] mt-[5px]'},
+  {text:'הצע שם לנושא היחידה',maxWidth:'max-w-[86px]'},
+  {text:'הצע מטרות ברמת התוכן',maxWidth:'max-w-[92px]'},
+  {text:'הצע מטרות ברמת המיומנויות',maxWidth:'max-w-[90px]'},
   {text:'הצע זמן כולל',maxWidth:'min-w-[92px] mt-[5px] leading-7'},
-  {text:'שפר ידע קודם נדרש',maxWidth:'max-w-[90px] mt-[5px]'},
+  {text:'הצע ידע קודם נדרש',maxWidth:'max-w-[90px] mt-[5px]'},
   {text:'הצע שכבת גיל',maxWidth:'min-w-[86px] mt-[5px] leading-7'},
+  {text:'הצע פעילות סיכום',maxWidth:'min-w-[92px] mt-[5px] leading-7',bgColor:'bg-gray-200'},
+  {text:'הצע פעילות פתיחה',maxWidth:'max-w-[86px]',bgColor:'bg-gray-200'},
+  {text:'הצע פעילות גוף השיעור',maxWidth:'max-w-[86px] mt-[5px]',bgColor:'bg-gray-200'},
 ];
 
 // Additional quick actions for the dropdown menu
