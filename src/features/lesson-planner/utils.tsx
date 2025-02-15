@@ -5,7 +5,6 @@ import { Message } from './components/ChatMessage.tsx';
 
 export const renderMessageText = (message: Message): React.ReactNode => {
   const parts = message.text.split(/(<שדה:\s*[^>]+>)/);
-  console.log(parts);
   return parts.map((part, index) => {
     const fieldMatch = part.match(/<שדה:\s*([^>]+)>/);
     if (fieldMatch) {

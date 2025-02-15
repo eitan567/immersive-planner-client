@@ -17,51 +17,57 @@ interface ChatMessageProps {
   onResend?: (text: string) => void;
 }
 
-export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onCopy, onResend }) => {
-  return (
-    <div className={`flex gap-2 ${message.sender === 'ai' ? '' : ''}`}>
-      <div className="shrink-0">
-        {message.sender === 'user' ? (
-          <MdFace className="h-6 w-6 text-[darkslateblue]" />
-        ) : (
-          <SiProbot className="h-5 w-5 text-[darkmagenta]" />
-        )}
-      </div>
-      <div className={`relative p-2 text-sm rounded-lg max-w-[90%] whitespace-pre-wrap break-words font-['Assistant'] ${
-        message.sender === 'user'
-          ? 'bg-[darkslateblue] text-white px-[9px] pt-[3px] pb-[6px]'
-          : 'bg-[honeydew] border rounded-md min-w-[210px]'
-      }`}>
-        {renderMessageText(message)}
-        <div className="flex gap-2 mt-2 justify-end">
+export const ChatMessage = React.memo(
+  ({ message, onCopy, onResend }: ChatMessageProps) => {
+    return (
+      <div className={`flex gap-2 ${message.sender === 'ai' ? '' : ''}`}>
+        <div className="shrink-0">
           {message.sender === 'user' ? (
-            <>
-              <button
-                onClick={() => onResend && onResend(message.text)}
-                className="hover:text-[pink] transition-colors text-white"
-                title="שלח שוב"
-              >
-                <ArrowPathIcon className="h-4 w-4" />
-              </button>
+            <MdFace className="h-6 w-6 text-[darkslateblue]" />
+          ) : (
+            <SiProbot className="h-5 w-5 text-[darkmagenta]" />
+          )}
+        </div>
+        <div className={`relative p-2 text-sm rounded-lg max-w-[90%] whitespace-pre-wrap break-words font-['Assistant'] ${
+          message.sender === 'user'
+            ? 'bg-[darkslateblue] text-white px-[9px] pt-[3px] pb-[6px]'
+            : 'bg-[honeydew] border rounded-md min-w-[210px]'
+        }`}>
+          {renderMessageText(message)}
+          <div className="flex gap-2 mt-2 justify-end">
+            {message.sender === 'user' ? (
+              <>
+                <button
+                  onClick={() => onResend && onResend(message.text)}
+                  className="hover:text-[pink] transition-colors text-white"
+                  title="שלח שוב"
+                >
+                  <ArrowPathIcon className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => onCopy(message.text)}
+                  className="hover:text-[pink] transition-colors text-white"
+                  title="העתק הודעה"
+                >
+                  <DocumentDuplicateIcon className="h-4 w-4" />
+                </button>
+              </>
+            ) : (
               <button
                 onClick={() => onCopy(message.text)}
-                className="hover:text-[pink] transition-colors text-white"
+                className="hover:text-[#540ba9] transition-colors text-gray-800"
                 title="העתק הודעה"
               >
                 <DocumentDuplicateIcon className="h-4 w-4" />
               </button>
-            </>
-          ) : (
-            <button
-              onClick={() => onCopy(message.text)}
-              className="hover:text-[#540ba9] transition-colors text-gray-800"
-              title="העתק הודעה"
-            >
-              <DocumentDuplicateIcon className="h-4 w-4" />
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  },
+  (prevProps, nextProps) => {
+    return prevProps.message.text === nextProps.message.text &&
+           prevProps.message.timestamp.getTime() === nextProps.message.timestamp.getTime();
+  }
+);
