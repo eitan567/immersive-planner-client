@@ -124,8 +124,7 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
       </DialogTrigger>
       <DialogContent className="max-w-4xl bg-white" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>
-          </DialogTitle>
+          <DialogTitle></DialogTitle>
         </DialogHeader>
         <div className="flex flex-col h-full overflow-hidden">
           <LessonPlanPreview lesson={lesson} content={getLessonContent(lesson)} 
