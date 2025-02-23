@@ -153,7 +153,7 @@ export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, 
               <RightSidebar {...(rightSidebarProps as LessonRightSidebarProps)} />
             </div>
           ) : mode === 'dashboard' && rightSidebarProps ? (
-            <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[20rem]' : 'w-0'} overflow-hidden`}>
+            <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[12rem]' : 'w-0'} overflow-hidden`}>
               <DashboardRightSidebar {...(rightSidebarProps as DashboardRightSidebarProps)} />
             </div>
           ) : null}
