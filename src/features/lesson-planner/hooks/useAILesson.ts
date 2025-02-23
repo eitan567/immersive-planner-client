@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { generateFullLesson } from '../services/aiLessonService.ts';
-import type { LessonCategory, LessonPlan } from '../types.ts';
+import type { 
+  LessonCategory, 
+  LessonPlan,
+  LessonPlanSections
+} from '../types.ts';
+import { 
+  POSITION_MAPPING,
+  SPACE_USAGE_MAPPING,
+  SCREEN_TYPE_MAPPING
+} from '../types.ts';
 
 interface UseAILessonProps {
   onSuccess: (lessonPlan: LessonPlan) => void;
@@ -28,21 +37,40 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
       // Create the lesson plan
       console.log('[AI Hook] AI Response before processing:', aiResponse);
 
+      // מיפוי ערכים בעברית לאנגלית
+      const mapToEnglish = (hebrew: string, mapping: Record<string, string>): string => {
+        const englishValue = Object.entries(mapping).find(([heb]) => heb === hebrew)?.[1];
+        return englishValue || hebrew;
+      };
+
+      // מיפוי סקשן שלם כולל כל המסכים והתיאורים
+      const mapSection = (section: any) => ({
+        ...section,
+        spaceUsage: mapToEnglish(section.spaceUsage, SPACE_USAGE_MAPPING),
+        screen1: mapToEnglish(section.screen1, SCREEN_TYPE_MAPPING),
+        screen2: mapToEnglish(section.screen2, SCREEN_TYPE_MAPPING),
+        screen3: mapToEnglish(section.screen3, SCREEN_TYPE_MAPPING)
+      });
+
+      // מיפוי כל הסקשנים
+      const mapSections = (sections: any): LessonPlanSections => ({
+        opening: sections.opening?.map(mapSection) || [],
+        main: sections.main?.map(mapSection) || [],
+        summary: sections.summary?.map(mapSection) || []
+      });
+
       const completeLessonPlan: LessonPlan = {
         // Form Data
         topic: data.topic,
         category: data.category,
+        position: mapToEnglish(aiResponse.position || '', POSITION_MAPPING),
         duration: aiResponse.duration || '',
         gradeLevel: aiResponse.gradeLevel || '',
         priorKnowledge: aiResponse.priorKnowledge || '',
-        position: aiResponse.position || '',
         contentGoals: aiResponse.contentGoals || '',
         skillGoals: aiResponse.skillGoals || '',
-        sections: aiResponse.sections || {
-          opening: [],
-          main: [],
-          summary: []
-        },
+        // מיפוי הסקשנים
+        sections: mapSections(aiResponse.sections || { opening: [], main: [], summary: [] }),
         
         // System/DB fields
         id: '',

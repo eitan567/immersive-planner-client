@@ -1,3 +1,31 @@
+// מיפוי ערכים בעברית לאנגלית
+export const POSITION_MAPPING = {
+  'פתיחת נושא': 'topic_opening',
+  'הקנייה': 'teaching',
+  'תרגול': 'practice',
+  'סיכום נושא': 'topic_summary'
+} as const;
+
+export const SPACE_USAGE_MAPPING = {
+  'מליאה': 'plenum',
+  'עבודה בקבוצות': 'group_work',
+  'עבודה אישית': 'individual_work',
+  'משולב': 'mixed'
+} as const;
+
+export const SCREEN_TYPE_MAPPING = {
+  'סרטון': 'video',
+  'תמונה': 'image',
+  'פדלט': 'padlet',
+  'אתר': 'website',
+  'ג\'ניאלי': 'genially',
+  'מצגת': 'presentation'
+} as const;
+
+export type PositionType = keyof typeof POSITION_MAPPING;
+export type SpaceUsageType = keyof typeof SPACE_USAGE_MAPPING;
+export type ScreenType = keyof typeof SCREEN_TYPE_MAPPING;
+
 export const LESSON_CATEGORIES = [
   'מתמטיקה',
   'אנגלית',
