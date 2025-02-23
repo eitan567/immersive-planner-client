@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent } from '../../../components/ui/card.tsx';
 import { LessonFieldChatBox } from '../../lesson-planner/components/LessonFieldChatBox.tsx';
 import type { LessonPlanSections } from '../../lesson-planner/types.ts';
