@@ -40,7 +40,7 @@ export function LessonDashboard() {
   }, [user]);
 
   const filteredLessons = lessons.filter(lesson => {
-    const matchesSearch = lesson.basicInfo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = lesson.topic.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lesson.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = selectedStatus === 'all' || lesson.status === selectedStatus;
     const matchesCategory = selectedCategory === 'all' || lesson.category === selectedCategory;
@@ -99,7 +99,7 @@ export function LessonDashboard() {
     const lesson = lessons.find(l => l.id === lessonId);
     if (!lesson) return;
 
-    if (!lesson.basicInfo.title?.trim() || !lesson.topic?.trim()) {
+    if (!lesson.topic?.trim()) {
       setError('לא ניתן לפרסם שיעור ללא נושא. אנא מלא את שדה נושא היחידה.');
       return;
     }
@@ -129,7 +129,7 @@ export function LessonDashboard() {
         <div className="flex flex-col gap-6">
           {filteredLessons.map((lesson) => (
             <div key={lesson.id} className="w-full p-6 bg-white rounded-lg shadow">
-              <h2 className="text-2xl font-bold mb-4">{lesson.basicInfo.title}</h2>
+              <h2 className="text-2xl font-bold mb-4">{lesson.topic}</h2>
               <div className="mb-4">
                 <p className="text-lg">{lesson.description}</p>
               </div>

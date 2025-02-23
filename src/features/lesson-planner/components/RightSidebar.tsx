@@ -14,13 +14,14 @@ import {
 } from '../../../components/ui/alert-dialog.tsx';
 import { LessonFieldChatBox } from './LessonFieldChatBox.tsx';
 import type { LessonPlanSections } from '../types.ts';
+import { ValidFieldNames } from '../../../features/common/components/Layout.tsx';
 
 interface RightSidebarProps {
   saveInProgress: boolean;
   lastSaved: Date | null;
   lessonTitle?: string;
   totalSteps: number;
-  onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
+  onUpdateField: (fieldName: ValidFieldNames | Array<[string, string]>, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
   saveCurrentPlan: () => Promise<void>;
   sections: LessonPlanSections;
@@ -48,10 +49,6 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   createAndAddSection,
   everSaved
 }) => {
-  // useEffect(() => {
-  //   console.log('Sidebar currentValues:', currentValues);
-  // }, []);
-
   const navigate = useNavigate();
   const [showExitDialog, setShowExitDialog] = React.useState(false);
 

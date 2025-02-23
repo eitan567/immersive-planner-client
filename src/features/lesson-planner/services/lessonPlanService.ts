@@ -113,9 +113,9 @@ const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => {
   };
 
   return {
-    id: dbPlan.id,
-    userId: dbPlan.user_id,
+    // Form Data
     topic: dbPlan.topic,
+    category: dbPlan.category,
     duration: dbPlan.duration,
     gradeLevel: dbPlan.grade_level,
     priorKnowledge: dbPlan.prior_knowledge || '',
@@ -123,19 +123,14 @@ const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => {
     contentGoals: dbPlan.content_goals || '',
     skillGoals: dbPlan.skill_goals || '',
     sections: transformedSections,
-    created_at: dbPlan.created_at,
-    updated_at: dbPlan.updated_at,
+    
+    // System/DB fields
+    id: dbPlan.id,
+    userId: dbPlan.user_id,
     status: dbPlan.status as 'draft' | 'published' || 'draft',
     description: dbPlan.description || '',
-    basicInfo: {
-      title: dbPlan.topic,
-      duration: dbPlan.duration,
-      gradeLevel: dbPlan.grade_level,
-      priorKnowledge: dbPlan.prior_knowledge || '',
-      contentGoals: dbPlan.content_goals || '',
-      skillGoals: dbPlan.skill_goals || ''
-    },
-    category: dbPlan.category
+    created_at: dbPlan.created_at,
+    updated_at: dbPlan.updated_at
   };
 };
 

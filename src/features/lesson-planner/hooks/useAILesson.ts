@@ -25,46 +25,45 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
       });
 
       // Explicitly set all fields to ensure proper initialization
+      // Create the lesson plan
       const completeLessonPlan: LessonPlan = {
-        // User provided fields
-        id: '',
-        userId: '',
+        // Form Data
         topic: data.topic,
         category: data.category,
-        basicInfo: {
-          title: data.topic,
-          duration: aiResponse.duration || '90 דקות',
-          gradeLevel: aiResponse.gradeLevel || 'ט\'-יב\'',
-          priorKnowledge: aiResponse.priorKnowledge || '',
-          contentGoals: aiResponse.contentGoals || '',
-          skillGoals: aiResponse.skillGoals || ''
-        },
-
-        // AI generated fields with defaults
         duration: aiResponse.duration || '90 דקות',
         gradeLevel: aiResponse.gradeLevel || 'ט\'-יב\'',
         priorKnowledge: aiResponse.priorKnowledge || '',
         position: aiResponse.position || 'פתיחת נושא',
         contentGoals: aiResponse.contentGoals || '',
         skillGoals: aiResponse.skillGoals || '',
-        description: aiResponse.description || '',
-        status: 'draft',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-
-        // Sections from AI response (already has proper structure from aiLessonService)
         sections: aiResponse.sections || {
           opening: [],
           main: [],
           summary: []
-        }
+        },
+        
+        // System/DB fields
+        id: '',
+        userId: '',
+        status: 'draft',
+        description: aiResponse.description || '',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
 
       // First ensure old data is cleared
       localStorage.removeItem('currentLessonPlanId');
       
+      console.log('AI Response:', aiResponse);
+      console.log('Complete Lesson Plan before storage:', completeLessonPlan);
+      
       // Store the complete plan
       localStorage.setItem('currentLessonPlan', JSON.stringify(completeLessonPlan));
+      
+      // Verify what was stored
+      const storedPlan = localStorage.getItem('currentLessonPlan');
+      console.log('Stored plan from localStorage:', storedPlan);
+      console.log('Parsed stored plan:', storedPlan ? JSON.parse(storedPlan) : null);
       
       // Add a small delay before navigation to ensure storage is complete
       setTimeout(() => {

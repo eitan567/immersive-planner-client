@@ -7,6 +7,7 @@ import {
   DialogTrigger,
   DialogClose,
   DialogFooter,
+  DialogDescription,
 } from "../../../components/ui/dialog.tsx";
 import { Button } from "../../../components/ui/button.tsx";
 import { Eye, X, Download } from 'lucide-react';
@@ -103,7 +104,7 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${lesson.basicInfo.title}.txt`;
+    link.download = `${lesson.topic}.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -125,6 +126,7 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
       <DialogContent className="max-w-4xl bg-white" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle></DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col h-full overflow-hidden">
           <LessonPlanPreview lesson={lesson} content={getLessonContent(lesson)} 

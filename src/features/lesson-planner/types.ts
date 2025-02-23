@@ -64,18 +64,9 @@ export type LessonPlanSections = {
   summary: LessonSection[];
 };
 
-export type LessonBasicInfo = {
-  title: string;
-  duration: string;
-  gradeLevel: string;
-  priorKnowledge: string;
-  contentGoals: string;
-  skillGoals: string;
-};
-
-export type LessonPlan = {
-  id: string;
-  userId: string;
+// Base lesson data used in forms and UI
+export type LessonFormData = {
+  category: LessonCategory | '';
   topic: string;
   duration: string;
   gradeLevel: string;
@@ -84,10 +75,23 @@ export type LessonPlan = {
   contentGoals: string;
   skillGoals: string;
   sections: LessonPlanSections;
+};
+
+// Full lesson plan with DB fields
+export type LessonPlan = {
+  category: LessonCategory | '';
+  topic: string;
+  duration: string;
+  gradeLevel: string;
+  priorKnowledge: string;
+  position: string;
+  contentGoals: string;
+  skillGoals: string;
+  sections: LessonPlanSections;
+  id: string;
+  userId: string;
   status: 'draft' | 'published';
   description: string;
-  basicInfo: LessonBasicInfo;
-  category: LessonCategory | '';
   created_at: string;
   updated_at: string;
 };

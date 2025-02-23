@@ -36,7 +36,7 @@ export function LessonCard({
   onDelete,
   onPublish,
 }: LessonCardProps) {
-  const { id, basicInfo, status, category } = lesson;
+  const { id, topic, status, category } = lesson;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -70,7 +70,7 @@ export function LessonCard({
         <div className="flex justify-between items-start">
           <div className="space-y-1">
             <CardTitle className="text-lg font-semibold text-[#f06094] line-clamp-1" onClick={() => onEdit(id)}>
-              {formatTitle(basicInfo.title)}
+              {formatTitle(topic)}
             </CardTitle>
           </div>
           <span
@@ -97,14 +97,14 @@ export function LessonCard({
         </div>
       </CardHeader>
       {/* <CardContent className="py-2">
-        {basicInfo.duration && (
+        {lesson.duration && (
           <div className="text-sm text-gray-600">
-            משך זמן: {basicInfo.duration}
+            משך זמן: {lesson.duration}
           </div>
         )}
-        {basicInfo.gradeLevel && (
+        {lesson.gradeLevel && (
           <div className="text-sm text-gray-600">
-            שכבת גיל: {basicInfo.gradeLevel}
+            שכבת גיל: {lesson.gradeLevel}
           </div>
         )}
       </CardContent> */}

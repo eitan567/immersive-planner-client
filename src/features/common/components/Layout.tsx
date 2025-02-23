@@ -8,12 +8,14 @@ import type { LessonPlanSections } from '../../lesson-planner/types.ts';
 import { FloatingSaveButton } from '../../lesson-planner/components/FloatingSaveButton.tsx';
 import { NavigationControls } from '../../lesson-planner/components/NavigationControls.tsx';
 
+export type ValidFieldNames = 'category' | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals';
+
 interface LessonRightSidebarProps {
   saveInProgress: boolean;
   lastSaved: Date | null;
   lessonTitle?: string;
   totalSteps: number;
-  onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
+  onUpdateField: (fieldName: ValidFieldNames | Array<[string, string]>, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
   saveCurrentPlan: () => Promise<void>;
   sections: LessonPlanSections;
@@ -41,7 +43,7 @@ interface NewRightSidebarProps {
   lastSaved: Date | null;
   lessonTitle?: string;
   totalSteps: number;
-  onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
+  onUpdateField: (fieldName: ValidFieldNames | Array<[string, string]>, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
   saveCurrentPlan: () => Promise<void>;
   sections: LessonPlanSections;
@@ -67,16 +69,7 @@ interface LayoutProps {
   saveInProgress: boolean;
   lastSaved: Date | null;
   rightSidebarProps?: LessonRightSidebarProps | DashboardRightSidebarProps | NewRightSidebarProps;
-  leftSidebarProps?: {
-    saveInProgress: boolean;
-    lastSaved: Date | null;
-    lessonTitle?: string;
-    totalSteps: number;
-    onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
-    currentValues: Record<string, string>;
-    saveCurrentPlan: () => Promise<void>;
-    sections: LessonPlanSections;
-  };
+  leftSidebarProps?: LessonRightSidebarProps;
   navigationProps?: {
     currentStep: number;
     onPrevious: () => Promise<void>;
@@ -107,7 +100,7 @@ export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, 
           <div className="relative flex">
             {/* LeftSidebar Container */}
             <div className={`bg-[#85003f05] border-r border-gray-300 transition-all duration-300 ease-in-out ${isLeftSidebarOpen ? 'w-[30rem]' : 'w-0'} overflow-hidden`}>
-              <LeftSidebar {...(leftSidebarProps as LessonRightSidebarProps)} />
+              <LeftSidebar {...leftSidebarProps} />
             </div>
             
             {/* Toggle Button */}
@@ -155,17 +148,15 @@ export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, 
 
         <div className="relative flex">
           {/* RightSidebar Container */}
-          {mode === 'new' ? null : (
-            mode === 'lesson' ? (
-              <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[30rem]' : 'w-0'} overflow-hidden`}>
-                <RightSidebar {...(rightSidebarProps as LessonRightSidebarProps)} />
-              </div>
-            ) : (
-              <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[20rem]' : 'w-0'} overflow-hidden`}>
-                <DashboardRightSidebar {...(rightSidebarProps as DashboardRightSidebarProps)} />
-              </div>
-            )
-          )}          
+          {mode === 'new' ? null : mode === 'lesson' && rightSidebarProps ? (
+            <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[30rem]' : 'w-0'} overflow-hidden`}>
+              <RightSidebar {...(rightSidebarProps as LessonRightSidebarProps)} />
+            </div>
+          ) : mode === 'dashboard' && rightSidebarProps ? (
+            <div className={`bg-[#85003f05] border-l border-gray-300 transition-all duration-300 ease-in-out ${isRightSidebarOpen ? 'w-[20rem]' : 'w-0'} overflow-hidden`}>
+              <DashboardRightSidebar {...(rightSidebarProps as DashboardRightSidebarProps)} />
+            </div>
+          ) : null}
           
           {/* Toggle Button */}
           <button

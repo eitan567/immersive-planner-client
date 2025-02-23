@@ -59,34 +59,44 @@ const LessonEditor = React.memo(() => {
     updateSections(updatedSections);
   }, [lessonPlan, updateSections]);
 
-  const handleFieldUpdate = React.useCallback(async (fieldName: string | Array<[string, string]>, value?: string) => {
+  const handleFieldUpdate = React.useCallback(
+  async (
+    fieldName: 'category' | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals' | Array<[string, string]>,
+    value?: string
+  ): Promise<void> => {
     if (!lessonPlan) return;
-    
-    const validFields: (keyof LessonPlan)[] = [
-      'topic', 'duration', 'gradeLevel', 'priorKnowledge',
-      'position', 'contentGoals', 'skillGoals', 'category'
-    ];
+
+    const validFields = [
+      'topic',
+      'duration',
+      'gradeLevel',
+      'priorKnowledge',
+      'position',
+      'contentGoals',
+      'skillGoals',
+      'category'
+    ] as const;
 
     if (Array.isArray(fieldName)) {
       // Handle batch updates
       for (const [field, val] of fieldName) {
-        if (validFields.includes(field as keyof LessonPlan)) {
-          handleBasicInfoChange(field as keyof LessonPlan, val);
+        if (validFields.includes(field as typeof validFields[number])) {
+          await handleBasicInfoChange(field as typeof validFields[number], val);
         }
       }
-      // await saveCurrentPlan();
-    } else if (value && validFields.includes(fieldName as keyof LessonPlan)) {
+    } else if (value && validFields.includes(fieldName)) {
       // Handle single update
-      handleBasicInfoChange(fieldName as keyof LessonPlan, value);
-      // await saveCurrentPlan();
+      await handleBasicInfoChange(fieldName as typeof validFields[number], value);
     }
-  }, [handleBasicInfoChange, saveCurrentPlan, lessonPlan]);
+  },
+  [handleBasicInfoChange, saveCurrentPlan, lessonPlan]
+);
 
   const rightSidebarProps = React.useMemo(() => ({
     saveInProgress,
     lastSaved,
     everSaved: !!lessonPlan?.id,
-    lessonTitle: lessonPlan?.basicInfo?.title || '',
+    lessonTitle: lessonPlan?.topic || '',
     totalSteps: (lessonPlan?.sections?.opening?.length || 0) +
                 (lessonPlan?.sections?.main?.length || 0) +
                 (lessonPlan?.sections?.summary?.length || 0),
@@ -103,33 +113,13 @@ const LessonEditor = React.memo(() => {
     },
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] },
     saveCurrentPlan,
-    createAndAddSection: (
-      phase: keyof LessonPlanSections,
-      content: string,
-      spaceUsage?: string,
-      screen1?: string,
-      screen2?: string,
-      screen3?: string,
-      screen1Description?: string,
-      screen2Description?: string,
-      screen3Description?: string
-    ) => createAndAddSection(
-      phase,
-      content,
-      spaceUsage ?? '',
-      screen1,
-      screen2,
-      screen3,
-      screen1Description,
-      screen2Description,
-      screen3Description
-    )
+    createAndAddSection
   }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan, createAndAddSection]);
 
   const leftSidebarProps = React.useMemo(() => ({
     saveInProgress,
     lastSaved,
-    lessonTitle: lessonPlan?.basicInfo?.title || '',
+    lessonTitle: lessonPlan?.topic || '',
     totalSteps: (lessonPlan?.sections?.opening?.length || 0) +
                 (lessonPlan?.sections?.main?.length || 0) +
                 (lessonPlan?.sections?.summary?.length || 0),
@@ -145,7 +135,9 @@ const LessonEditor = React.memo(() => {
       skillGoals: lessonPlan?.skillGoals || '',
       category: lessonPlan?.category || ''
     },
-    sections: lessonPlan?.sections || { opening: [], main: [], summary: [] }
+    sections: lessonPlan?.sections || { opening: [], main: [], summary: [] },
+    everSaved: !!lessonPlan?.id,
+    createAndAddSection
   }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan]);
 
   useEffect(() => {

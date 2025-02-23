@@ -18,14 +18,6 @@ const createEmptyLessonPlan = (userId: string): Omit<LessonPlan, 'id' | 'created
   position: '',
   contentGoals: '',
   skillGoals: '',
-  basicInfo: {
-    title: '',
-    duration: '',
-    gradeLevel: '',
-    priorKnowledge: '',
-    contentGoals: '',
-    skillGoals: ''
-  },
   sections: {
     opening: [],
     main: [],
@@ -112,13 +104,12 @@ const handleSectionUpdate = (fieldPath: string, newValue: string, currentSection
   return sectionsCopy;
 };
 
-const ensureBasicInfo = (plan: Partial<LessonPlan>): LessonPlan => {
+const ensureLessonPlan = (plan: Partial<LessonPlan>): LessonPlan => {
   if (!plan) {
-    throw new Error('Cannot ensure basic info for null plan');
+    throw new Error('Cannot ensure lesson plan for null plan');
   }
 
-  // First create the core fields
-  const corePlan = {
+  const validatedPlan = {
     id: plan.id || '',
     userId: plan.userId || '',
     topic: plan.topic || '',
@@ -136,20 +127,7 @@ const ensureBasicInfo = (plan: Partial<LessonPlan>): LessonPlan => {
     updated_at: plan.updated_at || new Date().toISOString()
   };
 
-  // Then ensure basicInfo reflects the same values
-  const basicInfo = {
-    title: corePlan.topic, // Always use topic as title
-    duration: corePlan.duration,
-    gradeLevel: corePlan.gradeLevel,
-    priorKnowledge: corePlan.priorKnowledge,
-    contentGoals: corePlan.contentGoals,
-    skillGoals: corePlan.skillGoals
-  };
-
-  return {
-    ...corePlan,
-    basicInfo
-  } as LessonPlan; // Type assertion since we know this matches LessonPlan
+  return validatedPlan as LessonPlan;
 };
 
 const useLessonPlanState = (lessonId?: string) => {
@@ -182,18 +160,24 @@ const useLessonPlanState = (lessonId?: string) => {
         
         // First check for an AI-generated plan
         const generatedPlan = localStorage.getItem(PLAN_STORAGE_KEY);
+        console.log('Raw plan from localStorage:', generatedPlan);
+        
         if (generatedPlan) {
           try {
             const parsedPlan = JSON.parse(generatedPlan);
+            console.log('Parsed plan:', parsedPlan);
+            
             if (parsedPlan && typeof parsedPlan === 'object') {
               // Ensure the plan has all required fields and proper basicInfo sync
-              plan = ensureBasicInfo({
+              // Pass all fields from parsedPlan but ensure userId is set
+              const planWithUser = {
                 ...parsedPlan,
-                userId: user.id,
-                // Preserve user-provided values
-                topic: parsedPlan.topic,
-                category: parsedPlan.category
-              });
+                userId: user.id
+              };
+              console.log('Plan before ensureBasicInfo:', planWithUser);
+              
+              plan = ensureLessonPlan(planWithUser);
+              console.log('Plan after ensureLessonPlan:', plan);
               localStorage.removeItem(PLAN_STORAGE_KEY);
             } else {
               throw new Error('Invalid plan format');
@@ -209,7 +193,7 @@ const useLessonPlanState = (lessonId?: string) => {
           try {
             const loadedPlan = await lessonPlanService.getLessonPlan(lessonId);
             if (loadedPlan) {
-              plan = ensureBasicInfo(loadedPlan);
+              plan = ensureLessonPlan(loadedPlan);
             } else {
               throw new Error('Lesson not found');
             }
@@ -225,22 +209,22 @@ const useLessonPlanState = (lessonId?: string) => {
             try {
               const loadedPlan = await lessonPlanService.getLessonPlan(savedId);
               if (loadedPlan) {
-                plan = ensureBasicInfo(loadedPlan);
+                plan = ensureLessonPlan(loadedPlan);
               } else {
                 throw new Error('Saved lesson not found');
               }
             } catch (err) {
               console.error('Failed to load from localStorage:', err);
               localStorage.removeItem(STORAGE_KEY);
-              plan = ensureBasicInfo(createEmptyLessonPlan(user.id));
+              plan = ensureLessonPlan(createEmptyLessonPlan(user.id));
             }
           } else {
-            plan = ensureBasicInfo(createEmptyLessonPlan(user.id));
+            plan = ensureLessonPlan(createEmptyLessonPlan(user.id));
           }
         }
 
         // Final validation to ensure all fields are present
-        const validatedPlan = ensureBasicInfo({
+        const validatedPlan = ensureLessonPlan({
           ...plan,
           // Ensure empty strings rather than undefined
           duration: plan.duration || '',
@@ -257,7 +241,7 @@ const useLessonPlanState = (lessonId?: string) => {
         setUnsavedChanges(!validatedPlan.id);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to initialize lesson plan');
-        setLessonPlan(ensureBasicInfo(createEmptyLessonPlan(user.id)));
+        setLessonPlan(ensureLessonPlan(createEmptyLessonPlan(user.id)));
       } finally {
         setLoading(false);
       }
@@ -267,7 +251,7 @@ const useLessonPlanState = (lessonId?: string) => {
   }, [user, lessonId]);
 
   const handleBasicInfoChange = (
-    field: keyof LessonPlan | Array<[string, string]>,
+    field: Array<[string, string]> | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals' | 'category',
     value?: string
   ) => {
     if (!lessonPlan || !user) return;
@@ -275,30 +259,30 @@ const useLessonPlanState = (lessonId?: string) => {
     setLessonPlan(prevPlan => {
       if (!prevPlan) return null;
 
+      // Handle array of changes
       if (Array.isArray(field)) {
-        return field.reduce((plan, [key, val]) => {
+        const newPlan = field.reduce((plan, [key, val]) => {
           if (isSectionField(key)) {
             return { ...plan, sections: handleSectionUpdate(key, val, plan.sections) };
           }
-          return { ...plan, [key]: val };
+          const updatedPlan = { ...plan, [key]: val };
+          return updatedPlan;
         }, prevPlan);
+        return newPlan;
       }
 
+      // Handle single field change
       if (value === undefined) return prevPlan;
 
-      const newPlan = { ...prevPlan, [field]: field === 'category' ? mapCategoryToHebrew(value) : value };
-      
-      // Keep basicInfo in sync with main fields
-      if (['topic', 'duration', 'gradeLevel', 'priorKnowledge', 'contentGoals', 'skillGoals'].includes(field)) {
-        newPlan.basicInfo = {
-          ...newPlan.basicInfo,
-          title: newPlan.topic,
-          [field]: value
-        };
-      }
+      // Create new plan with updated field
+      const updatedPlan = {
+        ...prevPlan,
+        [field]: field === 'category' ? mapCategoryToHebrew(value) : value
+      };
 
-      return newPlan;
+      return updatedPlan;
     });
+    
     setUnsavedChanges(true);
   };
 
@@ -457,7 +441,7 @@ const useLessonPlanState = (lessonId?: string) => {
   const createAndAddSection = async (
     phase: PhaseType,
     content: string,
-    spaceUsage: string,
+    spaceUsage?: string,
     screen1?: string,
     screen2?: string,
     screen3?: string,
@@ -470,7 +454,7 @@ const useLessonPlanState = (lessonId?: string) => {
     const newSection = {
       ...createEmptySection(),
       content,
-      spaceUsage,
+      spaceUsage: spaceUsage ?? '',
       screen1,
       screen2,
       screen3,

@@ -5,13 +5,24 @@ import LessonPlanPreview from './LessonPlanPreview.tsx';
 import { cn } from "../../../lib/utils.ts"
 import type { LessonPlan, LessonSection } from '../types.ts';
 
+const validFields = [
+  'topic',
+  'duration',
+  'gradeLevel',
+  'priorKnowledge',
+  'position',
+  'contentGoals',
+  'skillGoals',
+  'category'
+] as const;
+
 interface LessonContentProps {
   className?: string;
   currentStep: number;
   lessonPlan: LessonPlan;
   saveInProgress: boolean;
   lastSaved: Date | null;
-  handleBasicInfoChange: (field: keyof LessonPlan, value: string) => void;
+  handleBasicInfoChange: (field: typeof validFields[number], value: string) => void;
   addSection: (phase: 'opening' | 'main' | 'summary') => void;
   handleSectionUpdate: (
     phase: 'opening' | 'main' | 'summary',

@@ -34,7 +34,7 @@ const LessonPlanPreview = ({ content: initialContent, onContentChange,aiClassNam
     //   </CardHeader>
     //   <CardContent className={cn("bg-white", cardContentClassName)}>
     <>
-    <h2 className={cn("pt-6 pb-3 text-2xl font-semibold text-[#540ba9]", className)}>תצוגה מקדימה - {lesson.basicInfo.title}</h2>
+    <h2 className={cn("pt-6 pb-3 text-2xl font-semibold text-[#540ba9]", className)}>תצוגה מקדימה - {lesson.topic}</h2>
         <AITextarea
           onClick={(e) => e.stopPropagation()}
           aiOn={false}

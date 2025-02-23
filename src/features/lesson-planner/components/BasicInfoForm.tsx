@@ -13,9 +13,20 @@ import {
 import type { LessonPlan, LessonCategory } from '../types.ts';
 import { LESSON_CATEGORIES } from '../types.ts';
 
+const validFields = [
+  'topic',
+  'duration',
+  'gradeLevel',
+  'priorKnowledge',
+  'position',
+  'contentGoals',
+  'skillGoals',
+  'category'
+] as const;
+
 type BasicInfoFormProps = {
   lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'category'>;
-  handleBasicInfoChange: (field: keyof LessonPlan, value: string) => void;
+  handleBasicInfoChange: (field: typeof validFields[number], value: string) => void;
   onSave?: () => Promise<void>;
   validateRef?: React.MutableRefObject<(() => boolean) | undefined>;
 };
@@ -26,7 +37,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
     category?: string;
   }>({});
 
-  const handleChange = (field: keyof LessonPlan) => (
+  const handleChange = (field: typeof validFields[number]) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { currentTarget: { value: string } }
   ) => {
     handleBasicInfoChange(field, e.currentTarget.value);
