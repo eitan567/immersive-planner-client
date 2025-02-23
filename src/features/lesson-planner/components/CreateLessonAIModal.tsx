@@ -6,8 +6,9 @@ import {
   AlertDialogTitle,
   AlertDialogDescription,
   AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
 } from '../../../components/ui/alert-dialog.tsx';
-import { Button } from '../../../components/ui/button.tsx';
 import { Input } from '../../../components/ui/input.tsx';
 import {
   Select,
@@ -23,78 +24,63 @@ interface CreateLessonAIModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreate: (data: { topic: string; materials: string; category: LessonCategory }) => void;
+  isGenerating?: boolean; // Add this prop
 }
 
-export function CreateLessonAIModal({
-  isOpen,
-  onClose,
-  onCreate,
-}: CreateLessonAIModalProps) {
+export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }: CreateLessonAIModalProps) {
   const [topic, setTopic] = useState('');
   const [materials, setMaterials] = useState('');
   const [category, setCategory] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  React.useEffect(() => {
-    if (isOpen) {
-      setTopic('');
-      setMaterials(``);
-      setCategory('');
-      setError(null);
-    }
-  }, [isOpen]);
-
-  const handleCreate = () => {
-    if (!topic.trim()) {
-      setError('נושא היחידה הוא שדה חובה');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!topic) {
+      setError('נא להזין נושא');
       return;
     }
-
-    if (!category) {
-      setError('קטגוריה היא שדה חובה');
-      return;
-    }
-
+    
+    setIsSubmitting(true);
+    setError(null);
+    
     try {
-      setIsSubmitting(true);
-      setError(null);
-      
       onCreate({
         topic: topic.trim(),
         materials,
         category: category as LessonCategory,
       });
-
     } catch (err) {
       setError('אירעה שגיאה ביצירת השיעור');
       console.error(err);
-    } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleClose = () => {
-    setTopic('');
-    setMaterials('');
-    setCategory('');
-    setError(null);
-    onClose();
-  };
-
   return (
-    <AlertDialog open={isOpen} onOpenChange={handleClose}>
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent dir="rtl" className="max-w-2xl bg-white">
         <AlertDialogHeader className="space-y-3">
           <AlertDialogTitle className="text-2xl font-semibold text-[#540ba9]">
             יצירת שיעור בעזרת AI
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
-            הכנס את פרטי השיעור ותן ל-AI ליצור עבורך מערך שיעור
+            הזן את הפרטים הבאים ליצירת שיעור חדש
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <div className="space-y-6 py-4">
+        {(isSubmitting || isGenerating) && (
+          <div className="absolute inset-0 bg-white/40 flex items-center justify-center z-50 rounded-lg">
+            <div className="text-center">
+              <LoadingSpinner size="lg" />
+              <p className="mt-4 text-lg font-medium text-gray-700">
+                יוצר שיעור חדש, אנא המתן...
+              </p>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <div>
             <label className="text-base font-medium mb-2 block">נושא היחידה *</label>
             <Input
@@ -132,27 +118,27 @@ export function CreateLessonAIModal({
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded">
+            <div className="text-red-500 text-sm mt-2">
               {error}
             </div>
           )}
-        </div>
+        </form>
 
-        <AlertDialogFooter className="flex justify-between gap-2 px-6 py-4 border-t">
-          <div className="order-1">
-            <Button variant="outline" onClick={handleClose}>
-              ביטול
-            </Button>
-          </div>
-          <div className="order-2">
-            <Button
-              onClick={handleCreate}
-              className="bg-[#681bc2] text-white hover:bg-[#681bc2]/90"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? <LoadingSpinner /> : 'צור שיעור'}
-            </Button>
-          </div>
+        <AlertDialogFooter className="gap-3">
+          <AlertDialogCancel 
+            disabled={isSubmitting || isGenerating}
+            className="bg-gray-100 hover:bg-gray-200"
+          >
+            ביטול
+          </AlertDialogCancel>
+          <AlertDialogAction
+            type="submit"
+            onClick={handleSubmit}
+            disabled={isSubmitting || isGenerating}
+            className="bg-[#540ba9] hover:bg-[#7122db]"
+          >
+            צור שיעור
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

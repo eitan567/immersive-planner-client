@@ -216,6 +216,7 @@ export function LessonDashboard() {
         isOpen={isAIModalOpen}
         onClose={() => setIsAIModalOpen(false)}
         onCreate={handleCreateAI}
+        isGenerating={isGenerating}
       />
     </>
   );
