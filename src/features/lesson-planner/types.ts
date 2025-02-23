@@ -1,15 +1,15 @@
 // מיפוי ערכים בעברית לאנגלית
 export const POSITION_MAPPING = {
-  'פתיחת נושא': 'topic_opening',
+  'פתיחת נושא': 'opening',
   'הקנייה': 'teaching',
   'תרגול': 'practice',
-  'סיכום נושא': 'topic_summary'
+  'סיכום נושא': 'summary'
 } as const;
 
 export const SPACE_USAGE_MAPPING = {
-  'מליאה': 'plenum',
-  'עבודה בקבוצות': 'group_work',
-  'עבודה אישית': 'individual_work',
+  'מליאה': 'whole',
+  'עבודה בקבוצות': 'groups',
+  'עבודה אישית': 'individual',
   'משולב': 'mixed'
 } as const;
 
