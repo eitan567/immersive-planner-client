@@ -26,6 +26,8 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
 
       // Explicitly set all fields to ensure proper initialization
       // Create the lesson plan
+      console.log('[AI Hook] AI Response before processing:', aiResponse);
+
       const completeLessonPlan: LessonPlan = {
         // Form Data
         topic: data.topic,
@@ -51,24 +53,33 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
         updated_at: new Date().toISOString()
       };
 
-      // First ensure old data is cleared
+      console.log('[AI Hook] Complete lesson plan created:', completeLessonPlan);
+
+      console.log('[AI Hook] Processing AI response...');
+      
+      // Ensure sections are properly initialized
+      const validatedPlan = {
+        ...completeLessonPlan,
+        sections: {
+          opening: Array.isArray(completeLessonPlan.sections?.opening) ? completeLessonPlan.sections.opening : [],
+          main: Array.isArray(completeLessonPlan.sections?.main) ? completeLessonPlan.sections.main : [],
+          summary: Array.isArray(completeLessonPlan.sections?.summary) ? completeLessonPlan.sections.summary : []
+        }
+      };
+      
+      console.log('[AI Hook] Validated plan before storage:', validatedPlan);
+
+      // Store the validated plan first
+      const planJson = JSON.stringify(validatedPlan);
+      console.log('[AI Hook] Storing new plan in localStorage:', planJson);
+
+      // Clear any existing data after preparing the new plan
       localStorage.removeItem('currentLessonPlanId');
+      localStorage.setItem('currentLessonPlan', planJson);
+      console.log('[AI Hook] Successfully stored new plan');
       
-      console.log('AI Response:', aiResponse);
-      console.log('Complete Lesson Plan before storage:', completeLessonPlan);
-      
-      // Store the complete plan
-      localStorage.setItem('currentLessonPlan', JSON.stringify(completeLessonPlan));
-      
-      // Verify what was stored
-      const storedPlan = localStorage.getItem('currentLessonPlan');
-      console.log('Stored plan from localStorage:', storedPlan);
-      console.log('Parsed stored plan:', storedPlan ? JSON.parse(storedPlan) : null);
-      
-      // Add a small delay before navigation to ensure storage is complete
-      setTimeout(() => {
-        onSuccess(completeLessonPlan);
-      }, 100);
+      // Call success callback with validated plan
+      onSuccess(validatedPlan);
       
     } catch (error) {
       let errorMessage = 'Failed to generate lesson';

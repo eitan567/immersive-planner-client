@@ -158,34 +158,46 @@ const useLessonPlanState = (lessonId?: string) => {
         setLoading(true);
         let plan: LessonPlan;
         
-        // First check for an AI-generated plan
+        // Check for an AI-generated plan
         const generatedPlan = localStorage.getItem(PLAN_STORAGE_KEY);
-        console.log('Raw plan from localStorage:', generatedPlan);
+        console.log('[State] Loading generated plan from storage:', generatedPlan);
         
         if (generatedPlan) {
           try {
             const parsedPlan = JSON.parse(generatedPlan);
-            console.log('Parsed plan:', parsedPlan);
+            console.log('[State] Parsed plan from storage:', parsedPlan);
             
-            if (parsedPlan && typeof parsedPlan === 'object') {
-              // Ensure the plan has all required fields and proper basicInfo sync
-              // Pass all fields from parsedPlan but ensure userId is set
-              const planWithUser = {
-                ...parsedPlan,
-                userId: user.id
-              };
-              console.log('Plan before ensureBasicInfo:', planWithUser);
-              
-              plan = ensureLessonPlan(planWithUser);
-              console.log('Plan after ensureLessonPlan:', plan);
-              localStorage.removeItem(PLAN_STORAGE_KEY);
-            } else {
+            if (!parsedPlan || typeof parsedPlan !== 'object') {
               throw new Error('Invalid plan format');
             }
+
+            // Validate sections structure
+            const sections = parsedPlan.sections || { opening: [], main: [], summary: [] };
+            console.log('[State] Sections structure:', sections);
+
+            const validatedPlan = {
+              ...parsedPlan,
+              userId: user.id,
+              sections: {
+                opening: Array.isArray(sections.opening) ? sections.opening : [],
+                main: Array.isArray(sections.main) ? sections.main : [],
+                summary: Array.isArray(sections.summary) ? sections.summary : []
+              }
+            };
+            
+            console.log('[State] Validated plan before ensure:', validatedPlan);
+            plan = ensureLessonPlan(validatedPlan);
+            console.log('[State] Final plan after ensure:', plan);
+            
+            // נמחק את התוכן מ-localStorage רק אחרי שהתוכנית נשמרה לדאטהבייס
+            if (validatedPlan.id) {
+              localStorage.removeItem(PLAN_STORAGE_KEY);
+              console.log('[State] Cleared AI plan from storage after successful save');
+            }
           } catch (err) {
-            console.error('Failed to parse AI-generated plan:', err);
-            localStorage.removeItem(PLAN_STORAGE_KEY);
-            throw err;
+            console.error('[State] Failed to parse AI-generated plan:', err);
+            // השארת התוכנית ב-localStorage כדי לנסות לטעון אותה שוב
+            throw new Error('תקלה בטעינת תכנית השיעור - מנסה שוב...');
           }
         }
         // Then try to load by URL ID

@@ -21,6 +21,13 @@ export const LessonBuilder = ({
   onRemoveSection,
   onSave
 }: LessonBuilderProps) => {
+  React.useEffect(() => {
+    console.log('[LessonBuilder] Received sections:', sections);
+    console.log('[LessonBuilder] Opening sections:', sections.opening);
+    console.log('[LessonBuilder] Main sections:', sections.main);
+    console.log('[LessonBuilder] Summary sections:', sections.summary);
+  }, [sections]);
+
   return (
     <div>
       <h1 className="text-[1.2rem] font-semibold text-[#540ba9] pb-[10px] pt-[23px]">בניית השיעור</h1>
@@ -31,6 +38,7 @@ export const LessonBuilder = ({
             phase="opening"
             title=""
             sections={sections.opening}
+            key={`opening-${sections.opening.length}`}
             onAddSection={onAddSection}
             onUpdateSection={onUpdateSection}
             onRemoveSection={onRemoveSection}
@@ -40,6 +48,7 @@ export const LessonBuilder = ({
             phase="main"
             title=""
             sections={sections.main}
+            key={`main-${sections.main.length}`}
             onAddSection={onAddSection}
             onUpdateSection={onUpdateSection}
             onRemoveSection={onRemoveSection}
@@ -49,6 +58,7 @@ export const LessonBuilder = ({
             phase="summary"
             title=""
             sections={sections.summary}
+            key={`summary-${sections.summary.length}`}
             onAddSection={onAddSection}
             onUpdateSection={onUpdateSection}
             onRemoveSection={onRemoveSection}

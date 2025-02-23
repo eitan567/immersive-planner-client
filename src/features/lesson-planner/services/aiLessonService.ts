@@ -36,21 +36,16 @@ interface AILessonResponse {
 
 function tryParseJSON(text: string): any {
   try {
-    // First try parsing as is
-    return JSON.parse(text);
-  } catch (e) {
-    try {
-      // Try to find the last complete object by looking for the last closing brace
-      const lastBrace = text.lastIndexOf('}');
-      if (lastBrace > -1) {
-        const truncatedText = text.substring(0, lastBrace + 1);
-        return JSON.parse(truncatedText);
-      }
-    } catch (e2) {
-      // If both attempts fail, throw the original error
-      throw e;
+    // Try to extract JSON object using regex
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No valid JSON object found in response');
     }
-    throw e;
+    // Parse the matched JSON
+    return JSON.parse(jsonMatch[0]);
+  } catch (e) {
+    console.error('Failed to parse JSON:', text);
+    throw new Error('Invalid response format from AI server');
   }
 }
 
@@ -79,17 +74,38 @@ export async function generateFullLesson({
     if (!responseText) {
       throw new Error('No response received from server');
     }
+    
+    console.log('[AI Service] Raw response from server:', responseText);
 
     // Try to parse potentially incomplete JSON
     const aiResponse = tryParseJSON(responseText) as AILessonResponse;
+    console.log('[AI Service] Parsed AI response:', aiResponse);
     
     // Validate and provide defaults for essential fields
     if (!aiResponse || typeof aiResponse !== 'object') {
       throw new Error('Invalid response format from AI server');
     }
 
-    // Return only the AI-generated fields
-    return {
+    // Create a function to map sections with proper validation
+
+    // Create a function to map sections with proper validation
+    const mapSection = (section: AIGeneratedSection) => ({
+      id: crypto.randomUUID(),
+      content: section.content || '',
+      spaceUsage: section.spaceUsage || 'מליאה',
+      screen1: section.screen1 || '',
+      screen2: section.screen2 || '',
+      screen3: section.screen3 || '',
+      screen1Description: section.screen1Description || '',
+      screen2Description: section.screen2Description || '',
+      screen3Description: section.screen3Description || ''
+    });
+
+    // Ensure sections exist and have proper structure
+    const sections = aiResponse.sections || { opening: [], main: [], summary: [] };
+    
+    // Prepare the processed response
+    const processedResponse = {
       duration: aiResponse.duration || '',
       gradeLevel: aiResponse.gradeLevel || '',
       priorKnowledge: aiResponse.priorKnowledge || '',
@@ -97,49 +113,15 @@ export async function generateFullLesson({
       contentGoals: aiResponse.contentGoals || '',
       skillGoals: aiResponse.skillGoals || '',
       description: aiResponse.description || '',
-      // Sections need UUIDs for each section
       sections: {
-        opening: Array.isArray(aiResponse.sections?.opening) 
-          ? aiResponse.sections.opening.map(section => ({
-            id: crypto.randomUUID(),
-            content: section.content || '',
-            spaceUsage: section.spaceUsage || 'מליאה',
-            screen1: section.screen1 || '',
-            screen2: section.screen2 || '',
-            screen3: section.screen3 || '',
-            screen1Description: section.screen1Description || '',
-            screen2Description: section.screen2Description || '',
-            screen3Description: section.screen3Description || ''
-          })) 
-          : [],
-        main: Array.isArray(aiResponse.sections?.main) 
-          ? aiResponse.sections.main.map(section => ({
-            id: crypto.randomUUID(),
-            content: section.content || '',
-            spaceUsage: section.spaceUsage || 'מליאה',
-            screen1: section.screen1 || '',
-            screen2: section.screen2 || '',
-            screen3: section.screen3 || '',
-            screen1Description: section.screen1Description || '',
-            screen2Description: section.screen2Description || '',
-            screen3Description: section.screen3Description || ''
-          }))
-          : [],
-        summary: Array.isArray(aiResponse.sections?.summary) 
-          ? aiResponse.sections.summary.map(section => ({
-            id: crypto.randomUUID(),
-            content: section.content || '',
-            spaceUsage: section.spaceUsage || 'מליאה',
-            screen1: section.screen1 || '',
-            screen2: section.screen2 || '',
-            screen3: section.screen3 || '',
-            screen1Description: section.screen1Description || '',
-            screen2Description: section.screen2Description || '',
-            screen3Description: section.screen3Description || ''
-          }))
-          : []
+        opening: Array.isArray(sections.opening) ? sections.opening.map(mapSection) : [],
+        main: Array.isArray(sections.main) ? sections.main.map(mapSection) : [],
+        summary: Array.isArray(sections.summary) ? sections.summary.map(mapSection) : []
       }
     };
+
+    console.log('[AI Service] Processed response with defaults:', processedResponse);
+    return processedResponse;
   } catch (error) {
     console.error('Failed to generate lesson:', error);
     throw error;
