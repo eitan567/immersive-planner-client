@@ -214,7 +214,7 @@ const LessonEditor = React.memo(() => {
         onExport: currentStep === 2 ? handleExport : undefined
       }}      
     >
-      <div className="p-6 min-h-full">
+      <div className="min-h-full">
         <div dir="rtl" className="mx-auto space-y-0">
           {error && <ErrorAlert message={error} />}
           <Card className='border-0 shadow-none'>

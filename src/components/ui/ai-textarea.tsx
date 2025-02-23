@@ -273,7 +273,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
                        <Textarea
                          value={suggestion}
                          onChange={(e) => setSuggestion(e.target.value)}
-                         className="flex-1 min-h-[calc(100vh-350px)]"
+                         className="flex-1 min-h-[calc(100vh-364px)]"
                          placeholder="ההצעה תופיע כאן..."
                          dir="rtl"
                        />

@@ -50,24 +50,18 @@ export function LessonDashboard() {
 
   const handleCreateEmpty = () => {
     localStorage.removeItem('currentLessonPlanId');
+    localStorage.removeItem('currentLessonPlan'); // Ensure no AI plan exists
     navigate('/lesson/new');
   };
 
   const { generateLesson, isGenerating } = useAILesson({
-    onSuccess: async (generatedPlan) => {
-      try {
-        const updatedPlan = await lessonPlanService.updateLessonPlan(
-          generatedPlan.id,
-          {
-            ...generatedPlan,
-            status: 'draft',
-          }
-        );
-        navigate(`/lesson/${updatedPlan.id}`);
-      } catch (err) {
-        setError('Failed to update lesson with AI content');
-        console.error(err);
-      }
+    onSuccess: (generatedPlan) => {
+      // Wait for the localStorage update to complete
+      setTimeout(() => {
+        setIsAIModalOpen(false);
+        // Force a clean navigation to ensure fresh component mount
+        window.location.href = '/lesson/new';
+      }, 100);
     },
     onError: (errorMessage) => {
       setError(errorMessage);
@@ -79,40 +73,12 @@ export function LessonDashboard() {
     try {
       localStorage.removeItem('currentLessonPlanId');
       
-      const lessonPlan = await lessonPlanService.createLessonPlan({
-        userId: user!.id,
-        topic: data.topic,
-        duration: '',
-        gradeLevel: '',
-        priorKnowledge: '',
-        position: '',
-        contentGoals: '',
-        skillGoals: '',
-        sections: {
-          opening: [],
-          main: [],
-          summary: []
-        },
-        status: 'draft',
-        description: '',
-        basicInfo: {
-          title: data.topic,
-          duration: '',
-          gradeLevel: '',
-          priorKnowledge: '',
-          contentGoals: '',
-          skillGoals: ''
-        },
-        category: data.category
-      });
-
+      // Generate lesson directly without saving to DB
       await generateLesson({
         topic: data.topic,
         category: data.category,
         materials: data.materials || undefined
       });
-
-      setIsAIModalOpen(false);
     } catch (err) {
       setError('יצירת השיעור נכשלה');
       console.error(err);
@@ -120,6 +86,7 @@ export function LessonDashboard() {
   };
 
   const handleEdit = (lessonId: string) => {
+    localStorage.removeItem('currentLessonPlan'); // Ensure no AI plan exists
     navigate(`/lesson/${lessonId}`);
   };
 

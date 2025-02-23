@@ -122,17 +122,16 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
           <Eye className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl h-[75vh] bg-white" onClick={(e) => e.stopPropagation()}>
-        {/* <DialogHeader>
+      <DialogContent className="max-w-4xl bg-white" onClick={(e) => e.stopPropagation()}>
+        <DialogHeader>
           <DialogTitle>
-            תצוגה מקדימה - {lesson.basicInfo.title}
           </DialogTitle>
-        </DialogHeader> */}
+        </DialogHeader>
         <div className="flex flex-col h-full overflow-hidden">
           <LessonPlanPreview lesson={lesson} content={getLessonContent(lesson)} 
             aiClassName='max-h-[calc(100vh-460px)]' 
-            className="h-[calc(100vh-300px)] max-h-[calc(100vh-300px)] border-none shadow-none" 
-            cardContentClassName="h-[calc(100vh-400px)]"/>
+            className="pt-0" 
+            cardContentClassName=""/>
           <DialogFooter>
             <Button
               onClick={handleExport}

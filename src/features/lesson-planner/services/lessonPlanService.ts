@@ -140,20 +140,65 @@ const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => {
 };
 
 // Convert application lesson plan to database format
-const toDbLessonPlan = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at'>) => ({
-  status: plan.status || 'draft',
-  description: plan.description || '',
-  user_id: plan.userId,
-  topic: plan.topic,
-  duration: plan.duration,
-  grade_level: plan.gradeLevel,
-  prior_knowledge: plan.priorKnowledge,
-  position: plan.position,
-  content_goals: plan.contentGoals,
-  skill_goals: plan.skillGoals,
-  sections: plan.sections as unknown as Json,
-  category: plan.category
-});
+const toDbLessonPlan = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at'>) => {
+  // Properly transform sections to ensure screen data is preserved
+  const transformedSections: LessonPlanSections = {
+    opening: plan.sections.opening.map(section => ({
+      id: section.id,
+      content: section.content,
+      spaceUsage: section.spaceUsage,
+      screens: {
+        screen1: section.screen1 || section.screens?.screen1 || '',
+        screen2: section.screen2 || section.screens?.screen2 || '',
+        screen3: section.screen3 || section.screens?.screen3 || '',
+        screen1Description: section.screen1Description || section.screens?.screen1Description || '',
+        screen2Description: section.screen2Description || section.screens?.screen2Description || '',
+        screen3Description: section.screen3Description || section.screens?.screen3Description || ''
+      }
+    })),
+    main: plan.sections.main.map(section => ({
+      id: section.id,
+      content: section.content,
+      spaceUsage: section.spaceUsage,
+      screens: {
+        screen1: section.screen1 || section.screens?.screen1 || '',
+        screen2: section.screen2 || section.screens?.screen2 || '',
+        screen3: section.screen3 || section.screens?.screen3 || '',
+        screen1Description: section.screen1Description || section.screens?.screen1Description || '',
+        screen2Description: section.screen2Description || section.screens?.screen2Description || '',
+        screen3Description: section.screen3Description || section.screens?.screen3Description || ''
+      }
+    })),
+    summary: plan.sections.summary.map(section => ({
+      id: section.id,
+      content: section.content,
+      spaceUsage: section.spaceUsage,
+      screens: {
+        screen1: section.screen1 || section.screens?.screen1 || '',
+        screen2: section.screen2 || section.screens?.screen2 || '',
+        screen3: section.screen3 || section.screens?.screen3 || '',
+        screen1Description: section.screen1Description || section.screens?.screen1Description || '',
+        screen2Description: section.screen2Description || section.screens?.screen2Description || '',
+        screen3Description: section.screen3Description || section.screens?.screen3Description || ''
+      }
+    }))
+  };
+
+  return {
+    status: plan.status || 'draft',
+    description: plan.description || '',
+    user_id: plan.userId,
+    topic: plan.topic,
+    duration: plan.duration,
+    grade_level: plan.gradeLevel,
+    prior_knowledge: plan.priorKnowledge,
+    position: plan.position,
+    content_goals: plan.contentGoals,
+    skill_goals: plan.skillGoals,
+    sections: transformedSections as unknown as Json,
+    category: plan.category
+  };
+};
 
 export const lessonPlanService = {
   async getLessonPlans(): Promise<LessonPlan[]> {

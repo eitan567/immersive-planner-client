@@ -6,6 +6,7 @@ import { mapCategoryToHebrew } from '../components/chat/useChatLogic.ts';
 import { translateContent } from "../../../utils/translations.ts";
 
 const STORAGE_KEY = 'currentLessonPlanId';
+const PLAN_STORAGE_KEY = 'currentLessonPlan';
 const STEP_STORAGE_KEY = 'currentLessonPlanStep';
 
 const createEmptyLessonPlan = (userId: string): Omit<LessonPlan, 'id' | 'created_at' | 'updated_at'> => ({
@@ -32,7 +33,7 @@ const createEmptyLessonPlan = (userId: string): Omit<LessonPlan, 'id' | 'created
   },
   status: 'draft',
   description: '',
-  category: '' // empty category by default
+  category: ''
 });
 
 const createEmptySection = (): LessonSection => ({
@@ -64,6 +65,7 @@ const handleSectionUpdate = (fieldPath: string, newValue: string, currentSection
     console.warn('handleSectionUpdate expects at least 3 parts (phase, index, field). Received:', parts);
     return currentSections;
   }
+
   const phase = parts[0];
   const rawIndex = parts[1];
   const field = parts.slice(2).join('.');
@@ -110,6 +112,46 @@ const handleSectionUpdate = (fieldPath: string, newValue: string, currentSection
   return sectionsCopy;
 };
 
+const ensureBasicInfo = (plan: Partial<LessonPlan>): LessonPlan => {
+  if (!plan) {
+    throw new Error('Cannot ensure basic info for null plan');
+  }
+
+  // First create the core fields
+  const corePlan = {
+    id: plan.id || '',
+    userId: plan.userId || '',
+    topic: plan.topic || '',
+    duration: plan.duration || '',
+    gradeLevel: plan.gradeLevel || '',
+    priorKnowledge: plan.priorKnowledge || '',
+    position: plan.position || '',
+    contentGoals: plan.contentGoals || '',
+    skillGoals: plan.skillGoals || '',
+    sections: plan.sections || { opening: [], main: [], summary: [] },
+    status: plan.status || 'draft',
+    description: plan.description || '',
+    category: plan.category || '',
+    created_at: plan.created_at || new Date().toISOString(),
+    updated_at: plan.updated_at || new Date().toISOString()
+  };
+
+  // Then ensure basicInfo reflects the same values
+  const basicInfo = {
+    title: corePlan.topic, // Always use topic as title
+    duration: corePlan.duration,
+    gradeLevel: corePlan.gradeLevel,
+    priorKnowledge: corePlan.priorKnowledge,
+    contentGoals: corePlan.contentGoals,
+    skillGoals: corePlan.skillGoals
+  };
+
+  return {
+    ...corePlan,
+    basicInfo
+  } as LessonPlan; // Type assertion since we know this matches LessonPlan
+};
+
 const useLessonPlanState = (lessonId?: string) => {
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(() => {
@@ -136,44 +178,86 @@ const useLessonPlanState = (lessonId?: string) => {
 
       try {
         setLoading(true);
-        let plan: LessonPlan | null = null;
+        let plan: LessonPlan;
         
-        // First try to load by URL ID
-        if (lessonId) {
+        // First check for an AI-generated plan
+        const generatedPlan = localStorage.getItem(PLAN_STORAGE_KEY);
+        if (generatedPlan) {
           try {
-            plan = await lessonPlanService.getLessonPlan(lessonId);
+            const parsedPlan = JSON.parse(generatedPlan);
+            if (parsedPlan && typeof parsedPlan === 'object') {
+              // Ensure the plan has all required fields and proper basicInfo sync
+              plan = ensureBasicInfo({
+                ...parsedPlan,
+                userId: user.id,
+                // Preserve user-provided values
+                topic: parsedPlan.topic,
+                category: parsedPlan.category
+              });
+              localStorage.removeItem(PLAN_STORAGE_KEY);
+            } else {
+              throw new Error('Invalid plan format');
+            }
+          } catch (err) {
+            console.error('Failed to parse AI-generated plan:', err);
+            localStorage.removeItem(PLAN_STORAGE_KEY);
+            throw err;
+          }
+        }
+        // Then try to load by URL ID
+        else if (lessonId) {
+          try {
+            const loadedPlan = await lessonPlanService.getLessonPlan(lessonId);
+            if (loadedPlan) {
+              plan = ensureBasicInfo(loadedPlan);
+            } else {
+              throw new Error('Lesson not found');
+            }
           } catch (err) {
             console.error('Failed to load lesson by ID:', err);
             throw err;
           }
         }
-        // Then try to load from localStorage if no URL ID
+        // Try to load from localStorage ID
         else {
           const savedId = localStorage.getItem(STORAGE_KEY);
           if (savedId) {
             try {
-              plan = await lessonPlanService.getLessonPlan(savedId);
+              const loadedPlan = await lessonPlanService.getLessonPlan(savedId);
+              if (loadedPlan) {
+                plan = ensureBasicInfo(loadedPlan);
+              } else {
+                throw new Error('Saved lesson not found');
+              }
             } catch (err) {
               console.error('Failed to load from localStorage:', err);
               localStorage.removeItem(STORAGE_KEY);
+              plan = ensureBasicInfo(createEmptyLessonPlan(user.id));
             }
+          } else {
+            plan = ensureBasicInfo(createEmptyLessonPlan(user.id));
           }
         }
 
-        // If no plan was loaded, create a new empty one
-        if (!plan) {
-          plan = {
-            ...createEmptyLessonPlan(user.id),
-            id: '',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          };
-        }
+        // Final validation to ensure all fields are present
+        const validatedPlan = ensureBasicInfo({
+          ...plan,
+          // Ensure empty strings rather than undefined
+          duration: plan.duration || '',
+          gradeLevel: plan.gradeLevel || '',
+          priorKnowledge: plan.priorKnowledge || '',
+          contentGoals: plan.contentGoals || '',
+          skillGoals: plan.skillGoals || '',
+          position: plan.position || ''
+        });
 
-        setLessonPlan(plan);
+        setLessonPlan(validatedPlan);
         setError(null);
+        // Set unsaved changes if this is an AI-generated plan that hasn't been saved yet
+        setUnsavedChanges(!validatedPlan.id);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to initialize lesson plan');
+        setLessonPlan(ensureBasicInfo(createEmptyLessonPlan(user.id)));
       } finally {
         setLoading(false);
       }
@@ -202,98 +286,20 @@ const useLessonPlanState = (lessonId?: string) => {
 
       if (value === undefined) return prevPlan;
 
-      return { ...prevPlan, [field]: field === 'category' ? mapCategoryToHebrew(value) : value };
+      const newPlan = { ...prevPlan, [field]: field === 'category' ? mapCategoryToHebrew(value) : value };
+      
+      // Keep basicInfo in sync with main fields
+      if (['topic', 'duration', 'gradeLevel', 'priorKnowledge', 'contentGoals', 'skillGoals'].includes(field)) {
+        newPlan.basicInfo = {
+          ...newPlan.basicInfo,
+          title: newPlan.topic,
+          [field]: value
+        };
+      }
+
+      return newPlan;
     });
     setUnsavedChanges(true);
-  };
-
-  const saveCurrentPlan = async (navigate?: (path: string) => void) => {
-    console.log('saveCurrentPlan called');
-    if (!lessonPlan || !user || saveInProgress) {
-      console.log('saveCurrentPlan aborted: missing lessonPlan, user, or saveInProgress is true');
-      return;
-    }
-    
-    // Skip saving if category is not selected or topic is empty
-    if (!lessonPlan.category || !lessonPlan.topic.trim()) {
-      console.log('saveCurrentPlan aborted: missing category or topic');
-      return;
-    }
-
-    try {
-      setSaveInProgress(true);
-      
-      let savedPlan: LessonPlan;
-      
-      const preparePlanForSave = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at'>) => ({
-        ...plan,
-        sections: {
-          opening: plan.sections.opening.map(section => ({
-            ...section,
-            screens: {
-              screen1: section.screen1 || '',
-              screen2: section.screen2 || '',
-              screen3: section.screen3 || '',
-              screen1Description: section.screen1Description || '',
-              screen2Description: section.screen2Description || '',
-              screen3Description: section.screen3Description || ''
-            }
-          })),
-          main: plan.sections.main.map(section => ({
-            ...section,
-            screens: {
-              screen1: section.screen1 || '',
-              screen2: section.screen2 || '',
-              screen3: section.screen3 || '',
-              screen1Description: section.screen1Description || '',
-              screen2Description: section.screen2Description || '',
-              screen3Description: section.screen3Description || ''
-            }
-          })),
-          summary: plan.sections.summary.map(section => ({
-            ...section,
-            screens: {
-              screen1: section.screen1 || '',
-              screen2: section.screen2 || '',
-              screen3: section.screen3 || '',
-              screen1Description: section.screen1Description || '',
-              screen2Description: section.screen2Description || '',
-              screen3Description: section.screen3Description || ''
-            }
-          }))
-        }
-      });
-
-      // For new lessons without an ID, create new DB record
-      if (!lessonPlan.id) {
-        const { id, created_at, updated_at, ...planWithoutId } = lessonPlan;
-        const preparedPlan = preparePlanForSave(planWithoutId);
-        savedPlan = await lessonPlanService.createLessonPlan(preparedPlan);
-        
-        // Save ID to localStorage after first successful save
-        localStorage.setItem(STORAGE_KEY, savedPlan.id);
-        
-        // Navigate to the edit page after first save if navigate function is provided
-        if (navigate) {
-          navigate(`/lesson/${savedPlan.id}`);
-        }
-      } else {
-        // For existing lessons, update the record
-        const { id, created_at, updated_at, ...planWithoutMeta } = lessonPlan;
-        const preparedPlan = preparePlanForSave(planWithoutMeta);
-        savedPlan = await lessonPlanService.updateLessonPlan(lessonPlan.id, preparedPlan);
-      }
-      
-      setLessonPlan(savedPlan);
-      setLastSaved(new Date());
-      setUnsavedChanges(false);
-      console.log(lessonPlan.id ? 'Lesson plan updated successfully' : 'New lesson plan created successfully');
-    } catch (err) {
-      console.error('Error saving lesson plan:', err);
-      setError(err instanceof Error ? err.message : 'Error saving plan');
-    } finally {
-      setSaveInProgress(false);
-    }
   };
 
   const updateSections = (newSections: LessonPlanSections) => {
@@ -405,6 +411,47 @@ const useLessonPlanState = (lessonId?: string) => {
     });
 
     return translateContent(text);
+  };
+
+  const saveCurrentPlan = async (navigate?: (path: string) => void) => {
+    if (!lessonPlan || !user || saveInProgress) return;
+    
+    // Skip saving if category is not selected or topic is empty
+    if (!lessonPlan.category || !lessonPlan.topic.trim()) {
+      return;
+    }
+
+    try {
+      setSaveInProgress(true);
+      
+      let savedPlan: LessonPlan;
+      
+      // For new lessons without an ID, create new DB record
+      if (!lessonPlan.id) {
+        const { id, created_at, updated_at, ...planWithoutId } = lessonPlan;
+        savedPlan = await lessonPlanService.createLessonPlan(planWithoutId);
+        
+        // Save ID to localStorage after first successful save
+        localStorage.setItem(STORAGE_KEY, savedPlan.id);
+        
+        // Navigate to the edit page after first save if navigate function is provided
+        if (navigate) {
+          navigate(`/lesson/${savedPlan.id}`);
+        }
+      } else {
+        // For existing lessons, update the record
+        const { id, created_at, updated_at, ...planWithoutMeta } = lessonPlan;
+        savedPlan = await lessonPlanService.updateLessonPlan(lessonPlan.id, planWithoutMeta);
+      }
+      
+      setLessonPlan(savedPlan);
+      setLastSaved(new Date());
+      setUnsavedChanges(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error saving plan');
+    } finally {
+      setSaveInProgress(false);
+    }
   };
 
   const createAndAddSection = async (
