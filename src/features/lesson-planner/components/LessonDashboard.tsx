@@ -56,12 +56,8 @@ export function LessonDashboard() {
 
   const { generateLesson, isGenerating } = useAILesson({
     onSuccess: (generatedPlan) => {
-      // Wait for the localStorage update to complete
-      setTimeout(() => {
-        setIsAIModalOpen(false);
-        // Force a clean navigation to ensure fresh component mount
-        window.location.href = '/lesson/new';
-      }, 100);
+      setIsAIModalOpen(false);
+      navigate('/lesson/new', { replace: true });
     },
     onError: (errorMessage) => {
       setError(errorMessage);
