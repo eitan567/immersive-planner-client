@@ -30,10 +30,10 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
         // Form Data
         topic: data.topic,
         category: data.category,
-        duration: aiResponse.duration || '90 דקות',
-        gradeLevel: aiResponse.gradeLevel || 'ט\'-יב\'',
+        duration: aiResponse.duration || '',
+        gradeLevel: aiResponse.gradeLevel || '',
         priorKnowledge: aiResponse.priorKnowledge || '',
-        position: aiResponse.position || 'פתיחת נושא',
+        position: aiResponse.position || '',
         contentGoals: aiResponse.contentGoals || '',
         skillGoals: aiResponse.skillGoals || '',
         sections: aiResponse.sections || {
