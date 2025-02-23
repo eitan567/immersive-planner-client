@@ -1,6 +1,4 @@
-import React, { useEffect } from 'react';
-import { Card, CardContent } from '../../../components/ui/card.tsx';
-import { Button } from '../../../components/ui/button.tsx';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   AlertDialog,
@@ -40,14 +38,11 @@ interface RightSidebarProps {
 }
 
 const RightSidebar: React.FC<RightSidebarProps> = ({
-  sections,
-  lessonTitle,
-  totalSteps,
+  sections,  
   onUpdateField,
   currentValues,
   saveCurrentPlan,
-  createAndAddSection,
-  everSaved
+  createAndAddSection
 }) => {
   const navigate = useNavigate();
   const [showExitDialog, setShowExitDialog] = React.useState(false);
