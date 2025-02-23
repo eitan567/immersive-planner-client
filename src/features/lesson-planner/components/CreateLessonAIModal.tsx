@@ -19,6 +19,8 @@ import {
 } from '../../../components/ui/select.tsx';
 import { LessonCategory, LESSON_CATEGORIES } from '../types.ts';
 import { LoadingSpinner } from '../../../components/ui/loading-spinner.tsx';
+import { Label } from '../../../components/ui/label.tsx';
+import { Textarea } from '../../../components/ui/textarea.tsx';
 
 interface CreateLessonAIModalProps {
   isOpen: boolean;
@@ -36,8 +38,10 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!topic) {
-      setError('נא להזין נושא');
+    
+    // Check if at least one field has a value
+    if (!topic.trim() && !materials.trim() && !category) {
+      setError('נא להזין לפחות אחד מהשדות');
       return;
     }
     
@@ -47,7 +51,7 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
     try {
       onCreate({
         topic: topic.trim(),
-        materials,
+        materials: materials.trim(),
         category: category as LessonCategory,
       });
     } catch (err) {
@@ -57,6 +61,9 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
     }
   };
 
+  // Check if at least one field has a value
+  const isFormValid = topic.trim() || materials.trim() || category;
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent dir="rtl" className="max-w-2xl bg-white">
@@ -65,7 +72,7 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
             יצירת שיעור בעזרת AI
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
-            הזן את הפרטים הבאים ליצירת שיעור חדש
+            הזן לפחות אחד מהפרטים הבאים ליצירת שיעור חדש
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -81,18 +88,31 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-          <div>
-            <label className="text-base font-medium mb-2 block">נושא היחידה *</label>
-            <Input
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder="הכנס את נושא היחידה"
-            />
-          </div>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="topic">נושא היחידה</Label>
+              <Input
+                id="topic"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                placeholder="לדוגמה: מעגל החיים של הפרפר"
+              />
+            </div>
 
-          <div>
-            <label className="text-base font-medium mb-2 block">קטגוריה *</label>
-            <Select value={category} onValueChange={setCategory}>
+            <div>
+              <Label htmlFor="materials">חומרי עזר</Label>
+              <Textarea
+                id="materials"
+                value={materials}
+                onChange={(e) => setMaterials(e.target.value)}
+                placeholder="לדוגמה: מצגת, סרטון, כרטיסיות..."
+                className="min-h-[100px]"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="category">קטגוריה (לא חובה)</Label>
+              <Select value={category} onValueChange={setCategory}>
               <SelectTrigger>
                 <SelectValue placeholder="בחר קטגוריה" />
               </SelectTrigger>
@@ -102,19 +122,7 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div>
-            <label className="text-base font-medium mb-2 block">חומרי למידה</label>
-            <textarea
-              value={materials}
-              onChange={(e) => setMaterials(e.target.value)}
-              placeholder="הכנס חומרי למידה עבור ה-AI"
-              className="w-full min-h-[150px] p-3 border rounded-md"
-            />
-            <p className="text-sm text-gray-500 mt-1">
-              המודל ישתמש בחומרים אלו ליצירת תוכן השיעור
-            </p>
+            </div>
           </div>
 
           {error && (
@@ -134,7 +142,7 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
           <AlertDialogAction
             type="submit"
             onClick={handleSubmit}
-            disabled={isSubmitting || isGenerating}
+            disabled={isSubmitting || isGenerating || !isFormValid}
             className="bg-[#540ba9] hover:bg-[#7122db]"
           >
             צור שיעור
