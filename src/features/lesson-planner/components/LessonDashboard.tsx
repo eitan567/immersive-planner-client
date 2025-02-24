@@ -65,15 +65,15 @@ export function LessonDashboard() {
     }
   });
 
-  const handleCreateAI = async (data: { topic: string, materials: string, category: LessonCategory }) => {
+  const handleCreateAI = async (data: { topic?: string, materials?: string, category?: LessonCategory }) => {
     try {
       localStorage.removeItem('currentLessonPlanId');
       
       // שליחת הנתונים עם ערכים ריקים במקום undefined
       await generateLesson({
-        topic: data.topic,
-        category: data.category,
-        materials: data.materials
+        topic: data.topic || '',
+        category: data.category || LESSON_CATEGORIES[0],
+        materials: data.materials || ''
       });
     } catch (err) {
       setError('יצירת השיעור נכשלה');

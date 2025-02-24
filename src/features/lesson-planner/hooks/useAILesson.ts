@@ -8,7 +8,8 @@ import type {
 import { 
   POSITION_MAPPING,
   SPACE_USAGE_MAPPING,
-  SCREEN_TYPE_MAPPING
+  SCREEN_TYPE_MAPPING,
+  LESSON_CATEGORIES
 } from '../types.ts';
 
 interface UseAILessonProps {
@@ -61,9 +62,9 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
 
       // לוקח רק את השדות שצריך מהתשובה של השרת
       const completeLessonPlan: LessonPlan = {
-        // אם יש ערכים מהמשתמש - משתמשים בהם, אחרת לוקחים מהשרת
-        topic: data.topic ?? aiResponse.topic ?? '',
-        category: data.category ?? aiResponse.category ?? '',
+        // אם יש ערכים מהמשתמש שאינם ריקים - משתמשים בהם, אחרת לוקחים מהשרת
+        topic: (data.topic && data.topic.trim()) || aiResponse.topic || '',
+        category: (data.category && data.category.trim() ? data.category : aiResponse.category) || LESSON_CATEGORIES[0],
         position: mapToEnglish(aiResponse.position || '', POSITION_MAPPING),
         duration: aiResponse.duration || '',
         gradeLevel: aiResponse.gradeLevel || '',
