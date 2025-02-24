@@ -80,7 +80,7 @@ interface LayoutProps {
 
 export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, children, user, mode, rightSidebarProps, leftSidebarProps, navigationProps }: LayoutProps) => {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
-  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false);
 
   const toggleRightSidebar = () => setIsRightSidebarOpen(!isRightSidebarOpen);
   const toggleLeftSidebar = () => setIsLeftSidebarOpen(!isLeftSidebarOpen);
@@ -104,7 +104,8 @@ export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, 
             </div>
             
             {/* Toggle Button */}
-            <button
+            <button 
+              type='button'
               onClick={toggleLeftSidebar}
               className="absolute -right-[0.20rem] top-0 -mr-4 z-10 flex items-center justify-center w-5 h-8 bg-[#fff4fc] rounded-l border border-slate-200 shadow-sm focus:outline-none"
               aria-label={isLeftSidebarOpen ? "Close sidebar" : "Open sidebar"}
@@ -160,6 +161,7 @@ export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, 
           
           {/* Toggle Button */}
           <button
+            type='button'
             onClick={toggleRightSidebar}
             className="absolute -left-[0.20rem] top-0 -ml-4 z-10 flex items-center justify-center w-5 h-8 bg-[#fff4fc] rounded-l border border-slate-200 shadow-sm focus:outline-none"
             aria-label={isRightSidebarOpen ? "Close sidebar" : "Open sidebar"}
