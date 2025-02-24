@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Navbar } from './Navbar.tsx';
-import { RightSidebar } from '../../lesson-planner/components/RightSidebar.tsx';
+import { RightSidebar } from './RightSidebar.tsx';
 import { LeftSidebar } from './LeftSidebar.tsx';
 import { DashboardRightSidebar } from './DashboardRightSidebar.tsx';
 import type { LessonPlanSections } from '../../lesson-planner/types.ts';

@@ -10,9 +10,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '../../../components/ui/alert-dialog.tsx';
-import { LessonFieldChatBox } from './LessonFieldChatBox.tsx';
-import type { LessonPlanSections } from '../types.ts';
-import { ValidFieldNames } from '../../../features/common/components/Layout.tsx';
+import { LessonFieldChatBox } from '../../lesson-planner/components/LessonFieldChatBox.tsx';
+import type { LessonPlanSections } from '../../lesson-planner/types.ts';
+import { ValidFieldNames } from './Layout.tsx';
 
 interface RightSidebarProps {
   saveInProgress: boolean;

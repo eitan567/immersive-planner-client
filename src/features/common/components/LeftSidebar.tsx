@@ -50,14 +50,14 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           </CardContent>
         </Card>
         
-        <LessonFieldChatBox
+        {/* <LessonFieldChatBox
           onUpdateField={onUpdateField}
           currentValues={currentValues}
           saveCurrentPlan={saveCurrentPlan}
           createAndAddSection={createAndAddSection}
           sections={sections}
           className="h-[calc(100vh-500px)]"
-        />
+        /> */}
 
       </div>
     </aside>
