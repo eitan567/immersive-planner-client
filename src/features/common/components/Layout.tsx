@@ -15,6 +15,7 @@ interface LessonRightSidebarProps {
   lastSaved: Date | null;
   lessonTitle?: string;
   totalSteps: number;
+  lessonId?: string;
   onUpdateField: (fieldName: ValidFieldNames | Array<[string, string]>, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
   saveCurrentPlan: () => Promise<void>;

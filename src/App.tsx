@@ -140,8 +140,9 @@ const LessonEditor = React.memo(() => {
     },
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] },
     everSaved: !!lessonPlan?.id,
-    createAndAddSection
-  }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan]);
+    createAndAddSection,
+    lessonId: lessonPlan?.id
+  }), [saveInProgress, lastSaved, lessonPlan, handleFieldUpdate, saveCurrentPlan, createAndAddSection]);
 
   useEffect(() => {
     if (!loading && !lessonPlan && id && id !== 'new') {
