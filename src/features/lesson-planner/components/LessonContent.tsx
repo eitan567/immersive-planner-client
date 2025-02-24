@@ -13,7 +13,8 @@ const validFields = [
   'position',
   'contentGoals',
   'skillGoals',
-  'category'
+  'category',
+  'description'
 ] as const;
 
 interface LessonContentProps {

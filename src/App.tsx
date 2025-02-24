@@ -61,7 +61,7 @@ const LessonEditor = React.memo(() => {
 
   const handleFieldUpdate = React.useCallback(
   async (
-    fieldName: 'category' | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals' | Array<[string, string]>,
+    fieldName: 'category' | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals' | 'description' | Array<[string, string]>,
     value?: string
   ): Promise<void> => {
     if (!lessonPlan) return;
@@ -74,7 +74,8 @@ const LessonEditor = React.memo(() => {
       'position',
       'contentGoals',
       'skillGoals',
-      'category'
+      'category',
+      'description'
     ] as const;
 
     if (Array.isArray(fieldName)) {
@@ -109,7 +110,8 @@ const LessonEditor = React.memo(() => {
       position: String(lessonPlan?.position || ''),
       contentGoals: lessonPlan?.contentGoals || '',
       skillGoals: lessonPlan?.skillGoals || '',
-      category: lessonPlan?.category || ''
+      category: lessonPlan?.category || '',
+      description: lessonPlan?.description || ''
     },
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] },
     saveCurrentPlan,
@@ -133,7 +135,8 @@ const LessonEditor = React.memo(() => {
       position: String(lessonPlan?.position || ''),
       contentGoals: lessonPlan?.contentGoals || '',
       skillGoals: lessonPlan?.skillGoals || '',
-      category: lessonPlan?.category || ''
+      category: lessonPlan?.category || '',
+      description: lessonPlan?.description || ''
     },
     sections: lessonPlan?.sections || { opening: [], main: [], summary: [] },
     everSaved: !!lessonPlan?.id,

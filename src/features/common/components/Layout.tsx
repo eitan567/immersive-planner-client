@@ -8,7 +8,7 @@ import type { LessonPlanSections } from '../../lesson-planner/types.ts';
 import { FloatingSaveButton } from '../../lesson-planner/components/FloatingSaveButton.tsx';
 import { NavigationControls } from '../../lesson-planner/components/NavigationControls.tsx';
 
-export type ValidFieldNames = 'category' | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals';
+export type ValidFieldNames = 'category' | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals' | 'description';
 
 interface LessonRightSidebarProps {
   saveInProgress: boolean;

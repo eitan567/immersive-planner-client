@@ -263,7 +263,7 @@ const useLessonPlanState = (lessonId?: string) => {
   }, [user, lessonId]);
 
   const handleBasicInfoChange = (
-    field: Array<[string, string]> | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals' | 'category',
+    field: Array<[string, string]> | 'topic' | 'duration' | 'gradeLevel' | 'priorKnowledge' | 'position' | 'contentGoals' | 'skillGoals' | 'category' | 'description',
     value?: string
   ) => {
     if (!lessonPlan || !user) return;

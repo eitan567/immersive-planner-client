@@ -102,6 +102,7 @@ export type LessonFormData = {
   position: string;
   contentGoals: string;
   skillGoals: string;
+  description: string;
   sections: LessonPlanSections;
 };
 
