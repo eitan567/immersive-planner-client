@@ -59,10 +59,11 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
         summary: sections.summary?.map(mapSection) || []
       });
 
+      // לוקח רק את השדות שצריך מהתשובה של השרת
       const completeLessonPlan: LessonPlan = {
-        // Form Data
-        topic: data.topic || '',
-        category: data.category || '',
+        // אם יש ערכים מהמשתמש - משתמשים בהם, אחרת לוקחים מהשרת
+        topic: data.topic ?? aiResponse.topic ?? '',
+        category: data.category ?? aiResponse.category ?? '',
         position: mapToEnglish(aiResponse.position || '', POSITION_MAPPING),
         duration: aiResponse.duration || '',
         gradeLevel: aiResponse.gradeLevel || '',

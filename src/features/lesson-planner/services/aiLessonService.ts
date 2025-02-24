@@ -27,6 +27,8 @@ interface AIGeneratedSection {
 }
 
 interface AILessonResponse {
+  topic?: string;
+  category?: LessonCategory;
   duration?: string;
   gradeLevel?: string;
   priorKnowledge?: string;
@@ -96,7 +98,7 @@ export async function generateFullLesson(params: GenerateFullLessonParams): Prom
     const mapSection = (section: AIGeneratedSection) => ({
       id: crypto.randomUUID(),
       content: section.content || '',
-      spaceUsage: section.spaceUsage || 'מליאה',
+      spaceUsage: section.spaceUsage || '',
       screen1: section.screen1 || '',
       screen2: section.screen2 || '',
       screen3: section.screen3 || '',
@@ -108,8 +110,10 @@ export async function generateFullLesson(params: GenerateFullLessonParams): Prom
     // Ensure sections exist and have proper structure
     const sections = aiResponse.sections || { opening: [], main: [], summary: [] };
     
-    // Prepare the processed response
+    // Prepare the processed response with type assertion for category
     const processedResponse = {
+      topic: aiResponse.topic || '',
+      category: params.category || aiResponse.category,
       duration: aiResponse.duration || '',
       gradeLevel: aiResponse.gradeLevel || '',
       priorKnowledge: aiResponse.priorKnowledge || '',
