@@ -21,11 +21,12 @@ const validFields = [
   'position',
   'contentGoals',
   'skillGoals',
-  'category'
+  'category',
+  'description'
 ] as const;
 
 type BasicInfoFormProps = {
-  lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'category'>;
+  lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'category' | 'description'>;
   handleBasicInfoChange: (field: typeof validFields[number], value: string) => void;
   onSave?: () => Promise<void>;
   validateRef?: React.MutableRefObject<(() => boolean) | undefined>;
@@ -84,6 +85,9 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
   return (
     <div className="space-y-2 rtl">
       <h1 className="text-[1.2rem] font-semibold text-[#540ba9] pt-3">פרטי השיעור</h1>
+      {lessonPlan.description && (
+        <div className="text-purple-600 bg-yellow-50 p-3 py-2 rounded-lg border border-yellow-200 mb-4 text-right text-md">{lessonPlan.description}</div>
+      )}
 
       <div className="text-right">
         <Label className="text-right">קטגוריה *</Label>
