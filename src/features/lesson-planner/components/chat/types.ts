@@ -2,14 +2,14 @@ import { LessonPlanSections } from '../../types.ts';
 import { ValidFieldNames } from '../../../../features/common/components/Layout.tsx';
 
 export interface LessonFieldChatBoxProps {
-  onUpdateField: (fieldName: ValidFieldNames | Array<[string, string]>, value?: string) => Promise<void>;
+  onUpdateField: (fieldName: [string, string][] | ValidFieldNames, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
   sections: LessonPlanSections;
   saveCurrentPlan: () => Promise<void>;
   createAndAddSection: (    
      phase: keyof LessonPlanSections, 
      content: string, 
-     spaceUsage: string,
+     spaceUsage?: string,
      screen1?: string,
      screen2?: string,
      screen3?: string,

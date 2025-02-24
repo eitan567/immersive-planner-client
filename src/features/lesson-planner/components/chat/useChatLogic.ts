@@ -3,6 +3,7 @@ import { useMcpTool } from '../../../../hooks/useMcp.ts';
 import { Message } from '../ChatMessage.tsx';
 import { AIResponse, FieldUpdate, FIELD_LABELS, SPACE_USAGE_MAP, SCREEN_TYPE_MAP, POSITION_MAP, CATEGORY_MAP, ChatResponse } from './types.ts';
 import type { LessonPlanSections } from '../../types.ts';
+import { ValidFieldNames } from '../../../common/components/Layout.tsx';
 
 export function mapScreenTypeToEnglish(hebrewValue: string): string {
   return SCREEN_TYPE_MAP[hebrewValue as keyof typeof SCREEN_TYPE_MAP] || hebrewValue;
@@ -63,7 +64,7 @@ function getHebrewFieldLabel(fieldName: string): string {
 }
 
 interface UseChatLogicProps {
-  onUpdateField: (fieldName: string | Array<[string, string]>, value?: string) => Promise<void>;
+  onUpdateField: (fieldName: [string, string][] | ValidFieldNames, value?: string) => Promise<void>;
   currentValues: Record<string, string>;
   sections: LessonPlanSections;
   saveCurrentPlan: () => Promise<void>;

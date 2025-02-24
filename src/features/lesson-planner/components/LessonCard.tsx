@@ -69,7 +69,7 @@ export function LessonCard({
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
-            <CardTitle className="text-lg font-semibold text-[#f06094] line-clamp-1" onClick={() => onEdit(id)}>
+            <CardTitle className="text-md font-semibold text-[#f06094] line-clamp-2" onClick={() => onEdit(id)}>
               {formatTitle(topic)}
             </CardTitle>
           </div>
