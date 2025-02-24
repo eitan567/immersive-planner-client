@@ -20,9 +20,9 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateLesson = async (data: {
-    topic: string;
-    materials: string;
-    category: LessonCategory;
+    topic?: string;
+    materials?: string;
+    category?: LessonCategory;
   }) => {
     try {
       setIsGenerating(true);
@@ -61,8 +61,8 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
 
       const completeLessonPlan: LessonPlan = {
         // Form Data
-        topic: data.topic,
-        category: data.category,
+        topic: data.topic || '',
+        category: data.category || '',
         position: mapToEnglish(aiResponse.position || '', POSITION_MAPPING),
         duration: aiResponse.duration || '',
         gradeLevel: aiResponse.gradeLevel || '',

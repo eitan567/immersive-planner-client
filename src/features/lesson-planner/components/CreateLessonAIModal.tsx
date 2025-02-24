@@ -25,7 +25,7 @@ import { Textarea } from '../../../components/ui/textarea.tsx';
 interface CreateLessonAIModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (data: { topic: string; materials: string; category: LessonCategory }) => void;
+  onCreate: (data: { topic?: string; materials?: string; category?: LessonCategory }) => void;
   isGenerating?: boolean; // Add this prop
 }
 
@@ -50,11 +50,20 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
     
     try {
       // שליחה של השדות עם ערכי ברירת מחדל ריקים במקום undefined
-      onCreate({
-        topic: topic.trim() || '',
-        materials: materials.trim() || '',
-        category: category as LessonCategory || LESSON_CATEGORIES[0], // שימוש בקטגוריה הראשונה כברירת מחדל
-      });
+      const data: { topic?: string; materials?: string; category?: LessonCategory } = {};
+      
+      // רק אם יש ערך בשדה, נוסיף אותו לאובייקט
+      if (topic.trim()) {
+        data.topic = topic.trim();
+      }
+      if (materials.trim()) {
+        data.materials = materials.trim();
+      }
+      if (category) {
+        data.category = category as LessonCategory;
+      }
+
+      onCreate(data);
     } catch (err) {
       setError('אירעה שגיאה ביצירת השיעור');
       console.error(err);

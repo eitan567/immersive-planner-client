@@ -3,9 +3,16 @@ import type { LessonPlan, LessonCategory } from '../types.ts';
 import { FIELD_LABELS } from '../components/chat/types.ts';
 
 interface GenerateFullLessonParams {
-  topic: string;
+  topic?: string;
   materials?: string;
-  category: LessonCategory;
+  category?: LessonCategory;
+}
+
+// וידוא שלפחות אחד מהשדות קיים
+function validateParams(params: GenerateFullLessonParams) {
+  if (!params.topic && !params.materials && !params.category) {
+    throw new Error('חובה למלא לפחות אחד מהשדות: נושא, חומרי עזר או קטגוריה');
+  }
 }
 
 interface AIGeneratedSection {
@@ -49,19 +56,16 @@ function tryParseJSON(text: string): any {
   }
 }
 
-export async function generateFullLesson({ 
-  topic, 
-  materials,
-  category 
-}: GenerateFullLessonParams): Promise<Partial<LessonPlan>> {
+export async function generateFullLesson(params: GenerateFullLessonParams): Promise<Partial<LessonPlan>> {
+  // בדיקת תקינות הפרמטרים
+  validateParams(params);
+
   try {
     const response = await useMcpTool({
       serverName: 'ai-server',
       toolName: 'generate_full_lesson',
       arguments: {
-        topic,
-        materials,
-        category,
+        ...params,
         fieldLabels: FIELD_LABELS
       }
     });
