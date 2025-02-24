@@ -21,7 +21,7 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
 
   const generateLesson = async (data: {
     topic: string;
-    materials?: string;
+    materials: string;
     category: LessonCategory;
   }) => {
     try {

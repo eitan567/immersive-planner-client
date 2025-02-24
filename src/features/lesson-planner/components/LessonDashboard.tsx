@@ -69,11 +69,11 @@ export function LessonDashboard() {
     try {
       localStorage.removeItem('currentLessonPlanId');
       
-      // Generate lesson directly without saving to DB
+      // שליחת הנתונים עם ערכים ריקים במקום undefined
       await generateLesson({
         topic: data.topic,
         category: data.category,
-        materials: data.materials || undefined
+        materials: data.materials
       });
     } catch (err) {
       setError('יצירת השיעור נכשלה');

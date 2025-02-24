@@ -39,7 +39,7 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if at least one field has a value
+    // בדיקה שלפחות אחד מהשדות מוזן
     if (!topic.trim() && !materials.trim() && !category) {
       setError('נא להזין לפחות אחד מהשדות');
       return;
@@ -49,10 +49,11 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
     setError(null);
     
     try {
+      // שליחה של השדות עם ערכי ברירת מחדל ריקים במקום undefined
       onCreate({
-        topic: topic.trim(),
-        materials: materials.trim(),
-        category: category as LessonCategory,
+        topic: topic.trim() || '',
+        materials: materials.trim() || '',
+        category: category as LessonCategory || LESSON_CATEGORIES[0], // שימוש בקטגוריה הראשונה כברירת מחדל
       });
     } catch (err) {
       setError('אירעה שגיאה ביצירת השיעור');
