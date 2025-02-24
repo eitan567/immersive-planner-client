@@ -1,0 +1,1 @@
+ALTER TABLE materials ADD title TEXT NOT NULL DEFAULT '';
