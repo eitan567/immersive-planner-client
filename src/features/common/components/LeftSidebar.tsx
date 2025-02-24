@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../../../components/ui/card.tsx';
 import { Input } from '../../../components/ui/input.tsx';
 import { Textarea } from '../../../components/ui/textarea.tsx';
@@ -44,6 +44,39 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   const [materialsTitle, setMaterialsTitle] = useState("");
   const [materialsContent, setMaterialsContent] = useState("");
   const [isSavingMaterials, setIsSavingMaterials] = useState(false);
+  const [materialId, setMaterialId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadMaterials = async () => {
+      if (lessonId) {
+        try {
+          const { data: lessonData } = await supabase
+            .from('lesson_plans')
+            .select('material_id')
+            .eq('id', lessonId)
+            .single();
+
+          if (lessonData?.material_id) {
+            const { data: materialData } = await supabase
+              .from('materials')
+              .select('*')
+              .eq('id', lessonData.material_id)
+              .single();
+
+            if (materialData) {
+              setMaterialId(materialData.id);
+              setMaterialsTitle(materialData.title || '');
+              setMaterialsContent(materialData.content || '');
+            }
+          }
+        } catch (error) {
+          console.error('שגיאה בטעינת חומרי עזר:', error);
+        }
+      }
+    };
+
+    loadMaterials();
+  }, [lessonId]);
 
   return (
     <aside className="w-[30rem] border-r border-slate-200 shrink-0">
@@ -62,10 +95,10 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
         <Card className='mt-4'>
           <CardContent className="p-4 space-y-4">
-            <h3 className="font-medium text-slate-800">חומרי עזר</h3>
+            <div className="text-lg font-semibold text-[#681bc2]" >חומרי עזר</div>
             
-            <div className="space-y-2">
-              <label className="text-sm font-medium">כותרת לחומרי עזר</label>
+            <div className="space-y-0">
+              <label className="text-sm font-medium">כותרת</label>
               <Input
                 className="w-full px-3 py-2 border rounded-md"
                 placeholder="הזן כותרת..."
@@ -75,7 +108,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-medium">תוכן חומרי העזר</label>
+              <label className="text-sm font-medium">תוכן</label>
               <Textarea
                 className="w-full px-3 py-2 border rounded-md h-32 h-[calc(100vh-510px)] "
                 placeholder="הזן את חומרי העזר כאן..."
@@ -90,16 +123,34 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
               onClick={async () => {
                 try {
                   setIsSavingMaterials(true);
-                  const { data: materialData } = await supabase
-                    .from("materials")
-                    .insert([
-                      {
+                  let materialData;
+                  
+                  if (materialId) {
+                    // עדכון חומרי עזר קיימים
+                    const { data } = await supabase
+                      .from("materials")
+                      .update({
                         title: materialsTitle,
                         content: materialsContent
-                      }
-                    ])
-                    .select()
-                    .single();
+                      })
+                      .eq('id', materialId)
+                      .select()
+                      .single();
+                    materialData = data;
+                  } else {
+                    // יצירת חומרי עזר חדשים
+                    const { data } = await supabase
+                      .from("materials")
+                      .insert([
+                        {
+                          title: materialsTitle,
+                          content: materialsContent
+                        }
+                      ])
+                      .select()
+                      .single();
+                    materialData = data;
+                  }
 
                   if (materialData?.id && lessonId) {
                     await supabase
@@ -107,8 +158,9 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                       .update({ material_id: materialData.id })
                       .eq("id", lessonId);
                       
-                    setMaterialsTitle("");
-                    setMaterialsContent("");
+                    if (materialData) {
+                      setMaterialId(materialData.id);
+                    }
                   }
                 } catch (error) {
                   console.error("שגיאה בשמירת חומרי עזר:", error);

@@ -81,7 +81,7 @@ interface LayoutProps {
 
 export const Layout = React.memo(({ saveCurrentPlan, saveInProgress, lastSaved, children, user, mode, rightSidebarProps, leftSidebarProps, navigationProps }: LayoutProps) => {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
-  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false);
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
 
   const toggleRightSidebar = () => setIsRightSidebarOpen(!isRightSidebarOpen);
   const toggleLeftSidebar = () => setIsLeftSidebarOpen(!isLeftSidebarOpen);
