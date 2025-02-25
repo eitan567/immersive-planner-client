@@ -72,7 +72,7 @@ export function LessonDashboard() {
       // שליחת הנתונים עם ערכים ריקים במקום undefined
       await generateLesson({
         topic: data.topic || '',
-        category: data.category || LESSON_CATEGORIES[0],
+        category: data.category,
         materials: data.materials || ''
       });
     } catch (err) {
@@ -100,7 +100,7 @@ export function LessonDashboard() {
       return;
     }
 
-    if (!lesson.category || lesson.category === LESSON_CATEGORIES[0]) {
+    if (!lesson.category || !lesson.category) {
       setError('לא ניתן לפרסם שיעור ללא בחירת קטגוריה. אנא בחר קטגוריה.');
       return;
     }

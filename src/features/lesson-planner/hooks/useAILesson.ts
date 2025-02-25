@@ -64,7 +64,7 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
       const completeLessonPlan: LessonPlan = {
         // אם יש ערכים מהמשתמש שאינם ריקים - משתמשים בהם, אחרת לוקחים מהשרת
         topic: (data.topic && data.topic.trim()) || aiResponse.topic || '',
-        category: (data.category && data.category.trim() ? data.category : aiResponse.category) || LESSON_CATEGORIES[0],
+        category: (data.category && data.category.trim() ? data.category : aiResponse.category) || '',
         position: mapToEnglish(aiResponse.position || '', POSITION_MAPPING),
         duration: aiResponse.duration || '',
         gradeLevel: aiResponse.gradeLevel || '',
