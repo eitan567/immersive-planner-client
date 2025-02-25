@@ -11,13 +11,14 @@ import { SparklesIcon, XMarkIcon, ChatBubbleLeftRightIcon, PaperAirplaneIcon } f
 
 interface AITextareaProps extends React.ComponentProps<"textarea"> {
   context: string;
+  materials?: { title: string; content: string } | string;
   fieldType?: 'topic' | 'duration' | 'activity' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position';
   aiOn?: boolean;
   onSave?: () => Promise<void>;
 }
 
 const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
-  ({ className, context, fieldType = 'content', aiOn = true ,onSave, value, onChange, ...props }, ref) => {
+  ({ className, context, materials, fieldType = 'content', aiOn = true ,onSave, value, onChange, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isChatMode, setIsChatMode] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -47,6 +48,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
           serverName: 'ai-server',
           toolName: 'generate_suggestion',
           arguments: {
+            materials,
             context,
             currentValue: value?.toString() || '',
             type: fieldTypeMapping[fieldType] || fieldType,

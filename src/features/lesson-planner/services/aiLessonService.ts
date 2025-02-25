@@ -4,7 +4,7 @@ import { FIELD_LABELS } from '../components/chat/types.ts';
 
 interface GenerateFullLessonParams {
   topic?: string;
-  materials?: string;
+  materials?: { title: string; content: string } | string;
   category?: LessonCategory;
 }
 

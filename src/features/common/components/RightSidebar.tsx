@@ -13,6 +13,7 @@ import {
 import { LessonFieldChatBox } from '../../lesson-planner/components/LessonFieldChatBox.tsx';
 import type { LessonPlanSections } from '../../lesson-planner/types.ts';
 import { ValidFieldNames } from './Layout.tsx';
+import { Card, CardContent } from '../../../components/ui/card.tsx';
 
 interface RightSidebarProps {
   saveInProgress: boolean;
@@ -42,7 +43,9 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   onUpdateField,
   currentValues,
   saveCurrentPlan,
-  createAndAddSection
+  createAndAddSection,
+  totalSteps,
+  lessonTitle
 }) => {
   const navigate = useNavigate();
   const [showExitDialog, setShowExitDialog] = React.useState(false);
@@ -83,7 +86,17 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        
+        <Card className=''>
+          <CardContent className="p-4 space-y-2 bg-[#fff4fc]">
+            <h3 className="font-medium text-slate-800">סטטוס שיעור</h3>
+            <div className="text-sm text-slate-600">
+              {lessonTitle || "ללא כותרת"}
+            </div>
+            <div className="text-sm text-slate-600">
+              {totalSteps} שלבים
+            </div>
+          </CardContent>
+        </Card>
         <LessonFieldChatBox
           onUpdateField={onUpdateField}
           currentValues={currentValues}

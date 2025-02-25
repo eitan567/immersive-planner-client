@@ -104,6 +104,7 @@ export type LessonFormData = {
   skillGoals: string;
   description: string;
   sections: LessonPlanSections;
+  materials?: { title: string; content: string } | string;
 };
 
 // Full lesson plan with DB fields
@@ -123,4 +124,5 @@ export type LessonPlan = {
   description: string;
   created_at: string;
   updated_at: string;
+  materials?: { title: string; content: string } | string;
 };

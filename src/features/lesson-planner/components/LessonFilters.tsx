@@ -36,7 +36,7 @@ export function LessonFilters({
         placeholder="חיפוש שיעורים..."
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
-        className=""
+        className="border-[#f0609457]"
       />
       <div className="flex gap-4">
         <Select value={selectedStatus} onValueChange={onStatusChange}>

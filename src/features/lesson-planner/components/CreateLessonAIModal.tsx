@@ -25,7 +25,11 @@ import { Textarea } from '../../../components/ui/textarea.tsx';
 interface CreateLessonAIModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (data: { topic?: string; materials?: string; category?: LessonCategory }) => void;
+  onCreate: (data: { 
+    topic?: string; 
+    materials?: { title: string; content: string } | string; 
+    category?: LessonCategory 
+  }) => void;
   isGenerating?: boolean; // Add this prop
 }
 
@@ -50,14 +54,27 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
     
     try {
       // שליחה של השדות עם ערכי ברירת מחדל ריקים במקום undefined
-      const data: { topic?: string; materials?: string; category?: LessonCategory } = {};
+      const data: { 
+        topic?: string; 
+        materials?: { title: string; content: string } | string; 
+        category?: LessonCategory 
+      } = {};
       
       // רק אם יש ערך בשדה, נוסיף אותו לאובייקט
       if (topic.trim()) {
         data.topic = topic.trim();
       }
       if (materials.trim()) {
-        data.materials = materials.trim();
+        // ננסה לזהות אם יש כותרת בתוך התוכן
+        const lines = materials.trim().split('\n');
+        if (lines.length > 1) {
+          data.materials = {
+            title: lines[0].trim(),
+            content: lines.slice(1).join('\n').trim()
+          };
+        } else {
+          data.materials = materials.trim();
+        }
       }
       if (category) {
         data.category = category as LessonCategory;

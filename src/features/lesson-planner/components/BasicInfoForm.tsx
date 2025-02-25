@@ -30,9 +30,10 @@ type BasicInfoFormProps = {
   handleBasicInfoChange: (field: typeof validFields[number], value: string) => void;
   onSave?: () => Promise<void>;
   validateRef?: React.MutableRefObject<(() => boolean) | undefined>;
+  materials?: { title: string; content: string } | string;
 };
 
-export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, validateRef }: BasicInfoFormProps) => {
+export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, validateRef, materials }: BasicInfoFormProps) => {
   const [validationErrors, setValidationErrors] = useState<{
     topic?: string;
     category?: string;
@@ -122,6 +123,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
             dir="rtl"
             context={lessonPlan.topic}
             fieldType="topic"
+            materials={materials}
           />
           {validationErrors.topic && (
             <p className="text-sm text-red-500 mt-1">{validationErrors.topic}</p>
@@ -140,6 +142,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
             dir="rtl"
             context={lessonPlan.duration}
             fieldType="duration"
+            materials={materials}
           />          
         </div>
       </div>
@@ -155,6 +158,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
             dir="rtl"
             context={lessonPlan.gradeLevel} 
             fieldType="gradeLevel"
+            materials={materials}
           />          
         </div>
       </div>
@@ -170,6 +174,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
             dir="rtl"
             context={lessonPlan.priorKnowledge}
             fieldType="priorKnowledge"
+            materials={materials}
           />
         </div>
       </div>
@@ -203,6 +208,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
             dir="rtl"
             context={lessonPlan.contentGoals}
             fieldType="contentGoals"
+            materials={materials}
           />
         </div>
       </div>
@@ -218,6 +224,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
             dir="rtl"
             context={lessonPlan.skillGoals}
             fieldType="skillGoals"
+            materials={materials}
           />
         </div>
       </div>

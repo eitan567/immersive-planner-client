@@ -11,6 +11,7 @@ import { Textarea } from "./textarea.tsx";
 
 interface AIInputProps<T extends string = string> extends Omit<React.ComponentProps<"input">, "onChange"> {
   context: string;
+  materials?: { title: string; content: string } | string;
   fieldType?: 'topic' | 'duration' | 'activity' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'content';
   aiOn?: boolean;
   onSave?: () => Promise<void>;
@@ -19,7 +20,7 @@ interface AIInputProps<T extends string = string> extends Omit<React.ComponentPr
 }
 
 const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
-  ({ className, type, context, fieldType = 'content', aiOn = true , onSave, value, onChange, ...props }, ref) => {
+  ({ className, type, context, materials, fieldType = 'content', aiOn = true , onSave, value, onChange, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isChatMode, setIsChatMode] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
           serverName: 'ai-server',
           toolName: 'generate_suggestion',
           arguments: {
+            materials,
             context,
             currentValue: value?.toString() || '',
             type: fieldType,

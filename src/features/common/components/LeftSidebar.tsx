@@ -104,20 +104,8 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
   return (
     <aside className="w-[30rem] border-r border-slate-200 shrink-0">
-      <div className="fixed w-[30rem] p-6 space-y-6">
-        <Card className='mb-4'>
-          <CardContent className="p-4 space-y-2 bg-[#fff4fc]">
-            <h3 className="font-medium text-slate-800">סטטוס שיעור</h3>
-            <div className="text-sm text-slate-600">
-              {lessonTitle || "ללא כותרת"}
-            </div>
-            <div className="text-sm text-slate-600">
-              {totalSteps} שלבים
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className='mt-4'>
+      <div className="fixed w-[30rem] p-6 space-y-6">        
+        <Card className=''>
           <CardContent className="p-4 space-y-4 bg-[#fff4fc]">
             <div className="text-lg font-semibold text-[#681bc2]">חומרי עזר</div>
 
@@ -126,7 +114,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 <label className="text-sm font-medium">בחר חומר עזר קיים</label>
                 <button 
                   onClick={handleCleanSelection}
-                  className="text-sm text-[#681bc2] hover:text-[#681bc2]/80"
+                  className="text-sm bg-[#681bc2] text-white hover:bg-[#681bc2]/90 disabled:opacity-50 px-2 py-0.5 rounded-md"
                 >
                   יצירת חומר עזר חדש
                 </button>
@@ -169,7 +157,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
             <div className="space-y-2">
               <label className="text-sm font-medium">תוכן</label>
               <Textarea
-                className="w-full px-3 py-2 border rounded-md h-32 h-[calc(100vh-605px)] "
+                className="w-full px-3 py-2 border rounded-md h-32 h-[calc(100vh-470px)] "
                 placeholder="הזן את חומרי העזר כאן..."
                 value={materialsContent}
                 onChange={(e) => setMaterialsContent(e.target.value)}
@@ -241,7 +229,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
               {isSavingMaterials ? "שומר..." : "שמור חומרי עזר"}
             </Button>
           </CardContent>
-        </Card>
+        </Card>        
       </div>
     </aside>
   );

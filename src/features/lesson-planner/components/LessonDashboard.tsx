@@ -65,7 +65,11 @@ export function LessonDashboard() {
     }
   });
 
-  const handleCreateAI = async (data: { topic?: string, materials?: string, category?: LessonCategory }) => {
+  const handleCreateAI = async (data: { 
+    topic?: string, 
+    materials?: { title: string; content: string } | string, 
+    category?: LessonCategory 
+  }) => {
     try {
       localStorage.removeItem('currentLessonPlanId');
       
@@ -173,6 +177,7 @@ export function LessonDashboard() {
 
   const dashboardContent = (
     <div className="container mx-auto p-6" dir="rtl">
+      <h1 className="text-3xl font-bold mb-6 text-[#f06094]">השיעורים שלי</h1>
       <LessonFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}

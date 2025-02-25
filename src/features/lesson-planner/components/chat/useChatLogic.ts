@@ -79,6 +79,7 @@ interface UseChatLogicProps {
     screen2Description?: string,
     screen3Description?: string
   ) => Promise<void>;
+  materials?: { title: string; content: string } | string;
 }
 
 export function useChatLogic({
@@ -86,7 +87,8 @@ export function useChatLogic({
   currentValues,
   sections,
   saveCurrentPlan,
-  createAndAddSection
+  createAndAddSection,
+  materials
 }: UseChatLogicProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
@@ -123,6 +125,7 @@ export function useChatLogic({
           serverName: 'ai-server',
           toolName: 'update_lesson_field',
           arguments: {
+            materials, 
             message: messageToSend,
             fieldLabels: FIELD_LABELS,
             currentValues: allValues,
@@ -134,6 +137,7 @@ export function useChatLogic({
           serverName: 'ai-server',
           toolName: 'chat_with_context',
           arguments: {
+            materials,
             message: messageToSend,
             currentValues: allValues,
             history: messages,

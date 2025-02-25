@@ -22,7 +22,7 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
 
   const generateLesson = async (data: {
     topic?: string;
-    materials?: string;
+    materials?: { title: string; content: string } | string;
     category?: LessonCategory;
   }) => {
     try {
