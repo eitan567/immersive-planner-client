@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { materialsService } from '../services/materialsService.ts';
 import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
 import { AIInput } from "../../../components/ui/ai-input.tsx";
@@ -26,7 +27,7 @@ const validFields = [
 ] as const;
 
 type BasicInfoFormProps = {
-  lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'category' | 'description'>;
+  lessonPlan: Pick<LessonPlan, 'topic' | 'duration' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'category' | 'description' | 'material_id'>;
   handleBasicInfoChange: (field: typeof validFields[number], value: string) => void;
   onSave?: () => Promise<void>;
   validateRef?: React.MutableRefObject<(() => boolean) | undefined>;
@@ -38,6 +39,24 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
     topic?: string;
     category?: string;
   }>({});
+  
+  const [materialContent, setMaterialContent] = useState<string>('');
+  
+  // טעינת חומרי העזר אם קיימים
+  useEffect(() => {
+    const loadMaterial = async () => {
+      if (!lessonPlan.material_id) return;
+      try {
+        const material = await materialsService.getMaterial(lessonPlan.material_id);
+        if (material) {
+          setMaterialContent(material.title ? `${material.title}\n${material.content}` : material.content);
+        }
+      } catch (error) {
+        console.error('Failed to load material:', error);
+      }
+    };
+    loadMaterial();
+  }, [lessonPlan.material_id]);
 
   const handleChange = (field: typeof validFields[number]) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { currentTarget: { value: string } }
@@ -228,6 +247,13 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
           />
         </div>
       </div>
+
+      {materialContent && (
+        <div className="text-right mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <Label className="text-right font-semibold text-[#540ba9]">חומרי עזר</Label>
+          <div className="mt-2 whitespace-pre-wrap text-gray-700">{materialContent}</div>
+        </div>
+      )}
     </div>
   );
 };

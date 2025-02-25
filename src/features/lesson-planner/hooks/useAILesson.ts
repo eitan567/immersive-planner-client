@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { generateFullLesson } from '../services/aiLessonService.ts';
+import { materialsService } from '../services/materialsService.ts';
 import type { 
   LessonCategory, 
   LessonPlan,
@@ -88,13 +89,25 @@ export function useAILesson({ onSuccess, onError }: UseAILessonProps) {
       console.log('[AI Hook] Processing AI response...');
       
       // Ensure sections are properly initialized
+      // יצירת חומר עזר אם קיים
+      let material_id = null;
+      if (data.materials) {
+        const materialData = typeof data.materials === 'string' 
+          ? { title: '', content: data.materials }
+          : data.materials;
+        
+        const material = await materialsService.createMaterial(materialData);
+        material_id = material.id;
+      }
+
       const validatedPlan = {
         ...completeLessonPlan,
         sections: {
           opening: Array.isArray(completeLessonPlan.sections?.opening) ? completeLessonPlan.sections.opening : [],
           main: Array.isArray(completeLessonPlan.sections?.main) ? completeLessonPlan.sections.main : [],
           summary: Array.isArray(completeLessonPlan.sections?.summary) ? completeLessonPlan.sections.summary : []
-        }
+        },
+        material_id // קישור ל-material שנוצר
       };
       
       console.log('[AI Hook] Validated plan before storage:', validatedPlan);

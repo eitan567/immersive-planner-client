@@ -72,9 +72,13 @@ export const LessonContent = React.memo(({
         {currentStep === 1 && (
           <>
             <BasicInfoForm
-              lessonPlan={lessonPlan}
+              lessonPlan={{
+                ...lessonPlan,
+                material_id: (lessonPlan as any).material_id // העברת מזהה חומרי העזר
+              }}
               handleBasicInfoChange={handleBasicInfoChange}
               validateRef={validateRef}
+              materials={(lessonPlan as any).materials}
             />
             <LessonBuilder
               sections={lessonPlan.sections}

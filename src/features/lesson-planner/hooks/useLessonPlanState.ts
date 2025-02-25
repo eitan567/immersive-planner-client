@@ -236,16 +236,18 @@ const useLessonPlanState = (lessonId?: string) => {
         }
 
         // Final validation to ensure all fields are present
-        const validatedPlan = ensureLessonPlan({
-          ...plan,
-          // Ensure empty strings rather than undefined
-          duration: plan.duration || '',
-          gradeLevel: plan.gradeLevel || '',
-          priorKnowledge: plan.priorKnowledge || '',
-          contentGoals: plan.contentGoals || '',
-          skillGoals: plan.skillGoals || '',
-          position: plan.position || ''
-        });
+      // Use type assertion to handle the potential extra material_id field
+      const validatedPlan = ensureLessonPlan({
+        ...plan,
+        // Ensure empty strings rather than undefined
+        duration: plan.duration || '',
+        gradeLevel: plan.gradeLevel || '',
+        priorKnowledge: plan.priorKnowledge || '',
+        contentGoals: plan.contentGoals || '',
+        skillGoals: plan.skillGoals || '',
+        position: plan.position || '',
+        material_id: (plan as any).material_id
+      });
 
         setLessonPlan(validatedPlan);
         setError(null);

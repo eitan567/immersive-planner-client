@@ -107,6 +107,15 @@ export type LessonFormData = {
   materials?: { title: string; content: string } | string;
 };
 
+// DB Material type
+export type Material = {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+};
+
 // Full lesson plan with DB fields
 export type LessonPlan = {
   category: LessonCategory | '';
@@ -124,5 +133,5 @@ export type LessonPlan = {
   description: string;
   created_at: string;
   updated_at: string;
-  materials?: { title: string; content: string } | string;
+  material_id?: string;
 };

@@ -180,18 +180,19 @@ const toDbLessonPlan = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at
   };
 
   return {
-    status: plan.status || 'draft',
-    description: plan.description || '',
-    user_id: plan.userId,
-    topic: plan.topic,
-    duration: plan.duration,
-    grade_level: plan.gradeLevel,
-    prior_knowledge: plan.priorKnowledge,
-    position: plan.position,
-    content_goals: plan.contentGoals,
-    skill_goals: plan.skillGoals,
-    sections: transformedSections as unknown as Json,
-    category: plan.category
+  status: plan.status || 'draft',
+  description: plan.description || '',
+  user_id: plan.userId,
+  topic: plan.topic,
+  duration: plan.duration,
+  grade_level: plan.gradeLevel,
+  prior_knowledge: plan.priorKnowledge,
+  position: plan.position,
+  content_goals: plan.contentGoals,
+  skill_goals: plan.skillGoals,
+  sections: transformedSections as unknown as Json,
+  category: plan.category,
+  material_id: (plan as any).material_id || null // אפשרות לקשר חומר עזר
   };
 };
 
