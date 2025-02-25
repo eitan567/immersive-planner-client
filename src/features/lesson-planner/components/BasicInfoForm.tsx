@@ -104,10 +104,31 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
 
   return (
     <div className="space-y-2 rtl">
-      <h1 className="text-[1.2rem] font-semibold text-[#540ba9] pt-3">פרטי השיעור</h1>
+      <h1 className="text-[1.2rem] font-semibold text-[#540ba9] py-4">פרטי השיעור</h1>
+      
+      <div className="text-right">
+        <Label className="text-right">תיאור כללי</Label>
+        <div className="space-y-2">
+          <AIInput
+            value={lessonPlan.description}
+            onChange={handleChange('description')}
+            placeholder="הכנס תיאור כללי"
+            className="text-right"
+            dir="rtl"
+            context={materials ? typeof materials === 'string' ? materials : materials.content : lessonPlan.topic}
+            fieldType="description"
+            materials={materials}
+          />          
+        </div>
+      </div>
+{/*       
+      
       {lessonPlan.description && (
-        <div className="text-purple-600 bg-yellow-50 p-3 py-2 rounded-lg border border-yellow-200 mb-4 text-right text-md">{lessonPlan.description}</div>
-      )}
+        <>
+        <Label className="text-right">תיאור כללי</Label>
+        <div className="bg-white p-3 py-2 rounded-lg border border-input mb-4 text-right text-sm">{lessonPlan.description}</div>
+        </>
+      )} */}
 
       <div className="text-right">
         <Label className="text-right">קטגוריה *</Label>

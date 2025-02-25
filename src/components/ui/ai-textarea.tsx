@@ -12,7 +12,7 @@ import { SparklesIcon, XMarkIcon, ChatBubbleLeftRightIcon, PaperAirplaneIcon } f
 interface AITextareaProps extends React.ComponentProps<"textarea"> {
   context: string;
   materials?: { title: string; content: string } | string;
-  fieldType?: 'topic' | 'duration' | 'activity' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position';
+  fieldType?: 'topic' | 'duration' | 'activity' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'description';
   aiOn?: boolean;
   onSave?: () => Promise<void>;
 }
@@ -35,7 +35,8 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
       'רמה': 'gradeLevel',
       'מטרות תוכן': 'contentGoals',
       'מטרות כישורים': 'skillGoals',
-      'מיקום בתוכן': 'position'
+      'מיקום בתוכן': 'position',
+      'תיאור כללי': 'description'
     };
 
     const generateSuggestion = async (message?: string): Promise<string> => {

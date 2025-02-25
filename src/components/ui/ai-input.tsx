@@ -12,7 +12,7 @@ import { Textarea } from "./textarea.tsx";
 interface AIInputProps<T extends string = string> extends Omit<React.ComponentProps<"input">, "onChange"> {
   context: string;
   materials?: { title: string; content: string } | string;
-  fieldType?: 'topic' | 'duration' | 'activity' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'content';
+  fieldType?: 'topic' | 'duration' | 'activity' | 'priorKnowledge' | 'gradeLevel' | 'contentGoals' | 'skillGoals' | 'position' | 'content' | 'description';
   aiOn?: boolean;
   onSave?: () => Promise<void>;
   onChange?: (e: React.ChangeEvent<HTMLInputElement> & { currentTarget: { value: string } }) => void;
