@@ -40,7 +40,7 @@ export function LessonFilters({
       />
       <div className="flex gap-4">
         <Select value={selectedStatus} onValueChange={onStatusChange}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-40 border-[#f0609457]">
             <SelectValue placeholder="סטטוס" />
           </SelectTrigger>
           <SelectContent>
@@ -51,7 +51,7 @@ export function LessonFilters({
         </Select>
 
         <Select value={selectedCategory} onValueChange={onCategoryChange}>
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-48 border-[#f0609457]">
             <SelectValue placeholder="תחום" />
           </SelectTrigger>
           <SelectContent>
@@ -65,7 +65,7 @@ export function LessonFilters({
         </Select>
 
         <Select value={selectedView} onValueChange={onViewChange}>
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-32 border-[#f0609457]">
             <SelectValue placeholder="בחר תצוגה" />
           </SelectTrigger>
           <SelectContent>

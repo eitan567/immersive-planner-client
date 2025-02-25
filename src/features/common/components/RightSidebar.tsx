@@ -88,11 +88,13 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         </AlertDialog>
         <Card className=''>
           <CardContent className="p-4 space-y-2 bg-[#fff4fc]">
-            <h3 className="font-medium text-slate-800">סטטוס שיעור</h3>
+            <div className="text-lg font-semibold text-[#681bc2]">סטטוס שיעור</div>
             <div className="text-sm text-slate-600">
+              כותרת: &nbsp;
               {lessonTitle || "ללא כותרת"}
             </div>
             <div className="text-sm text-slate-600">
+              פעילויות: &nbsp;
               {totalSteps} שלבים
             </div>
           </CardContent>

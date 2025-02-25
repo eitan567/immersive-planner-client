@@ -25,7 +25,7 @@ export function FloatingSaveButton({
         data-save-button
         onClick={onClick}
         disabled={saving}
-        className="leading-tight bg-white text-[#681bc2] border border-[#681bc2] h-9 flex flex-col items-center hover:!bg-[#681bc2] hover:!text-white"
+        className="leading-tight h-9 flex flex-col items-center border bg-[#681bc2] border-[#681bc2] hover:!bg-[#681bc2]/90 text-white"
       >
         {saving ? savingText : buttonText}
         {lastSaved && (

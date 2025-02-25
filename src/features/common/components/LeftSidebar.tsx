@@ -157,7 +157,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
             <div className="space-y-2">
               <label className="text-sm font-medium">תוכן</label>
               <Textarea
-                className="w-full px-3 py-2 border rounded-md h-32 h-[calc(100vh-470px)] "
+                className="w-full px-3 py-2 border rounded-md h-32 h-[calc(100vh-462px)] "
                 placeholder="הזן את חומרי העזר כאן..."
                 value={materialsContent}
                 onChange={(e) => setMaterialsContent(e.target.value)}

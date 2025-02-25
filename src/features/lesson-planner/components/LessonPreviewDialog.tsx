@@ -117,7 +117,7 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
         <Button
           variant="outline"
           size="sm"
-          className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+          className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 border-none"
           onClick={(e) => e.stopPropagation()}
         >
           <Eye className="w-4 h-4" />
@@ -137,7 +137,7 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
             <Button
               onClick={handleExport}
               variant="outline"
-              className="text-gray-700 hover:text-gray-900"
+              className="text-gray-700 hover:text-gray-900 border-none"
             >
               <Download className="w-4 h-4 ml-2" />
               ייצא לקובץ טקסט

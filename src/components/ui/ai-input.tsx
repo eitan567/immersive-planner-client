@@ -171,13 +171,13 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
          
         {isOpen && (
           <div id="conversation" className={cn(
-            "p-6 z-[9999] bg-[#f9f6ff] rounded-lg shadow-lg border border-gray-200",
+            "p-6 z-[9999] bg-[#ffedf7] rounded-lg shadow-lg border border-[#ffa0d2]",
             isChatMode
-              ? "fixed inset-x-[15%] top-[10%] bottom-[10%] w-[70%]"
-              : "p-4 left-[-8px] top-[45px] absolute w-[-webkit-fill-available] before:content-[''] before:absolute before:top-[-9px] before:left-[45px] before:w-4 before:h-4 before:bg-[#f9f6ff] before:border-t before:border-l before:border-gray-200 before:rotate-45 before:transform"
+              ? "fixed inset-x-[25%] top-[20%] bottom-[20%] w-[50%]"
+              : "p-4 left-[-8px] top-[45px] absolute w-[-webkit-fill-available] before:content-[''] before:absolute before:top-[-9px] before:left-[45px] before:w-4 before:h-4 before:bg-[#ffedf7] before:border-t before:border-l before:border-[#ffa0d2] before:rotate-45 before:transform"
           )}>
             <div className="flex justify-between items-center mb-2">
-              <h1 className="text-[1.2rem] font-normal text-[#540ba9]">
+              <h1 className="text-[1.2rem] font-normal text-[#ff4aa9]">
                 {isChatMode ? 'שיחה' : 'הצעה לשיפור'}
               </h1>
               <button
@@ -185,9 +185,9 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                   setIsOpen(false);
                   setIsChatMode(false);
                 }}
-                className="p-1 rounded-full border border-solid border-[#ead9ff]"
+                className="p-1 rounded-full border border-solid border-[#f82594] bg-[#f82594] hover:bg-[#fd5fb2]"
               >
-                <XMarkIcon className="h-4 w-4 text-gray-500" />
+                <XMarkIcon className="h-4 w-4 text-white" />
               </button>
             </div>
             
@@ -196,7 +196,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                <div className="flex h-full gap-4 pb-[40px]">
                  {/* Right side - Chat */}
                  <div className="w-1/2 flex flex-col h-full">
-                   <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md border rounded-lg p-3 space-y-3 bg-gray-50 min-h-[calc(100vh-350px)] max-h-[calc(100vh-100px)]">
+                   <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md border rounded-lg p-3 space-y-3 bg-gray-50 min-h-[calc(100vh-500px)] max-h-[calc(100vh-100px)]">
                      {messages.length === 0 ? (
                        <div className="text-center text-gray-500 text-sm p-4">
                          אפשר לשאול שאלות או לבקש שיפורים בתוכן
@@ -285,7 +285,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                        <Textarea
                          value={suggestion}
                          onChange={(e) => setSuggestion(e.target.value)}
-                         className="flex-1 min-h-[calc(100vh-350px)]"
+                         className="flex-1 min-h-[calc(100vh-500px)]"
                          placeholder="ההצעה תופיע כאן..."
                          dir="rtl"
                        />
@@ -294,7 +294,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                            variant="outline"
                            size="sm"
                            onClick={handleApply}
-                           className="text-[#681bc2] border border-[#681bc2] hover:!bg-[#681bc2] hover:!text-white"
+                           className="border text-white border-[#f82594] bg-[#f82594] hover:bg-[#fd5fb2]"
                          >
                            אישור
                          </Button>
@@ -337,7 +337,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                        value={suggestion}
                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setSuggestion(e.currentTarget.value)}
                     className={cn(
-                      "w-full",
+                      "w-full mb-4 mt-4",
                       isChatMode ? "h-[calc(100vh-120px)]" : "min-h-[200px]"
                     )}
                        dir="rtl"
@@ -347,7 +347,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                          variant="outline"
                          size="sm"
                          onClick={toggleChatMode}
-                         className="hover:!bg-[#681bc2] hover:!text-white text-[#681bc2] border border-[#681bc2]"
+                         className="hover:!bg-[#fd5fb2] text-white border border-[#ff4aa9] bg-[#f82594]"
                        >
                          פתח שיחה
                        </Button>
@@ -355,7 +355,7 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
                          variant="outline"
                          size="sm"
                          onClick={handleApply}
-                         className="text-[#681bc2] border border-[#681bc2] hover:!bg-[#681bc2] hover:!text-white"
+                         className="hover:!bg-[#fd5fb2] text-white border border-[#ff4aa9] bg-[#f82594]"
                        >
                          אישור
                        </Button>

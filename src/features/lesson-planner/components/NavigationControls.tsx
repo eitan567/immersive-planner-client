@@ -27,7 +27,7 @@ export const NavigationControls = ({
         <Button 
           onClick={onPrevious}
           disabled={saving}
-          className="text-[#681bc2] border border-[#681bc2] flex items-center hover:!bg-[#681bc2] hover:!text-white"
+          className="flex items-center border bg-[#681bc2] border-[#681bc2] hover:!bg-[#681bc2]/90 text-white"
         >
           <ArrowRightIcon className="h-5 w-5" />
           {saving ? 'שומר...' : 'הקודם'}
@@ -38,7 +38,7 @@ export const NavigationControls = ({
         <Button 
           onClick={onNext}
           disabled={saving}
-          className="text-[#681bc2] border border-[#681bc2] flex items-center gap-2 hover:!bg-[#681bc2] hover:!text-white"
+          className="flex items-center gap-2 border bg-[#681bc2] border-[#681bc2] hover:!bg-[#681bc2]/90 text-white"
         >
           {saving ? 'שומר...' : currentStep === 2 ? 'צפה בתוכנית' : 'הבא'}
           <ArrowLeftIcon className="h-5 w-5" />
@@ -46,7 +46,7 @@ export const NavigationControls = ({
       ) : onExport && (
         <Button 
           onClick={onExport}
-          className="text-[#681bc2] border border-[#681bc2] flex items-center gap-2 hover:!bg-[#681bc2] hover:!text-white"
+          className="flex items-center gap-2 border bg-[#681bc2] border-[#681bc2] hover:!bg-[#681bc2]/90 text-white"
         >
           <ArrowDownTrayIcon className="h-5 w-5" />
           ייצא לקובץ טקסט

@@ -115,7 +115,7 @@ export function LessonCard({
             <Button
               variant="outline"
               size="sm"
-              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-none"
             >
               <Trash2 className="w-4 h-4" />
             </Button>
@@ -141,7 +141,7 @@ export function LessonCard({
           variant="outline"
           size="sm"
           onClick={() => onEdit(id)}
-          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-none"
         >
           <PenBox className="w-4 h-4" />
         </Button>
@@ -151,7 +151,7 @@ export function LessonCard({
               <Button
                 variant="outline"
                 size="sm"
-                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                className="text-green-600 hover:text-green-700 hover:bg-green-50 border-none"
               >
                 <Upload className="w-4 h-4" />
               </Button>
