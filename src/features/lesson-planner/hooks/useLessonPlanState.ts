@@ -162,6 +162,12 @@ const useLessonPlanState = (lessonId?: string) => {
         const generatedPlan = localStorage.getItem(PLAN_STORAGE_KEY);
         console.log('[State] Loading generated plan from storage:', generatedPlan);
         
+        // If we have a lessonId from URL, store it in localStorage
+        if (lessonId) {
+          localStorage.setItem(STORAGE_KEY, lessonId);
+          console.log('[State] Stored lessonId in localStorage:', lessonId);
+        }
+        
         if (generatedPlan) {
           try {
             const parsedPlan = JSON.parse(generatedPlan);
@@ -429,9 +435,11 @@ const useLessonPlanState = (lessonId?: string) => {
         const { id, created_at, updated_at, ...planWithoutId } = lessonPlan;
         savedPlan = await lessonPlanService.createLessonPlan(planWithoutId);
         
-        // Save ID to localStorage after first successful save
+        // Save both ID and full plan to localStorage after first save
         localStorage.setItem(STORAGE_KEY, savedPlan.id);
         
+localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify(savedPlan));
+
         // Navigate to the edit page after first save if navigate function is provided
         if (navigate) {
           navigate(`/lesson/${savedPlan.id}`);
@@ -440,10 +448,15 @@ const useLessonPlanState = (lessonId?: string) => {
         // For existing lessons, update the record
         const { id, created_at, updated_at, ...planWithoutMeta } = lessonPlan;
         savedPlan = await lessonPlanService.updateLessonPlan(lessonPlan.id, planWithoutMeta);
+        
+        // Update both ID and full plan in localStorage
+        localStorage.setItem(STORAGE_KEY, savedPlan.id);
+        localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify(savedPlan));
       }
       
       setLessonPlan(savedPlan);
       setLastSaved(new Date());
+      console.log('[State] Successfully saved plan with ID:', savedPlan.id);
       setUnsavedChanges(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error saving plan');

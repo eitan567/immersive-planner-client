@@ -43,6 +43,24 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   const [materialId, setMaterialId] = useState<string | null>(null);
   const [allMaterials, setAllMaterials] = useState<Array<{ id: string; title: string; content: string }>>([]);
 
+  const loadMaterialFromId = async (materialId: string) => {
+    try {
+      const { data: materialData } = await supabase
+        .from('materials')
+        .select('*')
+        .eq('id', materialId)
+        .single();
+
+      if (materialData) {
+        setMaterialId(materialData.id);
+        setMaterialsTitle(materialData.title || '');
+        setMaterialsContent(materialData.content || '');
+      }
+    } catch (error) {
+      console.error('שגיאה בטעינת חומרי עזר:', error);
+    }
+  };
+
   // טעינת כל חומרי העזר
   useEffect(() => {
     const loadAllMaterials = async () => {
@@ -66,6 +84,21 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   // טעינת חומר העזר של השיעור הנוכחי
   useEffect(() => {
     const loadCurrentMaterial = async () => {
+      // First check localStorage for any current lesson plan
+      const currentPlanJson = localStorage.getItem('currentLessonPlan');
+      if (currentPlanJson) {
+        try {
+          const currentPlan = JSON.parse(currentPlanJson);
+          if (currentPlan.material_id) {
+            await loadMaterialFromId(currentPlan.material_id);
+            return;
+          }
+        } catch (error) {
+          console.error('Error parsing localStorage lesson plan:', error);
+        }
+      }
+
+      // If no material found in localStorage, try loading from DB using lessonId
       if (lessonId) {
         try {
           const { data: lessonData } = await supabase
@@ -75,17 +108,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
             .single();
 
           if (lessonData?.material_id) {
-            const { data: materialData } = await supabase
-              .from('materials')
-              .select('*')
-              .eq('id', lessonData.material_id)
-              .single();
-
-            if (materialData) {
-              setMaterialId(materialData.id);
-              setMaterialsTitle(materialData.title || '');
-              setMaterialsContent(materialData.content || '');
-            }
+            await loadMaterialFromId(lessonData.material_id);
           }
         } catch (error) {
           console.error('שגיאה בטעינת חומרי עזר:', error);
