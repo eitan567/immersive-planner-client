@@ -4,6 +4,7 @@ import { Card, CardContent } from './components/ui/card.tsx';
 import './index.css';
 
 import { AuthProvider } from './features/auth/AuthContext.tsx';
+import { ThemeProvider } from './features/common/ThemeContext.tsx';
 import { useAuth } from './features/auth/AuthContext.tsx';
 import useLessonPlanState from './features/lesson-planner/hooks/useLessonPlanState.ts';
 import LoginForm from './features/auth/LoginForm.tsx';
@@ -270,9 +271,11 @@ const MainContent = () => {
 const App = () => {
   return (
     <AuthProvider>
-      <Router>
-        <MainContent />
-      </Router>
+      <ThemeProvider>
+        <Router>
+          <MainContent />
+        </Router>
+      </ThemeProvider>
     </AuthProvider>
   );
 };

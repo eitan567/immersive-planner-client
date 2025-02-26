@@ -33,10 +33,10 @@ export const LessonBuilder = ({
 
   return (
     <div>
-      <h1 className="text-[1.2rem] font-semibold text-[#fa4083] pb-[10px] pt-[23px]">בניית השיעור</h1>
+      <h1 className="text-[1.2rem] font-semibold text-[--theme-color-1] pb-[10px] pt-[23px]">בניית השיעור</h1>
       <div dir='rtl' /*className='max-h-[calc(100vh-310px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[#f2d8ff] hover:scrollbar-thumb-[#f2d8ff] scrollbar-thumb-rounded-md'*/>
         <div className='space-y-4 p-0'>
-          <h3 className="text-[1rem] font-normal my-2 text-[#fa4083]">פתיחה</h3>
+          <h3 className="text-[1rem] font-normal my-2 text-[--theme-color-1]">פתיחה</h3>
           <LessonPhase
             phase="opening"
             title=""

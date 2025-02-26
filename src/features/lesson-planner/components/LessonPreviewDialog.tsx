@@ -120,7 +120,7 @@ export function LessonPreviewDialog({ lesson }: LessonPreviewDialogProps) {
           className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 border-none"
           onClick={(e) => e.stopPropagation()}
         >
-          <Eye className="w-4 h-4" />
+          <Eye className="w-4 h-4 text-[--theme-color-1]" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl bg-white" onClick={(e) => e.stopPropagation()}>

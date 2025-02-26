@@ -5,71 +5,96 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 @layer base {
   :root {
     font-family: 'Assistant', sans-serif !important;
     direction: rtl;
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+  }
+  
+  body {
+    background-color: hsl(var(--background));
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
+  .theme-default {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 340 89% 61%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 340 89% 61%;
+    --primary: 340 89% 61%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 326 63% 89%;
+    --secondary-foreground: 340 89% 61%;
+    --muted: 326 63% 89%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 326 63% 89%;
+    --accent-foreground: 340 89% 61%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 340 89% 61%;
+    --ring: 340 89% 61%;
+    --radius: 0.5rem;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Original theme colors for reference */
+    --theme-color-0: #ffffff;
+    --theme-color-1: #fa4083;
+    --theme-color-2: #e3cbdc;
+    --theme-color-3: #fff4fc;
+    --theme-color-4: #85003f05;
+    --theme-title-color: #fa4083;
+
+    & label,h1,h2,h3,h4 {
+      color: var(--theme-color-1);
+    }
+
+    /* SVG color */
+    & svg {
+      /* color: var(--theme-color-0); */
+    }
+  }
+
+  .theme-purple {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 340 89% 61%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 340 89% 61%;
+    --primary: 340 89% 61%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 301 35% 64%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 253 27% 51%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 219 39% 35%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 340 89% 61%;
+    --ring: 340 89% 61%;
+    --radius: 0.5rem;
+        
+    /* Purple theme colors for reference */
+    --theme-color-0: #fff;
+    --theme-color-1: #f06094;
+    --theme-color-2: #c161a4;
+    --theme-color-3: #8d62a3;
+    --theme-color-4: #5d5e93;
+    --theme-color-5: #3b5578;
+    --theme-color-6: #2f4858;
+    --theme-title-color: #3b5578;
+
+    & label,h1,h2,h3,h4 {
+      color: var(--theme-color-5);
+    }
+
+    /* SVG color */
+    & svg {
+      /* color: var(--theme-color-0); */
+    }
   }
 }
 
@@ -82,51 +107,33 @@
     line-height: 1.75;
     color: #334155;
   }
-}
 
+  .theme-circle {
+    @apply w-6 h-6 rounded-full border-2 border-white shadow-md;
+  }
 
-label {
-  font-size: 0.9rem !important;
-  line-height: 2rem !important;
-  font-weight: 600 !important;
-  color: #fa4083;
-  font-family: Assistant, sans-serif;
-}
-
-/* button:has(svg){
-  background-color:#ffffff !important;
-}
-
-button:not(:has(svg)){
-  background: #fa4083 !important;
-  color: #ffffff !important;
-} */
-
-svg{
-  color: #f06094;
-}
-
-.aibutton{
-  color: #fa4083;
-}
-
-.aibutton:hover{
-  color: #8b57c8;
-}
-
-
-
-@media (min-width: 1024px) {
-  .lg\:text-5xl {
-      font-size: 3rem;
-      line-height: 1;
+  .theme-circles-stack {
+    @apply relative flex items-center -space-x-3 rtl:space-x-reverse;
   }
 }
 
+svg {
+  transition: color 0.2s ease-in-out;
+}
+
+.required-field {
+  border-color: hsl(var(--primary)) !important;
+}
+
+.required-field:focus {
+  border-color: hsl(var(--primary)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 20%) !important;
+}
+
 .gradient-text-2 {
-  -webkit-text-fill-color: #0000;
-  background: #216b91;
-  background: linear-gradient(90deg, #c32978 46%, #206a92);
+  -webkit-text-fill-color: transparent;
+  background: hsl(var(--primary));
+  background: linear-gradient(90deg, hsl(var(--primary)) 46%, hsl(var(--accent)));
   -webkit-background-clip: text;
 }
 
@@ -138,21 +145,6 @@ svg{
   font-family: Assistant, sans-serif;
 }
 
-/* button {
-  background: #6c0dd6 !important;
-  background: linear-gradient(45deg, #c32978, #206a92) !important;
-  color: #fff !important;
-} */
-
 textarea {
-  border-color:rgba(175, 11, 184, 0.13) !important;
-}
-
-.required-field {
-  border-color: #fa4083 !important;
-}
-
-.required-field:focus {
-  border-color: #f06094 !important;
-  box-shadow: 0 0 0 2px rgba(104, 27, 194, 0.2) !important;
+  border-color: hsl(var(--primary) / 13%) !important;
 }

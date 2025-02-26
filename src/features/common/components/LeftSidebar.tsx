@@ -130,7 +130,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
       <div className="fixed w-[30rem] p-6 space-y-6">        
         <Card className=''>
           <CardContent className="p-4 space-y-4 bg-[#fff4fc]">
-            <div className="text-lg font-semibold text-[#f06094]">חומרי עזר</div>
+            <div className="text-lg font-semibold text-[--theme-title-color]">חומרי עזר</div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">

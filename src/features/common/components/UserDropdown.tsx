@@ -71,8 +71,8 @@ export const UserDropdown = React.memo(({ user, onSignOut }: UserDropdownProps) 
             )}
           </div>
           <div className="text-right hidden md:block">
-            <p className="text-slate-800 font-medium text-sm">{user?.email}</p>
-            <p className="text-slate-600 text-xs">מנהל מערכת</p>
+            <p className="text-[--theme-color-1] font-medium text-sm">{user?.email}</p>
+            <p className="text-[--theme-color-1] text-xs">מנהל מערכת</p>
           </div>
         </div>
       </DropdownMenu.Trigger>

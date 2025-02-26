@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext.tsx';
 import { UserDropdown } from './UserDropdown.tsx';
+import { ThemeSelector } from './ThemeSelector.tsx';
 
 interface NavbarProps {
   user: {
@@ -24,7 +25,7 @@ export const Navbar = React.memo(({ user }: NavbarProps) => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 h-[72px] z-50
-      bg-[#e3cbdc]
+      bg-[var(--theme-color-2)]
       backdrop-filter 
       backdrop-blur-lg       
       backdrop-opacity-80
@@ -44,12 +45,13 @@ export const Navbar = React.memo(({ user }: NavbarProps) => {
       <div className="flex items-center space-x-4">
         <div className="flex items-center">
           <img src="/logo.svg" alt="Logo" className="h-8 w-8 mr-3" />
-          <span className="text-xl font-semibold text-[#fa4083]">מתכנן שיעורים לחדר אימרסיבי</span>
+          <span className="text-xl font-semibold" style={{ color: 'var(--theme-color-1)' }}>מתכנן שיעורים לחדר אימרסיבי</span>
         </div>
       </div>      
-      <div className="flex items-center">
-{location.pathname !== "/" && (
-        <a href="/" className="ml-6 text-[#fa4083] hover:text-[#28026fa6]">חזרה לדשבורד</a>
+      <div className="flex items-center gap-4">
+        <ThemeSelector />
+        {location.pathname !== "/" && (
+          <a href="/" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--theme-color-1)' }}>חזרה לדשבורד</a>
 )}
       </div>
       {/* Right side - User Profile and Logout */}

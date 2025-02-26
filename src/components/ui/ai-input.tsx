@@ -153,17 +153,17 @@ const AIInput = React.forwardRef<HTMLInputElement, AIInputProps>(
             <>
             <button
               onClick={() => generateSuggestion()}
-              className="absolute left-8 top-0.5 p-1.5 text-gray-600 hover:text-blue-800 transition-colors outline-none focus:outline-none"
+              className="absolute left-8 top-0.5 p-1.5 text-[--theme-color-1] hover:text-[--theme-color-1] transition-colors outline-none focus:outline-none"
               title="בקש הצעה לשיפור"
             >
-              <SparklesIcon className="h-5 w-5 text-blue-800 aibutton hover:!text-[#8b57c8]" />
+              <SparklesIcon className="h-5 w-5 text-[--theme-color-1] aibutton hover:!text-[#8b57c8]" />
             </button>
             <button
               onClick={toggleChatMode}
-              className="absolute left-2 top-0.5 p-1.5 text-gray-600 hover:text-blue-800 transition-colors outline-none focus:outline-none"
+              className="absolute left-2 top-0.5 p-1.5 text-[--theme-color-1] hover:text-[--theme-color-1] transition-colors outline-none focus:outline-none"
               title="פתח שיחה"
             >
-              <ChatBubbleLeftRightIcon className="h-5 w-5 text-blue-800 aibutton hover:!text-[#8b57c8]" />
+              <ChatBubbleLeftRightIcon className="h-5 w-5 text-[--theme-color-1] aibutton hover:!text-[#8b57c8]" />
             </button>
            </>           
           )}

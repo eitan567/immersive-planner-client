@@ -27,9 +27,9 @@ export const NavigationControls = ({
         <Button 
           onClick={onPrevious}
           disabled={saving}
-          className="flex items-center gap-2 border bg-[#f06094] border-[#f06094] hover:!bg-[#f06094]/90 text-white"
+          className="flex items-center gap-2 border bg-[#f06094] border-[#f06094] hover:!bg-[#f06094]/90 text-[--theme-color-0]"
         >
-          <ArrowRightIcon className="h-5 w-5  text-white" />
+          <ArrowRightIcon className="h-5 w-5 text-[--theme-color-0]" />
           {saving ? 'שומר...' : 'הקודם'}
         </Button>
       )}
@@ -38,17 +38,17 @@ export const NavigationControls = ({
         <Button 
           onClick={onNext}
           disabled={saving}
-          className="flex items-center gap-2 border bg-[#f06094] border-[#f06094] hover:!bg-[#f06094]/90 text-white"
+          className="flex items-center gap-2 border bg-[#f06094] border-[#f06094] hover:!bg-[#f06094]/90 text-[--theme-color-0]"
         >
           {saving ? 'שומר...' : currentStep === 2 ? 'צפה בתוכנית' : 'הבא'}
-          <ArrowLeftIcon className="h-5 w-5 text-white" />
+          <ArrowLeftIcon className="h-5 w-5 text-[--theme-color-0]" />
         </Button>
       ) : onExport && (
         <Button 
           onClick={onExport}
-          className="flex items-center gap-2 border bg-[#f06094] border-[#f06094] hover:!bg-[#f06094]/90 text-white"
+          className="flex items-center gap-2 border bg-[#f06094] border-[#f06094] hover:!bg-[#f06094]/90 text-[--theme-color-0]"
         >
-          <ArrowDownTrayIcon className="h-5 w-5  text-white" />
+          <ArrowDownTrayIcon className="h-5 w-5 text-[--theme-color-0]" />
           ייצא לקובץ טקסט
         </Button>
       )}
