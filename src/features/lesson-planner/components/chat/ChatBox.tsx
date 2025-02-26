@@ -135,29 +135,29 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                   <br />
                   <button
                     onClick={() => handleQuickAction("שנה את נושא היחידה בהתאם לקטגוריה")}
-                    className="text-[#540ba9] hover:underline cursor-pointer"
+                    className="text-[#fa4083] hover:underline cursor-pointer"
                   >"שנה את נושא היחידה בהתאם לקטגוריה"</button>
                   <br />
                   <button
                     onClick={() => handleQuickAction("תעזור לי לנסח טוב יותר את מטרות התוכן")}
-                    className="text-[#540ba9] hover:underline cursor-pointer"
+                    className="text-[#fa4083] hover:underline cursor-pointer"
                   >"תעזור לי לנסח טוב יותר את מטרות התוכן"</button>
                   <br />
                   דוגמאות לבניית השיעור:
                   <br />
                   <button
                     onClick={() => handleQuickAction("הצע פעילות מעניינת לפתיחת השיעור")}
-                    className="text-[#540ba9] hover:underline cursor-pointer"
+                    className="text-[#fa4083] hover:underline cursor-pointer"
                   >"הצע פעילות מעניינת לפתיחת השיעור"</button>
                   <br />
                   <button
                     onClick={() => handleQuickAction("תשפר את השימוש במרחב בגוף השיעור")}
-                    className="text-[#540ba9] hover:underline cursor-pointer"
+                    className="text-[#fa4083] hover:underline cursor-pointer"
                   >"תשפר את השימוש במרחב בגוף השיעור"</button>
                   <br />
                   <button
                     onClick={() => handleQuickAction("הצע פעילות סיכום אינטראקטיבית")}
-                    className="text-[#540ba9] hover:underline cursor-pointer"
+                    className="text-[#fa4083] hover:underline cursor-pointer"
                   >"הצע פעילות סיכום אינטראקטיבית"</button>
                 </div>
               ) : (
@@ -198,7 +198,7 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                 size="icon"
                 className="border-none outline-none shadow-none"
               >
-                <PaperAirplaneIcon className="h-4 w-4 rotate-180 border-none outline-none shadow-none text-[#540ba9]" />
+                <PaperAirplaneIcon className="h-4 w-4 rotate-180 border-none outline-none shadow-none text-[#fa4083]" />
               </Button>
             </div>
             <div className="flex justify-between items-center relative">
@@ -208,7 +208,7 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                 onClick={() => setMode('command')}
                 className={`text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
                   mode === 'command'
-                    ? 'bg-[#540ba9] text-white rounded-r-md'
+                    ? 'bg-[#fa4083] text-white rounded-r-md'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-r-md'
                 }`}
               >
@@ -218,7 +218,7 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                 onClick={() => setMode('chat')}
                 className={`text-[10px] transition-colors outline-none px-[7px] pb-[3px] pt-0 ${
                   mode === 'chat'
-                    ? 'bg-[#540ba9] text-white rounded-l-md'
+                    ? 'bg-[#fa4083] text-white rounded-l-md'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-l-md'
                 }`}
               >
@@ -233,7 +233,7 @@ export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
                     e.stopPropagation();
                     setShortcutsOpen(prev => !prev);
                   }}
-                  className="text-[10px] bg-[#540ba9] text-white hover:text-[#540ba9] hover:bg-[#fff4fc] transition-colors outline-none px-[7px] pb-[1px] pt-0 h-5 border border-solid border-[#5b398b] rounded-md"
+                  className="text-[10px] bg-[#fa4083] text-white hover:text-[#fa4083] hover:bg-[#fff4fc] transition-colors outline-none px-[7px] pb-[1px] pt-0 h-5 border border-solid border-[#5b398b] rounded-md"
                   variant="ghost"
                 >
                   קיצורי דרך

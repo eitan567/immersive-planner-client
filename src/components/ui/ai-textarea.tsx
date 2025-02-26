@@ -179,7 +179,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
               : "p-4 left-[-8px] top-[45px] absolute w-[-webkit-fill-available] before:content-[''] before:absolute before:top-[-9px] before:left-[25px] before:w-4 before:h-4 before:bg-[#f9f6ff] before:border-t before:border-l before:border-gray-200 before:rotate-45 before:transform"
           )}>
             <div className="flex justify-between items-center mb-2">
-              <h1 className="text-[1.2rem] font-normal text-[#540ba9]">
+              <h1 className="text-[1.2rem] font-normal text-[#fa4083]">
                 {isChatMode ? 'שיחה' : 'הצעה לשיפור'}
               </h1>
               <button
@@ -285,7 +285,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
                            variant="outline"
                            size="sm"
                            onClick={handleApply}
-                           className="text-[#681bc2] border border-[#681bc2] hover:!bg-[#681bc2] hover:!text-white"
+                           className="text-[#f06094] border border-[#f06094] hover:!bg-[#f06094] hover:!text-white"
                          >
                            אישור
                          </Button>
@@ -327,7 +327,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
                          variant="outline"
                          size="sm"
                          onClick={toggleChatMode}
-                         className="hover:!bg-[#681bc2] hover:!text-white text-[#681bc2] border border-[#681bc2]"
+                         className="hover:!bg-[#f06094] hover:!text-white text-[#f06094] border border-[#f06094]"
                        >
                          פתח שיחה
                        </Button>
@@ -335,7 +335,7 @@ const AITextarea = React.forwardRef<HTMLTextAreaElement, AITextareaProps>(
                          variant="outline"
                          size="sm"
                          onClick={handleApply}
-                         className="text-[#681bc2] border border-[#681bc2] hover:!bg-[#681bc2] hover:!text-white"
+                         className="text-[#f06094] border border-[#f06094] hover:!bg-[#f06094] hover:!text-white"
                        >
                          אישור
                        </Button>

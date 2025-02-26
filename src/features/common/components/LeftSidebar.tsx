@@ -130,7 +130,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
       <div className="fixed w-[30rem] p-6 space-y-6">        
         <Card className=''>
           <CardContent className="p-4 space-y-4 bg-[#fff4fc]">
-            <div className="text-lg font-semibold text-[#681bc2]">חומרי עזר</div>
+            <div className="text-lg font-semibold text-[#f06094]">חומרי עזר</div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -138,7 +138,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 <button 
                   type='button'
                   onClick={handleCleanSelection}
-                  className="text-sm bg-[#681bc2] text-white hover:bg-[#681bc2]/90 disabled:opacity-50 px-2 py-0.5 rounded-md"
+                  className="text-sm bg-[#f06094] text-white hover:bg-[#f06094]/90 disabled:opacity-50 px-2 py-0.5 rounded-md"
                 >
                   יצירת חומר עזר חדש
                 </button>
@@ -189,7 +189,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
             </div>
             
             <Button
-              className="w-full bg-[#681bc2] text-white hover:bg-[#681bc2]/90 disabled:opacity-50"
+              className="w-full bg-[#f06094] text-white hover:bg-[#f06094]/90 disabled:opacity-50"
               disabled={isSavingMaterials || !materialsTitle || !materialsContent || !lessonId}
               onClick={async () => {
                 try {

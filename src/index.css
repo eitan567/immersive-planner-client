@@ -89,7 +89,7 @@ label {
   font-size: 0.9rem !important;
   line-height: 2rem !important;
   font-weight: 600 !important;
-  color: #540ba9;
+  color: #fa4083;
   font-family: Assistant, sans-serif;
 }
 
@@ -98,12 +98,16 @@ label {
 }
 
 button:not(:has(svg)){
-  background: #540ba9 !important;
+  background: #fa4083 !important;
   color: #ffffff !important;
 } */
 
+svg{
+  color: #f06094;
+}
+
 .aibutton{
-  color: #540ba9;
+  color: #fa4083;
 }
 
 .aibutton:hover{
@@ -145,10 +149,10 @@ textarea {
 }
 
 .required-field {
-  border-color: #540ba9 !important;
+  border-color: #fa4083 !important;
 }
 
 .required-field:focus {
-  border-color: #681bc2 !important;
+  border-color: #f06094 !important;
   box-shadow: 0 0 0 2px rgba(104, 27, 194, 0.2) !important;
 }

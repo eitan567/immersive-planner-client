@@ -55,7 +55,7 @@ export const ChatMessage = React.memo(
             ) : (
               <button
                 onClick={() => onCopy(message.text)}
-                className="hover:text-[#540ba9] transition-colors text-gray-800"
+                className="hover:text-[#fa4083] transition-colors text-gray-800"
                 title="העתק הודעה"
               >
                 <DocumentDuplicateIcon className="h-4 w-4" />

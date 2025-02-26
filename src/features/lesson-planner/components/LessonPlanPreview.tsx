@@ -30,11 +30,11 @@ const LessonPlanPreview = ({ content: initialContent, onContentChange,aiClassNam
   return (
     // <Card className={cn("border-gray-200", className)} onClick={(e) => e.stopPropagation()}>
     //   <CardHeader className='py-0 pt-3'>
-    //     <CardTitle className='text-2xl font-semibold text-[#540ba9]'>תצוגה מקדימה - {lesson.basicInfo.title}</CardTitle>
+    //     <CardTitle className='text-2xl font-semibold text-[#fa4083]'>תצוגה מקדימה - {lesson.basicInfo.title}</CardTitle>
     //   </CardHeader>
     //   <CardContent className={cn("bg-white", cardContentClassName)}>
     <>
-    <h2 className={cn("pt-6 pb-3 text-2xl font-semibold text-[#540ba9]", className)}>תצוגה מקדימה - {lesson.topic}</h2>
+    <h2 className={cn("pt-6 pb-3 text-2xl font-semibold text-[#fa4083]", className)}>תצוגה מקדימה - {lesson.topic}</h2>
         <AITextarea
           onClick={(e) => e.stopPropagation()}
           aiOn={false}

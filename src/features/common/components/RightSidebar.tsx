@@ -71,7 +71,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             <div className="space-y-6 py-4"></div>
             <AlertDialogFooter className="flex flex-row-reverse justify-start gap-2">
               <AlertDialogAction 
-                className="bg-[#681bc2] text-white hover:bg-[#681bc2]/90"
+                className="bg-[#f06094] text-white hover:bg-[#f06094]/90"
                 onClick={() => handleExitConfirm(true)}
               >
                 שמור וצא
@@ -88,7 +88,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         </AlertDialog>
         <Card className=''>
           <CardContent className="p-4 space-y-2 bg-[#fff4fc]">
-            <div className="text-lg font-semibold text-[#681bc2]">סטטוס שיעור</div>
+            <div className="text-lg font-semibold text-[#f06094]">סטטוס שיעור</div>
             <div className="text-sm text-slate-600">
               כותרת: &nbsp;
               {lessonTitle || "ללא כותרת"}

@@ -17,7 +17,7 @@ export const SaveStatus = ({ onSave, saving, lastSaved, className = '' ,savingTe
         data-save-button
         onClick={onSave}
         disabled={saving}
-        className="text-[#681bc2] border border-[#681bc2] h-[50px] flex flex-col items-center gap-1 hover:!bg-[#681bc2] hover:!text-white"
+        className="text-[#f06094] border border-[#f06094] h-[50px] flex flex-col items-center gap-1 hover:!bg-[#f06094] hover:!text-white"
       >
         {saving ? savingText : buttonText}
         <br/> 

@@ -104,7 +104,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
 
   return (
     <div className="space-y-2 rtl">
-      <h1 className="text-[1.2rem] font-semibold text-[#540ba9] py-4">פרטי השיעור</h1>
+      <h1 className="text-[1.2rem] font-semibold text-[#fa4083] py-4">פרטי השיעור</h1>
       
       <div className="text-right">
         <Label className="text-right">תיאור כללי</Label>
@@ -271,7 +271,7 @@ export const BasicInfoForm = ({ lessonPlan, handleBasicInfoChange, onSave, valid
 
       {materialContent && (
         <div className="text-right mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <Label className="text-right font-semibold text-[#540ba9]">חומרי עזר</Label>
+          <Label className="text-right font-semibold text-[#fa4083]">חומרי עזר</Label>
           <div className="mt-2 whitespace-pre-wrap text-gray-700">{materialContent}</div>
         </div>
       )}

@@ -58,7 +58,7 @@ export function SavePrompt({
           <AlertDialogAction
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-[#681bc2] text-white hover:bg-[#681bc2]/90"
+            className="bg-[#f06094] text-white hover:bg-[#f06094]/90"
           >
             {isSaving ? 'שומר...' : 'שמור'}
           </AlertDialogAction>

@@ -95,7 +95,7 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent dir="rtl" className="max-w-2xl bg-white">
         <AlertDialogHeader className="space-y-3">
-          <AlertDialogTitle className="text-2xl font-semibold text-[#540ba9]">
+          <AlertDialogTitle className="text-2xl font-semibold text-[#fa4083]">
             יצירת שיעור בעזרת AI
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
@@ -170,7 +170,7 @@ export function CreateLessonAIModal({ isOpen, onClose, onCreate, isGenerating }:
             type="submit"
             onClick={handleSubmit}
             disabled={isSubmitting || isGenerating || !isFormValid}
-            className="bg-[#540ba9] hover:bg-[#7122db]"
+            className="bg-[#fa4083] hover:bg-[#7122db]"
           >
             צור שיעור
           </AlertDialogAction>

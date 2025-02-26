@@ -181,7 +181,7 @@ const LessonPhase = ({
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button 
-                      className="text-[#681bc2] border border-[#681bc2] flex items-center justify-center gap-2"
+                      className="text-[#f06094] border border-[#f06094] flex items-center justify-center gap-2"
                     >
                       <TrashIcon className="h-5 w-5" />
                       מחק פעילות
@@ -207,7 +207,7 @@ const LessonPhase = ({
           ))}
           <Button 
             onClick={() => onAddSection(phase)}
-            className="w-full text-[#681bc2] border border-[#681bc2] flex items-center justify-center gap-2"
+            className="w-full text-[#f06094] border border-[#f06094] flex items-center justify-center gap-2"
           >
             <PlusIcon className="h-5 w-5" />
             הוסף פעילות

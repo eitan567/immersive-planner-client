@@ -18,7 +18,7 @@ export const ShortcutsMenu: React.FC<ShortcutsMenuProps> = ({ onActionClick }) =
         size="icon"
         className="p-2"
       >
-        <SparklesIcon className="h-5 w-5 text-[#540ba9]" />
+        <SparklesIcon className="h-5 w-5 text-[#fa4083]" />
       </Button>
 
       {isOpen && (
