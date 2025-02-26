@@ -134,4 +134,5 @@ export type LessonPlan = {
   created_at: string;
   updated_at: string;
   material_id?: string;
+  materials?: { title: string; content: string } | string;
 };

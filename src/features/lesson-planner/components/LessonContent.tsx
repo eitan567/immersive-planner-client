@@ -51,6 +51,7 @@ export const LessonContent = React.memo(({
   
   // Expose validateRef to parent
   React.useEffect(() => {
+    console.log("lessonPlan:", lessonPlan);
     if (typeof window !== 'undefined') {
       (window as any).__lessonValidateRef = validateRef;
     }
@@ -83,6 +84,7 @@ export const LessonContent = React.memo(({
             <LessonBuilder
               sections={lessonPlan.sections}
               onAddSection={addSection}
+              materials={lessonPlan.materials}
               onUpdateSection={handleSectionUpdate}
               onRemoveSection={removeSection}
             />

@@ -31,6 +31,7 @@ interface LessonPhaseProps {
   onAddSection: (phase: 'opening' | 'main' | 'summary') => void;
   onUpdateSection: (phase: 'opening' | 'main' | 'summary', index: number, updates: Partial<LessonSection>) => void;
   onRemoveSection: (phase: 'opening' | 'main' | 'summary', index: number) => void;
+  materials?: { title: string; content: string } | string;
   onSave?: () => Promise<void>;
 }
 
@@ -78,8 +79,13 @@ const LessonPhase = ({
   onAddSection,
   onUpdateSection,
   onRemoveSection,
-  onSave
+  onSave,
+  materials
 }: LessonPhaseProps) => {
+  React.useEffect(() => {
+    console.log('[LessonPhase] Materials:', materials);
+  }, [materials]);
+
   return (
     <Card className="mt-2 border-gray-200">
       <CardContent>

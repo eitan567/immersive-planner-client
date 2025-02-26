@@ -33,8 +33,8 @@ interface LeftSidebarProps {
 }
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({
-  lessonTitle,
-  totalSteps,
+  // lessonTitle,
+  // totalSteps,
   lessonId
 }) => {
   const [materialsTitle, setMaterialsTitle] = useState("");

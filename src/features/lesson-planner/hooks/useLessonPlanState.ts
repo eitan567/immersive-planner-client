@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext.tsx';
 import type { LessonPlan, LessonPlanSections, LessonSection } from '../types.ts';
+import { materialsService } from '../services/materialsService.ts';
 import { lessonPlanService } from '../services/lessonPlanService.ts';
 import { mapCategoryToHebrew } from '../components/chat/useChatLogic.ts';
 import { translateContent } from "../../../utils/translations.ts";
@@ -254,6 +255,22 @@ const useLessonPlanState = (lessonId?: string) => {
         position: plan.position || '',
         material_id: (plan as any).material_id
       });
+
+        // If there's a material_id, load the material content
+        if (validatedPlan.material_id) {
+          try {
+            const material = await materialsService.getMaterial(validatedPlan.material_id);
+            if (material) {
+              validatedPlan.materials = {
+                title: material.title,
+                content: material.content
+              };
+            }
+          } catch (err) {
+            console.error('Failed to load material content:', err);
+            // Don't throw error here, just continue without materials
+          }
+      }
 
         setLessonPlan(validatedPlan);
         setError(null);

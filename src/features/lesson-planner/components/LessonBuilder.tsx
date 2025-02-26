@@ -11,6 +11,7 @@ interface LessonBuilderProps {
     updates: Partial<LessonSection>
   ) => void;
   onRemoveSection: (phase: 'opening' | 'main' | 'summary', index: number) => void;
+  materials?: { title: string; content: string } | string;
   onSave?: () => Promise<void>;
 }
 
@@ -19,14 +20,16 @@ export const LessonBuilder = ({
   onAddSection,
   onUpdateSection,
   onRemoveSection,
-  onSave
+  onSave,
+  materials
 }: LessonBuilderProps) => {
   React.useEffect(() => {
     console.log('[LessonBuilder] Received sections:', sections);
     console.log('[LessonBuilder] Opening sections:', sections.opening);
     console.log('[LessonBuilder] Main sections:', sections.main);
     console.log('[LessonBuilder] Summary sections:', sections.summary);
-  }, [sections]);
+    console.log('[LessonBuilder] Materials:', materials);
+  }, [sections, materials]);
 
   return (
     <div>
@@ -42,6 +45,8 @@ export const LessonBuilder = ({
             onAddSection={onAddSection}
             onUpdateSection={onUpdateSection}
             onRemoveSection={onRemoveSection}
+            materials={materials}
+            onSave={onSave}
           />
           <h3 className="text-[1rem] font-normal my-2 text-[#540ba9]">גוף השיעור</h3>
           <LessonPhase
@@ -52,6 +57,8 @@ export const LessonBuilder = ({
             onAddSection={onAddSection}
             onUpdateSection={onUpdateSection}
             onRemoveSection={onRemoveSection}
+            materials={materials}
+            onSave={onSave}
           />
           <h3 className="text-[1rem] font-normal my-2 text-[#540ba9]">סיכום</h3>
           <LessonPhase
@@ -62,6 +69,8 @@ export const LessonBuilder = ({
             onAddSection={onAddSection}
             onUpdateSection={onUpdateSection}
             onRemoveSection={onRemoveSection}
+            materials={materials}
+            onSave={onSave}
           />
         </div>
       </div>
