@@ -35,6 +35,7 @@ interface LessonContentProps {
   handleExport: () => void;
   generateLessonPlanText: () => string;
   saveCurrentPlan: () => Promise<void>;
+  materials?: { title: string; content: string } | string;
 }
 
 export const LessonContent = React.memo(({
@@ -45,7 +46,8 @@ export const LessonContent = React.memo(({
   addSection,
   handleSectionUpdate,
   removeSection,  
-  generateLessonPlanText  
+  generateLessonPlanText,
+  materials
 }: LessonContentProps) => {
   const validateRef = React.useRef<(() => boolean) | undefined>();
   

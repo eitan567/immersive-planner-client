@@ -136,6 +136,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
               <div className="flex justify-between items-center">
                 <label className="text-sm font-medium">בחר חומר עזר קיים</label>
                 <button 
+                  type='button'
                   onClick={handleCleanSelection}
                   className="text-sm bg-[#681bc2] text-white hover:bg-[#681bc2]/90 disabled:opacity-50 px-2 py-0.5 rounded-md"
                 >
