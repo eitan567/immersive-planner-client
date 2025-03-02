@@ -6,14 +6,14 @@ import './index.css';
 import { AuthProvider } from './features/auth/AuthContext.tsx';
 import { ThemeProvider } from './features/common/ThemeContext.tsx';
 import { useAuth } from './features/auth/AuthContext.tsx';
-import useLessonPlanState from './features/lesson-planner/hooks/useLessonPlanState.ts';
+import useLessonPlanState from './features/lesson-planner/hooks/useLessonPlanState';
 import LoginForm from './features/auth/LoginForm.tsx';
 import { LoadingSpinner } from './components/ui/loading-spinner.tsx';
 import { ErrorAlert } from './features/common/components/ErrorAlert.tsx';
 import { LessonContent } from './features/lesson-planner/components/LessonContent.tsx';
-import type { LessonSection } from './features/lesson-planner/types.ts';
+import type { LessonSection } from './features/lesson-planner/types';
 import { Layout } from './features/common/components/Layout.tsx';
-import { usePreventPageReset } from './hooks/usePreventPageReset.ts';
+import { usePreventPageReset } from './hooks/usePreventPageReset';
 import { LessonDashboard } from './features/lesson-planner/components/LessonDashboard.tsx';
 
 const LessonEditor = React.memo(() => {

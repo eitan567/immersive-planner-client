@@ -19,7 +19,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "../../../components/ui/alert-dialog.tsx";
-import type { LessonPlan } from '../types.ts';
+import type { LessonPlan } from '../types';
 import { PenBox, Trash2, Upload } from 'lucide-react';
 import { LessonPreviewDialog } from './LessonPreviewDialog.tsx';
 

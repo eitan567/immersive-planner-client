@@ -1,6 +1,6 @@
 import React from 'react';
 import LessonPhase from './LessonPhase.tsx';
-import type { LessonSection, LessonPlanSections } from '../types.ts';
+import type { LessonSection, LessonPlanSections } from '../types';
 
 interface LessonBuilderProps {
   sections: LessonPlanSections;

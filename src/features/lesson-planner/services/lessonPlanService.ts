@@ -1,7 +1,7 @@
-import { dbOperation } from '../../../lib/supabase-client.ts';
-import type { LessonPlan, LessonPlanSections, LessonSection } from '../types.ts';
-import type { Database } from '../../../lib/database.types.ts';
-import type { Json } from '../../../lib/database.types.ts';
+import { dbOperation } from '../../../lib/supabase-client';
+import type { LessonPlan, LessonPlanSections, LessonSection } from '../types';
+import type { Database } from '../../../lib/database.types';
+import type { Json } from '../../../lib/database.types';
 
 type DbLessonPlan = Database['public']['Tables']['lesson_plans']['Row'];
 
@@ -130,7 +130,8 @@ const toAppLessonPlan = (dbPlan: DbLessonPlan): LessonPlan => {
     status: dbPlan.status as 'draft' | 'published' || 'draft',
     description: dbPlan.description || '',
     created_at: dbPlan.created_at,
-    updated_at: dbPlan.updated_at
+    updated_at: dbPlan.updated_at,
+    material_id: dbPlan.material_id || undefined
   };
 };
 
@@ -192,7 +193,7 @@ const toDbLessonPlan = (plan: Omit<LessonPlan, 'id' | 'created_at' | 'updated_at
   skill_goals: plan.skillGoals,
   sections: transformedSections as unknown as Json,
   category: plan.category,
-  material_id: (plan as any).material_id || null // אפשרות לקשר חומר עזר
+  material_id: plan.material_id || null // אפשרות לקשר חומר עזר
   };
 };
 
@@ -266,9 +267,25 @@ export const lessonPlanService = {
 
   async updateLessonPlan(id: string, updates: Partial<Omit<LessonPlan, 'id' | 'userId' | 'created_at' | 'updated_at'>>): Promise<LessonPlan> {
     return dbOperation(async (client) => {
+      // קודם נביא את השיעור הקיים
+      const { data: existingPlan, error: getError } = await client
+        .from('lesson_plans')
+        .select()
+        .eq('id', id)
+        .single();
+
+      if (getError) throw getError;
+      if (!existingPlan) throw new Error('Failed to find lesson plan');
+
+      // נמזג את העדכונים עם השיעור הקיים
+      const mergedPlan = {
+        ...toDbLessonPlan(toAppLessonPlan(existingPlan)),
+        ...toDbLessonPlan(updates as LessonPlan)
+      };
+
       const { data, error } = await client
         .from('lesson_plans')
-        .update(toDbLessonPlan(updates as LessonPlan))
+        .update(mergedPlan)
         .eq('id', id)
         .select()
         .single();

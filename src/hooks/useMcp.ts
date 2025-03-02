@@ -12,7 +12,7 @@ interface McpToolOptions {
 }
 
 // עדכון הפורט ל-8000
-const MCP_ENDPOINT = 'http://localhost:8000/mcp';
+const MCP_ENDPOINT = import.meta.env.VITE_SERVER_URL + '/mcp';
 
 export async function useMcpTool<T = McpToolResult>(
   options: McpToolOptions

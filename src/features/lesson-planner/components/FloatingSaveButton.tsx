@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../../../components/ui/button.tsx';
-import { cn } from "../../../lib/utils.ts";
+import { cn } from "../../../lib/utils";
 
 interface FloatingSaveButtonProps {
   onClick: () => void;

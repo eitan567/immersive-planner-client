@@ -12,8 +12,8 @@ import {
 import { Button } from "../../../components/ui/button.tsx";
 import { Eye, X, Download } from 'lucide-react';
 import LessonPlanPreview from './LessonPlanPreview.tsx';
-import type { LessonPlan } from '../types.ts';
-import { translateContent } from "../../../utils/translations.ts";
+import type { LessonPlan } from '../types';
+import { translateContent } from "../../../utils/translations";
 
 interface LessonPreviewDialogProps {
   lesson: LessonPlan;

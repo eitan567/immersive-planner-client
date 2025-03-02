@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext.tsx';
-import type { LessonPlan, LessonPlanSections, LessonSection } from '../types.ts';
-import { materialsService } from '../services/materialsService.ts';
-import { lessonPlanService } from '../services/lessonPlanService.ts';
-import { mapCategoryToHebrew } from '../components/chat/useChatLogic.ts';
-import { translateContent } from "../../../utils/translations.ts";
+import type { LessonPlan, LessonPlanSections, LessonSection } from '../types';
+import { materialsService } from '../services/materialsService';
+import { lessonPlanService } from '../services/lessonPlanService';
+import { mapCategoryToHebrew } from '../components/chat/useChatLogic';
+import { translateContent } from "../../../utils/translations";
 
 const STORAGE_KEY = 'currentLessonPlanId';
 const PLAN_STORAGE_KEY = 'currentLessonPlan';
@@ -26,7 +26,8 @@ const createEmptyLessonPlan = (userId: string): Omit<LessonPlan, 'id' | 'created
   },
   status: 'draft',
   description: '',
-  category: ''
+  category: '',
+  material_id: null
 });
 
 const createEmptySection = (): LessonSection => ({
@@ -125,7 +126,8 @@ const ensureLessonPlan = (plan: Partial<LessonPlan>): LessonPlan => {
     description: plan.description || '',
     category: plan.category || '',
     created_at: plan.created_at || new Date().toISOString(),
-    updated_at: plan.updated_at || new Date().toISOString()
+    updated_at: plan.updated_at || new Date().toISOString(),
+    material_id: (plan as any).material_id || null
   };
 
   return validatedPlan as LessonPlan;
@@ -463,8 +465,12 @@ localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify(savedPlan));
         }
       } else {
         // For existing lessons, update the record
+        // עבור שיעורים קיימים, נעדכן את הרשומה כולל material_id
         const { id, created_at, updated_at, ...planWithoutMeta } = lessonPlan;
-        savedPlan = await lessonPlanService.updateLessonPlan(lessonPlan.id, planWithoutMeta);
+        savedPlan = await lessonPlanService.updateLessonPlan(lessonPlan.id, {
+          ...planWithoutMeta,
+          material_id: lessonPlan.material_id
+        });
         
         // Update both ID and full plan in localStorage
         localStorage.setItem(STORAGE_KEY, savedPlan.id);

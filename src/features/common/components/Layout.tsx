@@ -4,7 +4,7 @@ import { Navbar } from './Navbar.tsx';
 import { RightSidebar } from './RightSidebar.tsx';
 import { LeftSidebar } from './LeftSidebar.tsx';
 import { DashboardRightSidebar } from './DashboardRightSidebar.tsx';
-import type { LessonPlanSections } from '../../lesson-planner/types.ts';
+import type { LessonPlanSections } from '../../lesson-planner/types';
 import { FloatingSaveButton } from '../../lesson-planner/components/FloatingSaveButton.tsx';
 import { NavigationControls } from '../../lesson-planner/components/NavigationControls.tsx';
 

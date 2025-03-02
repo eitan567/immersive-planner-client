@@ -2,14 +2,14 @@ import React, { useRef, useEffect } from 'react';
 import { Button } from "../../../../components/ui/button.tsx";
 import { Input } from "../../../../components/ui/input.tsx";
 import { Card } from "../../../../components/ui/card.tsx";
-import { cn } from "../../../../lib/utils.ts";
+import { cn } from "../../../../lib/utils";
 import { XMarkIcon, PaperAirplaneIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import { ShortcutsMenu } from './ShortcutsMenu.tsx';
 import { ChatMessage } from "../ChatMessage.tsx";
 import { QuickActions } from "../QuickActions.tsx";
-import { QUICK_ACTIONS, DROPDOWN_QUICK_ACTIONS, QuickAction } from './types.ts';
-import { useChatLogic } from './useChatLogic.ts';
-import type { LessonFieldChatBoxProps } from './types.ts';
+import { QUICK_ACTIONS, DROPDOWN_QUICK_ACTIONS, QuickAction } from './types';
+import { useChatLogic } from './useChatLogic';
+import type { LessonFieldChatBoxProps } from './types';
 
 export const ChatBox: React.FC<LessonFieldChatBoxProps> = ({
   onUpdateField,

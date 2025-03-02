@@ -7,7 +7,7 @@ import {
   SelectItem,
 } from '../../../components/ui/select.tsx';
 import { Input } from '../../../components/ui/input.tsx';
-import { LESSON_CATEGORIES } from '../types.ts';
+import { LESSON_CATEGORIES } from '../types';
 
 interface LessonFiltersProps {
   searchTerm: string;

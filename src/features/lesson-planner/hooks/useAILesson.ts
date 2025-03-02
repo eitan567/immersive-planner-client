@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { generateFullLesson } from '../services/aiLessonService.ts';
-import { materialsService } from '../services/materialsService.ts';
+import { generateFullLesson } from '../services/aiLessonService';
+import { materialsService } from '../services/materialsService';
 import type { 
   LessonCategory, 
   LessonPlan,
   LessonPlanSections
-} from '../types.ts';
+} from '../types';
 import { 
   POSITION_MAPPING,
   SPACE_USAGE_MAPPING,
   SCREEN_TYPE_MAPPING,
   LESSON_CATEGORIES
-} from '../types.ts';
+} from '../types';
 
 interface UseAILessonProps {
   onSuccess: (lessonPlan: LessonPlan) => void;

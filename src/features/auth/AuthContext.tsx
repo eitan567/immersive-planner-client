@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase, type SupabaseUser } from '../../lib/supabase-client.ts';
+import { supabase, type SupabaseUser } from '../../lib/supabase-client';
 import {
   type Session,
   type AuthError,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge } from "../../../components/ui/badge.tsx";
-import { cn } from "../../../lib/utils.ts";
+import { cn } from "../../../lib/utils";
 
 interface QuickAction {
   text: string;

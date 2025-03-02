@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import { Button } from "../../../../components/ui/button.tsx";
-import { QUICK_ACTIONS } from './types.ts';
+import { QUICK_ACTIONS } from './types';
 
 interface ShortcutsMenuProps {
   onActionClick: (action: string) => void;

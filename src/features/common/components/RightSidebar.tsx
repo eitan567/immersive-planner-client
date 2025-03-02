@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from '../../../components/ui/alert-dialog.tsx';
 import { LessonFieldChatBox } from '../../lesson-planner/components/LessonFieldChatBox.tsx';
-import type { LessonPlanSections } from '../../lesson-planner/types.ts';
+import type { LessonPlanSections } from '../../lesson-planner/types';
 import { ValidFieldNames } from './Layout.tsx';
 import { Card, CardContent } from '../../../components/ui/card.tsx';
 

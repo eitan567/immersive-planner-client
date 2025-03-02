@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "../../../components/ui/select.tsx";
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import type { LessonSection } from '../types.ts';
+import type { LessonSection } from '../types';
 
 interface LessonPhaseProps {
   phase: 'opening' | 'main' | 'summary';

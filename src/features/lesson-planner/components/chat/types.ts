@@ -1,4 +1,4 @@
-import { LessonPlanSections } from '../../types.ts';
+import { LessonPlanSections } from '../../types';
 import { ValidFieldNames } from '../../../../features/common/components/Layout.tsx';
 
 export interface LessonFieldChatBoxProps {

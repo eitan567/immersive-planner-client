@@ -3,7 +3,7 @@ import { BasicInfoForm } from './BasicInfoForm.tsx';
 import { LessonBuilder } from './LessonBuilder.tsx';
 import LessonPlanPreview from './LessonPlanPreview.tsx';
 import { cn } from "../../../lib/utils.ts"
-import type { LessonPlan, LessonSection } from '../types.ts';
+import type { LessonPlan, LessonSection } from '../types';
 
 const validFields = [
   'topic',
@@ -77,11 +77,11 @@ export const LessonContent = React.memo(({
             <BasicInfoForm
               lessonPlan={{
                 ...lessonPlan,
-                material_id: (lessonPlan as any).material_id // העברת מזהה חומרי העזר
+                material_id: lessonPlan.material_id // העברת מזהה חומרי העזר
               }}
               handleBasicInfoChange={handleBasicInfoChange}
               validateRef={validateRef}
-              materials={(lessonPlan as any).materials}
+              materials={lessonPlan.materials}
             />
             <LessonBuilder
               sections={lessonPlan.sections}

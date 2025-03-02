@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext.tsx';
 import { LoadingSpinner } from '../../../components/ui/loading-spinner.tsx';
 import { useNavigate } from "react-router-dom";
-import { LessonPlan, LessonCategory, LESSON_CATEGORIES } from '../types.ts';
-import { lessonPlanService } from '../services/lessonPlanService.ts';
+import { LessonPlan, LessonCategory, LESSON_CATEGORIES } from '../types';
+import { lessonPlanService } from '../services/lessonPlanService';
 import { Layout } from '../../common/components/Layout.tsx';
 import { LessonCard } from './LessonCard.tsx';
 import { LessonFilters } from './LessonFilters.tsx';
 import { CreateLessonAIModal } from './CreateLessonAIModal.tsx';
-import { useAILesson } from '../hooks/useAILesson.ts';
+import { useAILesson } from '../hooks/useAILesson';
 
 export function LessonDashboard() {
   const { user } = useAuth();

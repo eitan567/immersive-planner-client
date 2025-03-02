@@ -5,7 +5,7 @@ import { Input } from "./input.tsx"
 import { cn } from "../../lib/utils.ts"
 import { SiProbot } from "react-icons/si";
 import { MdFace } from "react-icons/md";
-import { useMcpTool } from '../../hooks/useMcp.ts';
+import { useMcpTool } from '../../hooks/useMcp';
 import { SparklesIcon, XMarkIcon, PaperAirplaneIcon, ChatBubbleLeftRightIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { Textarea } from "./textarea.tsx";
 

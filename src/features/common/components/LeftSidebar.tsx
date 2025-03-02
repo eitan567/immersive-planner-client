@@ -4,9 +4,9 @@ import { Input } from '../../../components/ui/input.tsx';
 import { Textarea } from '../../../components/ui/textarea.tsx';
 import { Button } from '../../../components/ui/button.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select.tsx';
-import { supabase } from '../../../lib/supabase-client.ts';
+import { supabase } from '../../../lib/supabase-client';
 // import { LessonFieldChatBox } from '../../lesson-planner/components/LessonFieldChatBox.tsx';
-import type { LessonPlanSections } from '../../lesson-planner/types.ts';
+import type { LessonPlanSections } from '../../lesson-planner/types';
 import { ValidFieldNames } from './Layout.tsx';
 
 interface LeftSidebarProps {

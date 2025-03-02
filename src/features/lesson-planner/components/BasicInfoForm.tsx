@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { materialsService } from '../services/materialsService.ts';
+import { materialsService } from '../services/materialsService';
 import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
 import { AIInput } from "../../../components/ui/ai-input.tsx";
@@ -11,8 +11,8 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "../../../components/ui/select.tsx";
-import type { LessonPlan, LessonCategory } from '../types.ts';
-import { LESSON_CATEGORIES } from '../types.ts';
+import type { LessonPlan, LessonCategory } from '../types';
+import { LESSON_CATEGORIES } from '../types';
 
 const validFields = [
   'topic',

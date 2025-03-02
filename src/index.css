@@ -50,9 +50,9 @@
     }
 
     /* SVG color */
-    & svg {
+    /* & svg { */
       /* color: var(--theme-color-0); */
-    }
+    /* } */
   }
 
   .theme-purple {
@@ -92,9 +92,9 @@
     }
 
     /* SVG color */
-    & svg {
+    /* & svg { */
       /* color: var(--theme-color-0); */
-    }
+    /* } */
   }
 }
 
@@ -134,7 +134,7 @@ svg {
   -webkit-text-fill-color: transparent;
   background: hsl(var(--primary));
   background: linear-gradient(90deg, hsl(var(--primary)) 46%, hsl(var(--accent)));
-  -webkit-background-clip: text;
+  --webkit-background-clip: text;
 }
 
 .font-black {

@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../components/ui/select.tsx';
-import { LessonCategory, LESSON_CATEGORIES } from '../types.ts';
+import { LessonCategory, LESSON_CATEGORIES } from '../types';
 import { LoadingSpinner } from '../../../components/ui/loading-spinner.tsx';
 import { Label } from '../../../components/ui/label.tsx';
 import { Textarea } from '../../../components/ui/textarea.tsx';

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 // import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card.tsx";
 import { AITextarea } from "../../../components/ui/ai-textarea.tsx";
-import { cn } from '../../../lib/utils.ts';
-import { LessonPlan } from '../types.ts';
-// import { translateContent } from "../../../utils/translations.ts";
+import { cn } from '../../../lib/utils';
+import { LessonPlan } from '../types';
+// import { translateContent } from "../../../utils/translations";
 
 interface LessonPlanPreviewProps {
   content: string;

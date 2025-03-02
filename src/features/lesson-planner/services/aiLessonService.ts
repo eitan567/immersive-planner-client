@@ -1,6 +1,6 @@
-import { useMcpTool } from '../../../hooks/useMcp.ts';
-import type { LessonPlan, LessonCategory } from '../types.ts';
-import { FIELD_LABELS } from '../components/chat/types.ts';
+import { useMcpTool } from '../../../hooks/useMcp';
+import type { LessonPlan, LessonCategory } from '../types';
+import { FIELD_LABELS } from '../components/chat/types';
 
 interface GenerateFullLessonParams {
   topic?: string;

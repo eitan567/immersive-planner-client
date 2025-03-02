@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Button } from "../../../components/ui/button.tsx";
-import { supabase } from '../../../lib/supabase-client.ts';
+import { supabase } from '../../../lib/supabase-client';
 
 interface UserDropdownProps {
     user: {

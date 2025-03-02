@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useMcpTool } from '../../../../hooks/useMcp.ts';
+import { useMcpTool } from '../../../../hooks/useMcp';
 import { Message } from '../ChatMessage.tsx';
-import { AIResponse, FieldUpdate, FIELD_LABELS, SPACE_USAGE_MAP, SCREEN_TYPE_MAP, POSITION_MAP, CATEGORY_MAP, ChatResponse } from './types.ts';
-import type { LessonPlanSections } from '../../types.ts';
+import { AIResponse, FieldUpdate, FIELD_LABELS, SPACE_USAGE_MAP, SCREEN_TYPE_MAP, POSITION_MAP, CATEGORY_MAP, ChatResponse } from './types';
+import type { LessonPlanSections } from '../../types';
 import { ValidFieldNames } from '../../../common/components/Layout.tsx';
 
 export function mapScreenTypeToEnglish(hebrewValue: string): string {

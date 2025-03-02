@@ -1,4 +1,4 @@
-import { dbOperation } from '../../../lib/supabase-client.ts';
+import { dbOperation } from '../../../lib/supabase-client';
 
 interface MaterialsCreateData {
   title: string;
